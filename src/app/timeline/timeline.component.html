@@ -1,0 +1,37 @@
+<div class="topnav flexbox" >
+	<div class="left" ></div>
+	<div class="right" >
+		<ide-timeline-ruler #ruler [scaleFrame]="frameWidth" ></ide-timeline-ruler>
+	</div>
+</div>
+<div class="main" >
+	<div class="flexbox" >
+		<div class="left list" >
+			<div *ngFor="let layer of model; let idx = index;" class="layer-item" 
+			[ngClass]="{true: 'active'}[isElementActive(layer.element.id)]"  >
+				<span [ngClass]="{
+					'0' : 'glyphicon glyphicon-file',
+					'1' : 'glyphicon glyphicon-adjust',
+					'2' : 'glyphicon glyphicon-wrench'
+				}[layer.type]"></span>
+				<input #nameInput 
+					class="layer-name" [value]="layer.name" id="layer-name" name="layer-name" type="text" 
+					onfocus="this.select()" 
+					(blur)="submitLayerName(idx, nameInput.value)" 
+					(keyup.enter)="nameInput.blur()" 
+					autocomplete="off" />
+				<md-icon style="cursor: pointer" class="md-18" (click)="toggleElementVisible(layer.element.id)" >{{getLayerVisibleIconName(idx)}}</md-icon>
+			</div>
+		</div>
+		<div class="right list" #timelineContainer  >
+			<div class="timeline-list" #timelineBox [style.minWidth]="(frameCount + 100) * frameWidth + 'px'"  >
+				<div #hoverRanger class="hover-ranger" ></div>
+				<ide-layer *ngFor="let layer of model; let idx = index;"
+					[frameWidth]="frameWidth"
+					[model]="layer"
+				></ide-layer>
+			</div>
+			<div class="marking" #marking ></div>
+		</div>
+	</div>
+</div>

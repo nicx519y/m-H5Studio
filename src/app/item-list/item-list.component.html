@@ -1,0 +1,36 @@
+<ul class="itemslist"  >
+	<li *ngFor="let opt of model; let idx = index;" 
+		[class.active]="idx===service.active"
+		[class.unactive]="idx!==service.active"
+		[class.editing]="isEditedPage(idx)"
+		(click)="changeActive(idx); " #itemContainer  >
+		<div *ngIf="idx===service.active" class="activebox" >
+			<div class="item-pic" >
+				<ide-previewer [src]="opt.thumbnail" [width]="38" [height]="38" ></ide-previewer>
+			</div>
+			<div class="item-desc" >
+				<form #itemForm="ngForm" >
+					<input #nameInput name="name" type="text" class="item-name" [value]="opt.name" onfocus="this.select()" (blur)="submitItemName(idx, nameInput.value)" (keyup.enter)="nameInput.blur()" autocomplete="off" />
+					<div [ngSwitch]="opt.type" class="item-type" >
+						<span *ngSwitchCase="0" >Movie Clip</span>
+						<span *ngSwitchCase="1" >Bitmap</span>
+						<span *ngSwitchCase="2" >Text</span>
+						<span *ngSwitchCase="3" >Video</span>
+						<span *ngSwitchCase="4" >Shape</span>
+					</div>
+				</form>
+			</div>
+			<span class="item-btn" *ngIf="opt.type==0" (click)="editActiveItem()"  >
+				<md-icon class="md-18"  >{{getEditorIcon()}}</md-icon>
+			</span>
+			<span class="item-btn" (click)="insertActiveItem()"  >
+				<md-icon class="md-18"  >{{getInsertIcon()}}</md-icon>
+			</span>
+		</div>
+		<span *ngIf="idx!==service.active" class="item-name" >
+			<md-icon class="md-18" >{{getItemTypeIcon(opt.type)}}</md-icon>&nbsp;
+			<span class="item-name-inner" >{{opt.name}}</span>
+		</span>
+	</li>
+</ul>
+

@@ -1,0 +1,122 @@
+<app-layout>
+	<div block="top" >
+		<md-toolbar color="primary">
+			<div class="logo"  >H5Studio</div>
+			<button md-button [mdMenuTriggerFor]="projectMenu">项目</button>
+			<md-menu #projectMenu="mdMenu">
+				<button md-menu-item (click)="createNewProject()" >新建</button>
+				<button md-menu-item (click)="saveData()" >保存</button>
+				<button md-menu-item (click)="preview()" >预览</button>
+				<button md-menu-item (click)="publish()" >发布</button>
+				<button md-menu-item (click)="openPageConfigerDialog()" >页面配置</button>
+				<button md-menu-item (click)="fullscreen()" >全屏</button>
+			</md-menu>
+			<button md-button [mdMenuTriggerFor]="sourceMenu" >资源</button>
+			<md-menu #sourceMenu="mdMenu" >
+				<button md-menu-item (click)="openImportBitmapsDialog()" >图片</button>
+				<button md-menu-item >视频</button>
+			</md-menu>
+		</md-toolbar>
+	</div>
+	<div block="content">
+		<app-ide-layout>
+			<div block="left">
+				<ide-accordion>
+					<ide-panel [title]="'页面'" [isOpen]="true" [closeAble]="false" >
+						<div block="main">
+							<ide-page-list #pageList [model]="pagesService.getData()" [editedPageId]="timelineService.getActivePageId()"  ></ide-page-list>
+						</div>
+					</ide-panel>
+				</ide-accordion>
+			</div>
+			<div block="centertop" >
+				<ide-onion-skin [stageName]="timelineService.getData().name" ></ide-onion-skin>
+			</div>
+			<div block="centerleft">
+				<ide-toolsbar #toolsbar ></ide-toolsbar>
+			</div>
+			<div block="center">
+				<ide-canvas #canvas 
+					[mode]="toolsbar.state" 
+					[hasData]="timelineService.hasData()"
+					[activePageModel]="timelineService.getData()" 
+					[itemsModel]="itemsService.getData()"
+					[activeOptions]="timelineService.getActiveOptions()"
+				></ide-canvas>
+			</div>
+			<div block="bottom">
+				<ide-accordion>
+					<ide-panel [title]="'时间轴'" [hasTitle]="false" [isOpen]="true" [hasTools]="true" [closeAble]="false" [autoHeight]="300" #timelinepanel>
+						<div block="main">
+							<ide-timeline #timeline 
+								[model]="timelineService._data" 
+								[activeOptions]="timelineService.getActiveOptions()"
+								[frameCount]="timelineService.getFrameCount()" 
+							></ide-timeline>
+						</div>
+						<div block="tools">
+							<div class="tools-left" style="width: 180px;">
+								<a href="javascript:void(0)" (click)="timeline.removeActiveElements()">
+								[删除]
+								</a>
+								<a href="javascript:void(0)" (click)="timeline.upActiveElements()">
+								[上移]
+								</a>
+								<a href="javascript:void(0)" (click)="timeline.downActiveElements()">
+								[下移]
+								</a>
+							</div>
+							<div class="tools-right">
+								<a href="javascript:void(0)" (click)="timeline.changeActiveToKeyFrames()">
+									[转换关键帧]
+								</a>
+								<a href="javascript:void(0)" (click)="timeline.changeActiveToEmptyKeyFrames()">
+									[转换空白关键帧]
+								</a>
+									<a href="javascript:void(0)" (click)="timeline.removeActiveKeyFrames()">
+									[删除关键帧]
+								</a>
+									<a href="javascript:void(0)" (click)="timeline.changeActiveToFrames()">
+									[转换帧]
+								</a>
+									<a href="javascript:void(0)" (click)="timeline.removeActiveFrames()">
+									[删除帧]
+								</a>
+									<a href="javascript:void(0)" (click)="timeline.createActiveTweens()">
+									[新建动画]
+								</a>
+									<a href="javascript:void(0)" (click)="timeline.removeActiveTweens()">
+									[删除动画]
+								</a>
+							</div>
+						</div>
+					</ide-panel>
+				</ide-accordion>
+			</div>
+			<div block="right">
+				<ide-accordion>
+					<ide-panel [title]="'素材库'" [isOpen]="true" [hasTools]="true" [autoHeight]="300" #itempanel>
+						<div block="main">
+							<ide-item-list #itemList [model]="itemsService.getData()" [active]="itemsService.active" [editedPage]="timelineService.getActivePageId()" ></ide-item-list>
+						</div>
+						<div block="tools">
+							<div>
+								<a href="javascript:void(0)"  (click)="itemList.openCreateItemModal()" >
+								[添加]
+								</a>
+								<a href="javascript:void(0)"  (click)="itemList.removeActiveItem()" >
+								[删除]
+								</a>
+							</div>
+						</div>
+					</ide-panel>
+					<ide-panel [title]="'属性'">
+						<div block="main">
+							<ide-attrs [attrsMod]="attrsService.mod" [model]="attrsService.getData().toJS()" ></ide-attrs>
+						</div>
+					</ide-panel>
+				</ide-accordion>
+			</div>
+		</app-ide-layout>
+	</div>
+</app-layout>

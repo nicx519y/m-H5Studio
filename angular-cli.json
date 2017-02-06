@@ -18,9 +18,15 @@
       "prefix": "app",
       "mobile": false,
       "styles": [
-        "styles.css"
+        "styles.css",
+        "material2-app-theme.scss"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/@JDB/janvas/lib/easeljs.js",
+        "../node_modules/@JDB/janvas/lib/preloadjs.js",
+        "../node_modules/@JDB/janvas/lib/tweenjs.js",
+        "../node_modules/@JDB/janvas/dist/bundle.js"
+      ],
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",

@@ -1,0 +1,19 @@
+<form #bitmapForm="ngForm" (submit)="importStart()" >
+	<md-dialog-content>
+		<md-grid-list cols="6" rowHeight="90" gutterSize="15" >
+			<md-grid-tile *ngFor="let bitmap of model; let i = index;"  >
+				<ide-previewer [src]="bitmap.url" [width]="95" [height]="95" [mdTooltip]="bitmap.name" mdTooltipPosition="after"  ></ide-previewer>
+			</md-grid-tile>
+			<md-grid-tile>
+				<button class="fileBtn" mdTooltip="浏览图片" mdTooltipPosition="after"  >
+					<input class="fileInput" #fileInput accept="image/*" multiple type="file" name="file" (change)="fileInputChange($event)"  />
+					<md-icon class="md-36" >add_a_photo</md-icon>
+				</button>
+			</md-grid-tile>
+		</md-grid-list>
+	</md-dialog-content>
+	<md-dialog-actions>
+		<button type="submit" color="accent" md-raised-button >上&nbsp;传</button>&nbsp;
+		<button type="button" md-raised-button (click)="dref.close()">取&nbsp;消</button>
+	</md-dialog-actions>
+</form>

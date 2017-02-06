@@ -1,0 +1,42 @@
+md-input-container, md-select {
+	width: 230px;
+	text-align: left;
+}
+
+md-input-container span {
+	vertical-align: middle;
+}
+
+md-select {
+	margin-top:13px;
+}
+
+.form-row {
+	padding: 10px;
+	width: 230px;
+	margin: 0 auto;
+}
+
+md-dialog-actions {
+	text-align: center;
+}
+
+input[type="color"] {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	background: none;
+	width:15px;
+	height: 19px;
+	position: absolute;
+	right: 1px;
+}
+
+md-dialog-content {
+	height: 380px;
+}
+
+.tab-content {
+	padding: 20px;
+}
+

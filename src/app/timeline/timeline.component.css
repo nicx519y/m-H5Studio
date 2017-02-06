@@ -1,0 +1,119 @@
+:host {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.topnav {
+	border-bottom: solid 1px #eee;
+	height: 26px;
+	flex-shrink: 0;
+}
+.main {
+	flex-grow: 1;
+	overflow-y: auto;
+}
+.flexbox {
+	display: flex;
+	flex-direction: row;
+}
+
+.main .flexbox {
+	min-height: 168px;
+}
+
+.left {
+	flex-shrink: 0;
+	flex-grow: 0;
+	width: 180px;
+}
+.right {
+	flex-shrink: 0;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	width: 0;	/*防止内容将此容器撑大，将宽度设置交给flexbox*/
+	overflow: auto;
+}
+
+.main .flexbox .left {
+	border-right: solid 1px #eee;
+}
+
+.timeline-list {
+	position: relative;
+	flex-grow: 1;
+	overflow: auto;
+}
+
+.hover-ranger {
+	position: absolute;
+	left: -9px;
+	right: -9px;
+	background: rgba(100, 149, 237, 0.2);
+	pointer-events: none;
+	border: solid 1px rgba(100, 149, 237, 0.8);
+	z-index: 10000;
+}
+
+.right.list {
+	position: relative;
+}
+
+.marking {
+	position: absolute;
+	border-left: solid 1px green;
+	width: 9px;
+	height: 100%;
+	left: -9px;
+	top: 0;
+	pointer-events: none;
+	z-index: 1000;
+	opacity: 0.5;
+}
+
+.layer-item {
+	border-bottom: dotted 1px #e5e5e5;
+	height: 23px;
+	border-right: solid 1px #f5f5f5;
+	line-height: 20px;
+	padding: 0 5px;
+}
+
+.layer-item.active {
+	color: #fff;
+	background: rgba(204, 153, 0, 0.5);
+}
+
+
+.layer-item span {
+	vertical-align: middle;
+}
+
+.layer-item form {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0;
+	padding: 0;
+}
+
+.layer-item input {
+	border: 0;
+	width: 135px;
+	height: 20px;
+	line-height: 20px;
+	vertical-align: middle;
+	background: rgba(0, 0, 0, 0)
+}
+
+.layer-item.active input {
+	color: #fff;
+}
+
+.layer-item md-icon {
+	vertical-align: middle;
+}

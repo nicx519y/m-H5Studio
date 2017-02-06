@@ -1,0 +1,53 @@
+:host {
+	font-size: 10px;
+}
+
+.list-group-item {
+	position: relative;
+	line-height: 20px;
+	color: #999;
+}
+
+.list-group-item .btn-group {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+.list-group-item .btn-group button:focus {
+	outline: none;
+}
+
+.btn-group button span{
+	font-size: 12px;
+}
+
+h3 {
+	font-size: 14px;
+	margin: 0;
+	padding: 5px 0;
+	color: #333;
+}
+
+
+.nav-item {
+	font-size: 13px;
+	height: 40px;
+}
+
+.nav-item > a {
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.dropdown-menu a {
+	font-size: 12px;
+}
+
+div[block="content"] {
+	overflow-y: scroll;
+}
+
+.logo {
+	margin-right: 30px;
+}

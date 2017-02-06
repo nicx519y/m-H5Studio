@@ -1,0 +1,2 @@
+<img *ngIf="src!=''" src="about:blank" #image [width]="width * n" [height]="height * n" [style.width]="width+'px'" [style.height]="height+'px'" />
+<div *ngIf="src==''" [ngStyle]="{ width: width + 'px', height: height + 'px' }" ></div>

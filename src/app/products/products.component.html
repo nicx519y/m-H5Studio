@@ -1,0 +1,28 @@
+<md-sidenav-layout [class.m2app-dark]="isDarkTheme">
+	<md-toolbar color="primary">
+		<div class="logo" >H5Studio</div>
+		<button md-button [mdMenuTriggerFor]="menu">项目</button>
+		<md-menu #menu="mdMenu">
+			<button md-menu-item>新建</button>
+		</md-menu>
+	</md-toolbar>
+	<div block="content">
+		<ul class="list-group">
+			<li *ngFor="let opt of service.options" class="list-group-item">
+				<h3>
+					<a href="javascript:void(0)" [routerLink]="['/studio']" [queryParams]="{pid: opt.prodId}">{{opt.title}}</a>
+				</h3>
+				项目作者：<span class="user">{{opt.user}}</span> <br /> 修改时间：
+				<span class="last-modify">{{opt.lastModify | date: 'yyyy/mm/dd hh:mm:ss' }}</span>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default" [routerLink]="['/studio']" [queryParams]="{pid: opt.prodId}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</button>
+					<button type="button" class="btn btn-default" (click)="service.removeProject(opt.prodId)">
+						<span class="glyphicon glyphicon-trash" ></span>
+					</button>
+				</div>
+			</li>
+		</ul>
+	</div>
+</md-sidenav-layout>

@@ -1,20 +1,31 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app/app.component';
+import { ProductsModule } from './products/products.module';
+import { IdeModule } from './ide/ide.module';
 
-import { AppComponent } from './app.component';
+
+const ROUTES: Routes = [
+	{path: '', redirectTo: 'products', pathMatch: 'full'}
+];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	imports: [
+		RouterModule.forRoot(ROUTES),
+		BrowserModule,
+		HttpModule,
+		ProductsModule,
+		IdeModule,
+	],
+	declarations: [
+		AppComponent,
+	],
+	providers: [
+	],
+	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+	
+}

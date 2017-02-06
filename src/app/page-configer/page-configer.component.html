@@ -1,0 +1,60 @@
+<form #configerForm="ngForm" class="modal-form" (submit)="submitHandler()"   >
+	<md-dialog-content>
+		<md-tab-group>
+			<md-tab label="基本" >
+				<div class="tab-content">
+					<div class="form-row" >
+						<md-input-container >
+							<input [(ngModel)]="stageTitle" [ngModelOptions]="{standalone: true}" md-input placeholder="标题" name="title" maxlength="20" autocomplete="off" />
+						</md-input-container>
+					</div>
+					<div class="form-row" >
+						<md-input-container >
+							<input [(ngModel)]="stageBackgroundColor" [ngModelOptions]="{standalone: true}" type="text" placeholder="背景色" maxlength="7" md-input name="backgroundColor" autocomplete="off"  />
+							<input [(ngModel)]="stageBackgroundColor" [ngModelOptions]="{standalone: true}" type="color" md-suffix />
+						</md-input-container>
+					</div>
+					<div class="form-row" >
+						<md-input-container >
+							<input [(ngModel)]="firstPage" [ngModelOptions]="{standalone: true}" placeholder="起始页" type="number" md-input name="firstPage" autocomplete="off" min="1" />
+						</md-input-container>
+					</div>
+					<div class="form-row" >
+						<md-slide-toggle [(ngModel)]="isLoop" [ngModelOptions]="{standalone: true}" name="loop" >循环播放</md-slide-toggle>
+					</div>
+					<div class="form-row" >
+						<md-slide-toggle [(ngModel)]="isAutoPlay" [ngModelOptions]="{standalone: true}" name="autoPlay" >自动播放</md-slide-toggle>
+					</div>
+				</div>
+			</md-tab>
+			<md-tab label="动画" >
+				<div class="tab-content" >
+					<div class="form-row" >
+						<md-slide-toggle [(ngModel)]="canSwiper" [ngModelOptions]="{standalone: true}" name="canSwiper" >启动动画</md-slide-toggle>
+					</div>
+					<div class="form-row" >
+						<md-select [(ngModel)]="swiperEffect" [disabled]="!canSwiper" [ngModelOptions]="{standalone: true}" placeholder="动画特效" name="effect" >
+							<md-option [value]="0" >swiper</md-option>
+						</md-select>
+					</div>
+					<div class="form-row" >
+						<md-select [(ngModel)]="swiperDirection" [disabled]="!canSwiper" [ngModelOptions]="{standalone: true}" placeholder="动画方向" name="direction"  >
+							<md-option [value]="0" >纵向</md-option>
+							<md-option [value]="1" >横向</md-option>
+						</md-select>
+					</div>
+					<div class="form-row" >
+						<md-input-container style="width:50px;" >
+							<input [(ngModel)]="swiperSpeed" [disabled]="!canSwiper" [ngModelOptions]="{standalone: true}" placeholder="动画速度" type="number" md-input name="speedInput" autocomplete="off" min="1" max="100"  />
+						</md-input-container>
+						<md-slider [(ngModel)]="swiperSpeed" [disabled]="!canSwiper" [ngModelOptions]="{standalone: true}" name="speedSlider" style="width: 176px;" thumbLabel tickInterval="1" max="100" min="0" >动画速度</md-slider>
+					</div>
+				</div>
+			</md-tab>
+		</md-tab-group>
+	</md-dialog-content>
+	<md-dialog-actions>
+		<button type="submit" color="accent" md-raised-button >确&nbsp;定</button>&nbsp;
+		<button type="button" md-raised-button (click)="dref.close();"  >取&nbsp;消</button>
+	</md-dialog-actions>
+</form>

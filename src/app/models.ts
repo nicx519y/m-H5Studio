@@ -132,7 +132,7 @@ export class TextModel extends Record({
 	font: 'arial',						//字体
 	color: '#000000',					//颜色
 	background: new BackgroundModel(),	//背景色
-	fileSize: 12,							//字号
+	fontSize: 12,							//字号
 	bold: false,						//粗体
 	italic: false,						//斜体
 	underline: false,					//下划线
@@ -179,8 +179,8 @@ export class ElementStateModel extends Record({
 	id: '',
 	x: 0,
 	y: 0,
-	originX: 0,
-	originY: 0,
+	originX: undefined,
+	originY: undefined,
 	rotation: 0,
 	scaleX: 1,
 	scaleY: 1,

@@ -61,8 +61,21 @@
 			<md-option [value]="simsun" >宋体</md-option>
 		</md-select>
 		<md-input-container >
+			<input [(ngModel)]="data.color" type="text" placeholder="文本色" maxlength="7" md-input name="color" autocomplete="off"  />
+			<input [(ngModel)]="data.color" type="color" md-suffix />
+		</md-input-container>
+		<md-input-container >
 			<input [(ngModel)]="data.backgroundColor" type="text" placeholder="背景色" maxlength="7" md-input name="backgroundColor" autocomplete="off"  />
 			<input [(ngModel)]="data.backgroundColor" type="color" md-suffix />
 		</md-input-container>
+		<md-input-container >
+			<input [(ngModel)]="data.fontSize" type="number"  md-input placeholder="字号" name="fontSize" autocomplete="off" />
+			<span md-suffix >px</span>
+		</md-input-container>
+		<md-input-container >
+			<input [(ngModel)]="data.lineheight" type="number"  md-input placeholder="行高" name="lineheight" autocomplete="off" />
+			<span md-suffix >px</span>
+		</md-input-container>
+		
 	</form>
 </div>

@@ -4,36 +4,65 @@
 		<input type="number" name="frameIndex" hidden [(ngModel)]="data.frameIndex" />
 		<md-input-container >
 			<input [(ngModel)]="data.originX" type="number"  md-input placeholder="x轴中心点坐标" name="originX" autocomplete="off" />
+			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
 			<input [(ngModel)]="data.originY" type="number"  md-input placeholder="y轴中心点坐标" name="originY" autocomplete="off" />
+			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.eleX" type="number"  md-input placeholder="x坐标" name="eleX" autocomplete="off" />
+			<input [(ngModel)]="data.eleX" type="number"  md-input placeholder="x轴坐标" name="eleX" autocomplete="off" />
+			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.eleY" type="number"  md-input placeholder="y坐标" name="eleY" autocomplete="off" />
+			<input [(ngModel)]="data.eleY" type="number"  md-input placeholder="y轴坐标" name="eleY" autocomplete="off" />
+			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.scaleX" type="number" step="0.01"  md-input placeholder="x轴缩放" name="scaleX" autocomplete="off" />
+			<input [(ngModel)]="data.scaleX" type="number" step="0.01"  md-input placeholder="x轴缩放比例" name="scaleX" autocomplete="off" />
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.scaleY" type="number" step="0.01"  md-input placeholder="y轴缩放" name="scaleY" autocomplete="off" />
+			<input [(ngModel)]="data.scaleY" type="number" step="0.01"  md-input placeholder="y轴缩放比例" name="scaleY" autocomplete="off" />
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.skewX" type="number" step="0.01"  md-input placeholder="x轴倾斜" name="skewX" autocomplete="off" />
+			<input [(ngModel)]="data.skewX" type="number" step="0.01"  md-input placeholder="x轴倾斜角度" name="skewX" autocomplete="off" />
+			<span md-suffix >°</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.skewY" type="number" step="0.01"  md-input placeholder="y轴倾斜" name="skewY" autocomplete="off" />
+			<input [(ngModel)]="data.skewY" type="number" step="0.01"  md-input placeholder="y轴倾斜角度" name="skewY" autocomplete="off" />
+			<span md-suffix >°</span>
 		</md-input-container>
 		<md-input-container style="width:80px;" >
 			<input [(ngModel)]="data.rotation" type="number" placeholder="旋转角度" md-input name="rotation" autocomplete="off" min="0" max="360"  />
+			<span md-suffix >°</span>
 		</md-input-container>
-		<md-slider [(ngModel)]="data.rotation"   name="rotationSlider" style="width: 176px;" thumbLabel tickInterval="1" max="360" min="0" >旋转角度</md-slider>
+		<md-slider [(ngModel)]="data.rotation"   name="rotationSlider" style="width: 176px;" thumbLabel tickInterval="1" max="360" min="0" (change)="onSubmit()" >旋转角度</md-slider>
 		<md-input-container style="width:80px;" >
 			<input [(ngModel)]="data.alpha" type="number" placeholder="透明度"  md-input name="alpha" autocomplete="off" min="0" max="100"  />
+			<span md-suffix >%</span>
 		</md-input-container>
-		<md-slider [(ngModel)]="data.alpha"   name="alphaSlider" style="width: 176px;" thumbLabel tickInterval="1" max="100" min="0" >透明度</md-slider>
+		<md-slider [(ngModel)]="data.alpha"   name="alphaSlider" style="width: 176px;" thumbLabel tickInterval="1" max="100" min="0" (change)="onSubmit()" >透明度</md-slider>
 		<button type="submit" hidden >submit</button>
+	</form>
+	<form #fontSettingForm="ngForm" (ngSubmit)="onSubmit(fontSettingForm)" *ngIf="attrsMod===2"   >
+		<input type="text" name="eleId" hidden [(ngModel)]="data.id" />
+		<input type="number" name="frameIndex" hidden [(ngModel)]="data.frameIndex" />
+		<input type="text" name="text" hidden [(ngModel)]="data.text" />
+		<md-input-container >
+			<input [(ngModel)]="data.width" type="number"  md-input placeholder="文本框宽度" name="width" autocomplete="off" />
+			<span md-suffix >px</span>
+		</md-input-container>
+		<md-input-container >
+			<input [(ngModel)]="data.height" type="number"  md-input placeholder="文本框高度" name="height" autocomplete="off" />
+			<span md-suffix >px</span>
+		</md-input-container>
+		<md-select [(ngModel)]="data.font" placeholder="字体" name="font" >
+			<md-option [value]="arial" >Arial</md-option>
+			<md-option [value]="simsun" >宋体</md-option>
+		</md-select>
+		<md-input-container >
+			<input [(ngModel)]="data.backgroundColor" type="text" placeholder="背景色" maxlength="7" md-input name="backgroundColor" autocomplete="off"  />
+			<input [(ngModel)]="data.backgroundColor" type="color" md-suffix />
+		</md-input-container>
 	</form>
 </div>

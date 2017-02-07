@@ -8,3 +8,11 @@
 	display: block;
 	margin-right: 8px;
 }
+
+md-input-container {
+	width: 48%;
+}
+
+[md-suffix] {
+	color: #ccc;
+}

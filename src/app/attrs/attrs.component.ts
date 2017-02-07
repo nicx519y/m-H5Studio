@@ -68,6 +68,10 @@ export class AttrsComponent implements OnInit {
 		}]);
 	}
 
+	private sliderChange() {
+		console.log('change');
+	}
+
 	onSubmit(form: any) {
 		this.elementStateSubmit(form.value);
 	}

@@ -18,7 +18,10 @@ export class AttrsComponent implements OnInit {
 	private attrsMod: AttrsMod = AttrsMod.none;
 
 	@Input()
-	private model: {};
+	private model: Map<string, any>;
+
+	//表单数据
+	private data: {} = {};
 
 	constructor(
 		private attrsService: AttrsService,
@@ -43,8 +46,6 @@ export class AttrsComponent implements OnInit {
             }
         });
 
-		console.log(ao, fo);
-
         this.timelineService.setTimelineData(this.timelineService.setToKeyFrames(ao, fo));
 	}
 
@@ -53,6 +54,8 @@ export class AttrsComponent implements OnInit {
 			id: value.eleId,
 			frameIndex: value.frameIndex,
 			state: {
+				originX: value.originX,
+				originY: value.originY,
 				x: value.eleX,
 				y: value.eleY,
 				scaleX: value.scaleX,
@@ -78,5 +81,8 @@ export class AttrsComponent implements OnInit {
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
+		if(changes.hasOwnProperty('model')) {
+			this.data = this.model.toJS();
+		}
 	}
 }

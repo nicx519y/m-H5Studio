@@ -20,7 +20,6 @@ export enum SwiperEffect {
 export enum ItemType { 
 	movieclip, 	//影片剪辑
 	bitmap, 	//位图
-	text,		//文字
 	video,		//视频
 }
 
@@ -31,7 +30,8 @@ export enum SourceType {
 
 export enum ElementType {
 	symbol,		//元件库元件的实例
-	shape		//图形
+	shape,		//图形
+	text,		//文字
 }
 
 export enum TweenType {

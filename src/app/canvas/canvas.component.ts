@@ -164,7 +164,8 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasSelectedHandler(selection: any[]) {
-
+        console.log('Janvas developer seleted event!');
+        //设置属性面板的展现
         this.attrsSetting(selection);
 
         if(selection && selection.length > 0) {
@@ -241,10 +242,12 @@ export class CanvasComponent implements OnInit {
         } else if(selection.length == 1) {
             if(this.mode === EditorState.choose) {
                 this.attrsService.mod = AttrsMod.elementProperty;
-                let state = selection[0].instance.state;
+                let state = selection[0].state;
                 let data = {
                     id: selection[0].elementId,
                     frameIndex: selection[0].frameIndex,
+                    originX: Math.round(state.originX),
+                    originY: Math.round(state.originY),
                     eleX: Math.round(state.x),
                     eleY: Math.round(state.y),
                     scaleX: Math.round(state.scaleX * 100) / 100,

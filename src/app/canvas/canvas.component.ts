@@ -90,6 +90,9 @@ export class CanvasComponent implements OnInit {
         (target || this.janvas).resizeJanvasDev(w, h);
     }
 
+    /**
+     * janvas初始化
+     */
     private janvasInit() {
         if(this.isJanvasInited) return;
         let data = this.makeJanvasData().toJS();
@@ -113,6 +116,9 @@ export class CanvasComponent implements OnInit {
         this.isJanvasInited = true;
     }
 
+    /**
+     * 更新janvas，timeline数据有改变的时候更新
+     */
     private janvasUpdate() {
         if(!this.janvas) return;
         let activeFrame: number = this.getActiveFirstFrame();
@@ -126,6 +132,9 @@ export class CanvasComponent implements OnInit {
         });
     }
 
+    /**
+     * 面板操作模式改变
+     */
     private modeChange() {
         let mode = this.mode;
         if(this.janvas) {
@@ -158,15 +167,16 @@ export class CanvasComponent implements OnInit {
             library: this.itemsModel,
         });
         
-        console.log('make: ', data.toJS());
-
         return data;
     }
 
+    /**
+     * janvas selected 事件触发
+     */
     private janvasSelectedHandler(selection: any[]) {
         console.log('Janvas developer seleted event!');
         //设置属性面板的展现
-        this.attrsSetting(selection);
+        this.propertiesPanelSetup(selection);
 
         if(selection && selection.length > 0) {
             let minFrame: number = Math.min.apply(null, selection.map(ele => ele.frameIndex));
@@ -189,6 +199,9 @@ export class CanvasComponent implements OnInit {
         }
     }
 
+    /**
+     * janvas change event触发
+     */
     private janvasChangedHandler(eleArr: any[]) {
         if(!eleArr || eleArr.length <= 0) return;
         let ao = eleArr.map(ele => {
@@ -221,11 +234,17 @@ export class CanvasComponent implements OnInit {
 		return Math.max(Math.min.apply(null, ao.map(ao => ao.get('start')).toArray()));
 	}
 
+    /**
+     * 获取当前active的 element
+     */
     private getActiveElement(ao: List<Map<string, any>> = null): string[] {
         if(!ao) ao = this.activeOptions;
         return ao.map(a => a.get('elementId')).toArray();
     }
 
+    /**
+     * timeline active数据改变触发
+     */
     private activeOptionsChangeHandler(changes: SimpleChange) {
         if(changes.isFirstChange()
         || this.getActiveFirstFrame(changes.currentValue) !== this.getActiveFirstFrame(changes.previousValue)) {
@@ -235,35 +254,64 @@ export class CanvasComponent implements OnInit {
         }
     }
 
-    private attrsSetting(selection: any[]) {
+    /**
+     * 属性面板初始化
+     */
+    private propertiesPanelSetup(selection: any[]) {
         if(selection.length <= 0) {
             this.attrsService.mod = AttrsMod.none;
             this.attrsService.clearData();
-        } else if(selection.length == 1) {
-            if(this.mode === EditorState.choose) {
-                this.attrsService.mod = AttrsMod.elementProperty;
-                let state = selection[0].state;
-                let data = {
-                    id: selection[0].elementId,
-                    frameIndex: selection[0].frameIndex,
-                    originX: Math.round(state.originX),
-                    originY: Math.round(state.originY),
-                    eleX: Math.round(state.x),
-                    eleY: Math.round(state.y),
-                    scaleX: Math.round(state.scaleX * 100) / 100,
-                    scaleY: Math.round(state.scaleY * 100) / 100,
-                    skewX: Math.round(state.skewX * 100) / 100,
-                    skewY: Math.round(state.skewY * 100) / 100,
-                    rotation: Math.round(state.rotation),
-                    alpha: Math.round(state.alpha),
-                };
-                this.attrsService.setData(Immutable.fromJS(data));
-            }
         } else {
-            if(this.mode === EditorState.choose) {
-                
+            switch(this.mode) {
+                case EditorState.choose:
+                    (selection.length === 1)? this.singleAttrsSetting(selection): this.multiAttrsSetting(selection);
+                    break;
+                case EditorState.text:
+                    this.textAttrsSetting(selection);
+                    break;
+                default:
+                    this.attrsService.mod = AttrsMod.none;
+                    this.attrsService.clearData();
+                    break;
             }
         }
+    }
+
+    /**
+     * 单选元素面板设置
+     */
+    private singleAttrsSetting(selection: any[]) {
+        this.attrsService.mod = AttrsMod.elementProperty;
+        let state = selection[0].state;
+        let data = {
+            id: selection[0].elementId,
+            frameIndex: selection[0].frameIndex,
+            originX: Math.round(state.originX),
+            originY: Math.round(state.originY),
+            eleX: Math.round(state.x),
+            eleY: Math.round(state.y),
+            scaleX: Math.round(state.scaleX * 100) / 100,
+            scaleY: Math.round(state.scaleY * 100) / 100,
+            skewX: Math.round(state.skewX * 100) / 100,
+            skewY: Math.round(state.skewY * 100) / 100,
+            rotation: Math.round(state.rotation),
+            alpha: Math.round(state.alpha),
+        };
+        this.attrsService.setData(Immutable.fromJS(data));
+    }
+
+    /**
+     * 多选元素面板设置
+     */
+    private multiAttrsSetting(selection: any[]) {
+
+    }
+
+    /**
+     * 文本面板设置
+     */
+    private textAttrsSetting(selection: any[]) {
+
     }
     
     ngOnInit() {

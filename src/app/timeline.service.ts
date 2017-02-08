@@ -254,6 +254,7 @@ export class TimelineService {
 		} else {
 			fos = frameOptions;
 		}
+		
 		let data: List<LayerModel> = this.changeToFrames(options)
 			.map(layer => {
 				let obj = options.find(opt => opt.elementId === layer.getIn(['element', 'id']));

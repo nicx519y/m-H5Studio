@@ -51,7 +51,7 @@ export class AttrsComponent implements OnInit {
 
 	private elementStateSubmit(value: any) {
 		this.changeElementStateInActionFrame([{
-			id: value.eleId,
+			id: value.id,
 			frameIndex: value.frameIndex,
 			state: {
 				originX: value.originX,
@@ -68,12 +68,9 @@ export class AttrsComponent implements OnInit {
 		}]);
 	}
 
-	private sliderChange() {
-		console.log('change');
-	}
-
-	onSubmit(form: any) {
-		this.elementStateSubmit(form.value);
+	onSubmit() {
+		let data = Object.assign({}, this.data);
+		this.elementStateSubmit(data);
 	}
 
 	ngOnInit() {

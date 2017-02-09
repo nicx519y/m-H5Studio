@@ -49,6 +49,9 @@ export class AttrsComponent implements OnInit {
         this.timelineService.setTimelineData(this.timelineService.setToKeyFrames(ao, fo));
 	}
 
+	/**
+	 * 提交element state 状态更新
+	 */
 	private elementStateSubmit(value: any) {
 		this.changeElementStateInActionFrame([{
 			id: value.id,
@@ -68,9 +71,32 @@ export class AttrsComponent implements OnInit {
 		}]);
 	}
 
+	/**
+	 * 初始化角度值，将任意角度值规范至-180° ~ 180°
+	 */
+	private angleInit(angle: number): number {
+		let result = angle % 360;
+		if(result > 180) {
+			result -= 360;
+		} else if(result < -180) {
+			result += 360;
+		}
+		return result;
+	}
+
+	/**
+	 * 初始化表单数据
+	 */
+	private dataInit() {
+		this.data = this.model.toJS();
+		this.data.hasOwnProperty('rotation') && (this.data['rotation'] = this.angleInit(this.data['rotation']));
+		this.data.hasOwnProperty('skewX') && (this.data['skewX'] = this.angleInit(this.data['skewX']));
+		this.data.hasOwnProperty('skewY') && (this.data['skewY'] = this.angleInit(this.data['skewY']));
+	}
+
+
 	onSubmit() {
-		let data = Object.assign({}, this.data);
-		this.elementStateSubmit(data);
+		this.elementStateSubmit(Object.assign({}, this.data));
 	}
 
 	ngOnInit() {
@@ -82,8 +108,6 @@ export class AttrsComponent implements OnInit {
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
-		if(changes.hasOwnProperty('model')) {
-			this.data = this.model.toJS();
-		}
+		changes.hasOwnProperty('model') && this.dataInit();
 	}
 }

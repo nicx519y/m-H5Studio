@@ -45,7 +45,8 @@ export enum EditorState {
 	choose,				//选择
 	text,				//文字
 	zoom,				//放大缩小
-	draw				//绘制
+	draw,				//绘制
+	move,				//移动视图
 }
 
 export enum Ease {		//具体请参照createjs Ease类

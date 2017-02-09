@@ -6,9 +6,9 @@
 		</div>
 		<input #nameInput type="text" onfocus="this.select()" (blur)="nameInputSubmit(i, nameInput.value)" (keyup.enter)="nameInput.blur()" [value]="stage.name" />
 		<div class="stages-tools" >
-			<span class="stages-btn glyphicon glyphicon-menu-up" (click)="upPage(i)" ></span>
-			<span class="stages-btn glyphicon glyphicon-trash" (click)="removePage(i)" ></span>
-			<span class="stages-btn glyphicon glyphicon-menu-down" (click)="downPage(i)" ></span>
+			<md-icon class="md-18 stages-btn" (click)="upPage(i)" >keyboard_arrow_up</md-icon>
+			<md-icon class="md-18 stages-btn" (click)="removePage(i)" >close</md-icon>
+			<md-icon class="md-18 stages-btn" (click)="downPage(i)" >keyboard_arrow_down</md-icon>
 		</div>
 	</li>
 	<li>

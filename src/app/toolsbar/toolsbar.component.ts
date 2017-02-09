@@ -11,14 +11,19 @@ export class ToolsbarComponent implements OnInit {
 	public state: EditorState = EditorState.choose;
 	public states = [
 		{
-			name: '选择元素',
+			name: '元素变换',
 			state: EditorState.choose,
-			class: 'open_with',
+			class: 'flip_to_front',
 		},
 		{
 			name: '插入文本',
 			state: EditorState.text,
-			class: 'title'
+			class: 'format_shapes'
+		},
+		{
+			name: '移动视图',
+			state: EditorState.move,
+			class: 'open_with'
 		},
 		{
 			name: '缩放视图',

@@ -29,14 +29,14 @@ input, select {
 }
 
 /* Rules for sizing the icon. */
-md-icon.md-12 { width: 12px; height: 12px; }
+md-icon.md-14 { width: 14px; height: 14px; }
 md-icon.md-18 { width: 18px; height: 18px; }
 md-icon.md-24 { width: 24px; height: 24px; }
 md-icon.md-36 { width: 36px; height: 36px; }
 md-icon.md-48 { width: 48px; height: 48px; }
 md-icon.md-78 { width: 78px; height: 78px; }
 
-.material-icons.md-12 { font-size: 12px; }
+.material-icons.md-14 { font-size: 14px; }
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
@@ -50,3 +50,5 @@ md-icon.md-78 { width: 78px; height: 78px; }
 /* Rules for using icons as white on a dark background. */
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+

@@ -174,7 +174,7 @@ export class CanvasComponent implements OnInit {
      * janvas selected 事件触发
      */
     private janvasSelectedHandler(selection: any[]) {
-        console.log('Janvas developer seleted event!');
+        console.log('Janvas developer seleted event!', selection);
         //设置属性面板的展现
         this.propertiesPanelSetup(selection);
 
@@ -296,6 +296,7 @@ export class CanvasComponent implements OnInit {
             skewY: Math.round(state.skewY * 100) / 100,
             rotation: Math.round(state.rotation),
             alpha: Math.round(state.alpha),
+            transformedBounds: selection[0].transformedBounds,
         };
         this.attrsService.setData(Immutable.fromJS(data));
     }

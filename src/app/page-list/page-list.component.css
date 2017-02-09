@@ -57,7 +57,7 @@ li:hover .stages-tools {
 
 .stages-tools .stages-btn {
 	flex-grow: 1;
-	line-height: 2em;
+	line-height: 1.3em;
 	color: #999;
 	cursor: pointer;
 }

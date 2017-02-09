@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { AppCommonModule } from '../app-common/app-common.module';
-import { MaterialModule, MdSliderModule } from '@angular/material';
+import { MaterialModule, MdSliderModule, MdButtonToggleModule } from '@angular/material';
 
 import { IdeComponent } from './ide.component';
 import { AccordionComponent } from '../accordion/accordion.component';
@@ -54,6 +54,7 @@ const ROUTES: Routes = [
 		RouterModule.forChild(ROUTES),
 		MaterialModule.forRoot(),
 		MdSliderModule.forRoot(),
+		MdButtonToggleModule,
 		CommonModule,
 		FormsModule,
 		HttpModule,

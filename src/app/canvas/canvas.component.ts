@@ -288,8 +288,8 @@ export class CanvasComponent implements OnInit {
             frameIndex: selection[0].frameIndex,
             originX: Math.round(state.originX),
             originY: Math.round(state.originY),
-            eleX: Math.round(state.x),
-            eleY: Math.round(state.y),
+            x: Math.round(state.x),
+            y: Math.round(state.y),
             scaleX: Math.round(state.scaleX * 100) / 100,
             scaleY: Math.round(state.scaleY * 100) / 100,
             skewX: Math.round(state.skewX * 100) / 100,
@@ -305,7 +305,32 @@ export class CanvasComponent implements OnInit {
      * 多选元素面板设置
      */
     private multiAttrsSetting(selection: any[]) {
+        this.attrsService.mod = AttrsMod.MultiProperties;
+        let data = {
+            frameIndex: selection[0].frameIndex,
+            originX: Math.round(this.getMultiValue(selection, 'originX')),
+            originY: Math.round(this.getMultiValue(selection, 'originY')),
+            x: Math.round(this.getMultiValue(selection, 'x')),
+            y: Math.round(this.getMultiValue(selection, 'y')),
+            scaleX: Math.round(this.getMultiValue(selection, 'scaleX') * 100) / 100,
+            scaleY: Math.round(this.getMultiValue(selection, 'scaleY') * 100) / 100,
+            skewX: Math.round(this.getMultiValue(selection, 'skewX') * 100) / 100,
+            skewY: Math.round(this.getMultiValue(selection, 'skewY') * 100) / 100,
+            rotation: Math.round(this.getMultiValue(selection, 'rotation')),
+            alpha: Math.round(this.getMultiValue(selection, 'alpha')),
+            transformedBounds: selection.map(ele => ele.transformedBounds),
+        };
+        this.attrsService.setData(Immutable.fromJS(data));
+    }
 
+    private getMultiValue(selection: any[], key: string): number {
+        let result;
+        if(this.numbersIsEqual(selection.map(ele => ele.state[key]))) {
+            result = selection[0]['state'][key];
+        } else {
+            result = NaN;
+        }
+        return result;
     }
 
     /**
@@ -313,6 +338,20 @@ export class CanvasComponent implements OnInit {
      */
     private textAttrsSetting(selection: any[]) {
 
+    }
+
+    /***
+     * 判断所有数字是否相等
+     */
+    private numbersIsEqual(values: number[]): boolean {
+        let result: boolean = true;
+        for(let i = 0; i < values.length - 1; i ++) {
+            if(values[i] !== values[i + 1]) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
     
     ngOnInit() {

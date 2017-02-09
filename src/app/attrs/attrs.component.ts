@@ -2,9 +2,12 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleCha
 import { PropertyBasicModel } from '../properties';
 import { TimelineService } from '../timeline.service';
 import { ElementModel, ElementStateModel, EditorState, FrameModel } from '../models';
-import { AttrsService, AttrsMod } from '../attrs.service';
+import { AttrsService, AttrsMod, AlignMode, ElementWithBounds } from '../attrs.service';
 import * as Immutable from 'immutable';
-import { List, Map, Record } from 'immutable';
+import { List, Map as ImmutableMap, Record } from 'immutable';
+
+const SCREEN_WIDTH: number = 750;	//编辑框宽度
+const SCREEN_HEIGHT: number = 1334;	//编辑框高度
 
 @Component({
 	selector: 'ide-attrs',
@@ -18,7 +21,7 @@ export class AttrsComponent implements OnInit {
 	private attrsMod: AttrsMod = AttrsMod.none;
 
 	@Input()
-	private model: Map<string, any>;
+	private model: ImmutableMap<string, any>;
 
 	//表单数据
 	private data: {} = {};
@@ -59,8 +62,8 @@ export class AttrsComponent implements OnInit {
 			state: {
 				originX: value.originX,
 				originY: value.originY,
-				x: value.eleX,
-				y: value.eleY,
+				x: value.x,
+				y: value.y,
 				scaleX: value.scaleX,
 				scaleY: value.scaleY,
 				skewX: value.skewX,
@@ -94,6 +97,32 @@ export class AttrsComponent implements OnInit {
 		this.data.hasOwnProperty('skewY') && (this.data['skewY'] = this.angleInit(this.data['skewY']));
 	}
 
+	private singleAlignWithMode(mode: AlignMode = AlignMode.top) {
+
+		let targets = new Map<AlignMode, number>();
+		targets.set(AlignMode.top, 0);
+		targets.set(AlignMode.left, 0);
+		targets.set(AlignMode.bottom, SCREEN_HEIGHT);
+		targets.set(AlignMode.right, SCREEN_WIDTH);
+		targets.set(AlignMode.middle, SCREEN_HEIGHT / 2);
+		targets.set(AlignMode.center, SCREEN_WIDTH / 2);
+
+		let ele: ElementWithBounds = new ElementWithBounds({
+			x: this.data['x'],
+			y: this.data['y'],
+			bounds: this.data['transformedBounds'],
+		});
+
+		let result = this.attrsService.singleAlign(ele, targets.get(mode), mode);
+		this.data['x'] = result.x;
+		this.data['y'] = result.y;
+
+		this.onSubmit();
+	}
+
+	private mutliAlignWithMode() {
+
+	}
 
 	onSubmit() {
 		this.elementStateSubmit(Object.assign({}, this.data));

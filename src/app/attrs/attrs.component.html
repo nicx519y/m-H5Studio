@@ -11,11 +11,11 @@
 			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.eleX" type="number"  md-input placeholder="x轴坐标" name="eleX" autocomplete="off" />
+			<input [(ngModel)]="data.x" type="number"  md-input placeholder="x轴坐标" name="x" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="data.eleY" type="number"  md-input placeholder="y轴坐标" name="eleY" autocomplete="off" />
+			<input [(ngModel)]="data.y" type="number"  md-input placeholder="y轴坐标" name="y" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
@@ -42,23 +42,23 @@
 			<span md-suffix >%</span>
 		</md-input-container>
 		
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(3)" >
 			<md-icon class="md-14" >format_align_left</md-icon>
 		</button>
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(4)" >
 			<md-icon class="md-14" >format_align_center</md-icon>
 		</button>
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(5)" >
 			<md-icon class="md-14" >format_align_right</md-icon>
 		</button>
 
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(0)" >
 			<md-icon class="md-14" >vertical_align_top</md-icon>
 		</button>
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(1)" >
 			<md-icon class="md-14" >vertical_align_center</md-icon>
 		</button>
-		<button md-icon-button >
+		<button md-icon-button (click)="singleAlignWithMode(2)" >
 			<md-icon class="md-14" >vertical_align_bottom</md-icon>
 		</button>
 

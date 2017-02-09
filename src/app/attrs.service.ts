@@ -73,7 +73,7 @@ export class AttrsService {
 	/**
 	 * 单元素对齐
 	 */
-	private singleAlign(element: ElementWithBounds, target: number, mode: AlignMode = AlignMode.top): ElementWithBounds {
+	public singleAlign(element: ElementWithBounds, target: number, mode: AlignMode = AlignMode.top): ElementWithBounds {
 		let result = element;
 		switch(mode) {
 			case AlignMode.top:
@@ -102,7 +102,7 @@ export class AttrsService {
 	/**
 	 * 多元素对齐
 	 */
-	private multiAlign(selection: ElementWithBounds[], mode: AlignMode = AlignMode.top) {
+	public multiAlign(selection: ElementWithBounds[], mode: AlignMode = AlignMode.top): ElementWithBounds[] {
 		let target: number;
 		switch(mode) {
 			case AlignMode.top:
@@ -120,10 +120,15 @@ export class AttrsService {
 				target = Math.min.apply(null, selection.map(ele => ele.bounds.x));
 				break;
 			case AlignMode.center:
+				let left: number = Math.min.apply(null, selection.map(ele => ele.bounds.x));
+				let right: number = Math.max.apply(null, selection.map(ele => ele.bounds.x + ele.bounds.width));
+				target = (left + right) / 2;
 				break;
 			case AlignMode.bottom:
+				target = Math.max.apply(null, selection.map(ele => ele.bounds.x + ele.bounds.width));
 				break;
 		}
+		return selection.map(ele => this.singleAlign(ele, target, mode));
 	}
 
 }

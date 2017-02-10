@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewChildren, ElementRef, Input, Output, QueryList, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { TimelineService } from '../timeline.service';
-import { MF, LayerModel, TweenType, FrameModel, ElementModel, TweenModel } from '../models';
+import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel } from '../models';
 import { LayerComponent } from '../layer/layer.component';
 import { TimelineRulerComponent } from '../timeline-ruler/timeline-ruler.component';
 
@@ -222,6 +222,23 @@ export class TimelineComponent implements OnInit {
 		let isVisible: boolean = this.model.getIn([index, 'element', 'visible']);
 		let result: string = isVisible? 'visibility' : 'visibility_off';
 		return result;
+	}
+
+	private getLayerTypeIconName(index: number): string {
+		let name: string;
+		let type: LayerType = this.model.getIn([index, 'type']);
+		switch(type) {
+			case LayerType.normal:
+				name = 'layers';
+				break;
+			case LayerType.mask:
+				name = 'content_cut';
+				break;
+			case LayerType.path:
+				name = 'gesture';
+				break;
+		}
+		return name;
 	}
 
 	ngOnInit() {

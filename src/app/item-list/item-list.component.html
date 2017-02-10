@@ -21,14 +21,14 @@
 				</form>
 			</div>
 			<span class="item-btn" *ngIf="opt.type==0" (click)="editActiveItem()"  >
-				<md-icon class="md-18"  >{{getEditorIcon()}}</md-icon>
+				<md-icon class="md-16"  >{{getEditorIcon()}}</md-icon>
 			</span>
 			<span class="item-btn" (click)="insertActiveItem()"  >
-				<md-icon class="md-18"  >{{getInsertIcon()}}</md-icon>
+				<md-icon class="md-16"  >{{getInsertIcon()}}</md-icon>
 			</span>
 		</div>
 		<span *ngIf="idx!==service.active" class="item-name" >
-			<md-icon class="md-18" >{{getItemTypeIcon(opt.type)}}</md-icon>&nbsp;
+			<md-icon class="md-16" >{{getItemTypeIcon(opt.type)}}</md-icon>&nbsp;
 			<span class="item-name-inner" >{{opt.name}}</span>
 		</span>
 	</li>

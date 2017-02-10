@@ -286,17 +286,19 @@ export class CanvasComponent implements OnInit {
         let data = {
             id: selection[0].elementId,
             frameIndex: selection[0].frameIndex,
-            originX: Math.round(state.originX),
-            originY: Math.round(state.originY),
-            x: Math.round(state.x),
-            y: Math.round(state.y),
-            scaleX: Math.round(state.scaleX * 100) / 100,
-            scaleY: Math.round(state.scaleY * 100) / 100,
-            skewX: Math.round(state.skewX * 100) / 100,
-            skewY: Math.round(state.skewY * 100) / 100,
-            rotation: Math.round(state.rotation),
-            alpha: Math.round(state.alpha),
-            transformedBounds: selection[0].transformedBounds,
+            formData: {
+                originX: Math.round(state.originX),
+                originY: Math.round(state.originY),
+                x: Math.round(state.x),
+                y: Math.round(state.y),
+                scaleX: Math.round(state.scaleX * 100) / 100,
+                scaleY: Math.round(state.scaleY * 100) / 100,
+                skewX: Math.round(state.skewX * 100) / 100,
+                skewY: Math.round(state.skewY * 100) / 100,
+                rotation: Math.round(state.rotation),
+                alpha: Math.round(state.alpha),
+                transformedBounds: selection[0].transformedBounds,
+            }
         };
         this.attrsService.setData(Immutable.fromJS(data));
     }
@@ -307,18 +309,22 @@ export class CanvasComponent implements OnInit {
     private multiAttrsSetting(selection: any[]) {
         this.attrsService.mod = AttrsMod.MultiProperties;
         let data = {
-            frameIndex: selection[0].frameIndex,
-            originX: Math.round(this.getMultiValue(selection, 'originX')),
-            originY: Math.round(this.getMultiValue(selection, 'originY')),
-            x: Math.round(this.getMultiValue(selection, 'x')),
-            y: Math.round(this.getMultiValue(selection, 'y')),
-            scaleX: Math.round(this.getMultiValue(selection, 'scaleX') * 100) / 100,
-            scaleY: Math.round(this.getMultiValue(selection, 'scaleY') * 100) / 100,
-            skewX: Math.round(this.getMultiValue(selection, 'skewX') * 100) / 100,
-            skewY: Math.round(this.getMultiValue(selection, 'skewY') * 100) / 100,
-            rotation: Math.round(this.getMultiValue(selection, 'rotation')),
-            alpha: Math.round(this.getMultiValue(selection, 'alpha')),
+            ids: selection.map(ele => ele.elementId),
             transformedBounds: selection.map(ele => ele.transformedBounds),
+            states: selection.map(ele => ele.state),
+            frameIndex: selection[0].frameIndex,
+            formData: {
+                originX: Math.round(this.getMultiValue(selection, 'originX')),
+                originY: Math.round(this.getMultiValue(selection, 'originY')),
+                x: Math.round(this.getMultiValue(selection, 'x')),
+                y: Math.round(this.getMultiValue(selection, 'y')),
+                scaleX: Math.round(this.getMultiValue(selection, 'scaleX') * 100) / 100,
+                scaleY: Math.round(this.getMultiValue(selection, 'scaleY') * 100) / 100,
+                skewX: Math.round(this.getMultiValue(selection, 'skewX') * 100) / 100,
+                skewY: Math.round(this.getMultiValue(selection, 'skewY') * 100) / 100,
+                rotation: Math.round(this.getMultiValue(selection, 'rotation')),
+                alpha: Math.round(this.getMultiValue(selection, 'alpha')),
+            }
         };
         this.attrsService.setData(Immutable.fromJS(data));
     }

@@ -1,7 +1,5 @@
 <div class="ide-attrs" >
-	<form #attrsForm="ngForm" (ngSubmit)="onSubmit()" *ngIf="attrsMod===1||sttrsMod===2"   >
-		<input type="text" name="eleId" hidden [(ngModel)]="data.id" />
-		<input type="number" name="frameIndex" hidden [(ngModel)]="data.frameIndex" />
+	<form #attrsForm="ngForm" (ngSubmit)="onSubmit()" *ngIf="attrsMod===1||attrsMod===2"   >
 		<md-input-container >
 			<input [(ngModel)]="data.originX" type="number"  md-input placeholder="x轴中心点坐标" name="originX" autocomplete="off" />
 			<span md-suffix >px</span>

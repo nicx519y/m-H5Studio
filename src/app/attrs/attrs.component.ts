@@ -56,22 +56,27 @@ export class AttrsComponent implements OnInit {
 	 * 提交element state 状态更新
 	 */
 	private elementStateSubmit(value: any) {
-		this.changeElementStateInActionFrame([{
-			id: value.id,
-			frameIndex: value.frameIndex,
-			state: {
-				originX: value.originX,
-				originY: value.originY,
-				x: value.x,
-				y: value.y,
-				scaleX: value.scaleX,
-				scaleY: value.scaleY,
-				skewX: value.skewX,
-				skewY: value.skewY,
-				rotation: value.rotation,
-				alpha: value.alpha,
-			}
-		}]);
+		if(this.attrsService.mod === AttrsMod.elementProperty) {
+			this.changeElementStateInActionFrame([{
+				id: this.model.get('id'),
+				frameIndex: this.model.get('frameIndex'),
+				state: value,
+			}]);
+		} else if(this.attrsService.mod === AttrsMod.MultiProperties) {
+			let data = [];
+			this.model.get('ids').forEach((val, idx) => {
+				let obj = {};
+				obj['id'] = val;
+				obj['transformedBounds'] = this.model.getIn(['transformedBounds', idx]);
+				obj['frameIndex'] = this.model.get('frameIndex');
+				obj['state'] = {};
+				for(let i in this.data) {
+					(this.data[i] === NaN)? (obj['state'] = this.model.getIn(['states', idx, i])): obj['state'][i] = this.data[i];
+				}
+				data.push(obj);
+			});
+			this.changeElementStateInActionFrame(data);
+		}
 	}
 
 	/**
@@ -91,10 +96,12 @@ export class AttrsComponent implements OnInit {
 	 * 初始化表单数据
 	 */
 	private dataInit() {
-		this.data = this.model.toJS();
-		this.data.hasOwnProperty('rotation') && (this.data['rotation'] = this.angleInit(this.data['rotation']));
-		this.data.hasOwnProperty('skewX') && (this.data['skewX'] = this.angleInit(this.data['skewX']));
-		this.data.hasOwnProperty('skewY') && (this.data['skewY'] = this.angleInit(this.data['skewY']));
+		if(this.model && this.model.get('formData')) {
+			this.data = this.model.get('formData').toJS();
+			this.data.hasOwnProperty('rotation') && (this.data['rotation'] = this.angleInit(this.data['rotation']));
+			this.data.hasOwnProperty('skewX') && (this.data['skewX'] = this.angleInit(this.data['skewX']));
+			this.data.hasOwnProperty('skewY') && (this.data['skewY'] = this.angleInit(this.data['skewY']));
+		}
 	}
 
 	private singleAlignWithMode(mode: AlignMode = AlignMode.top) {
@@ -125,6 +132,7 @@ export class AttrsComponent implements OnInit {
 	}
 
 	onSubmit() {
+		console.log('submit: ', this.data);
 		this.elementStateSubmit(Object.assign({}, this.data));
 	}
 

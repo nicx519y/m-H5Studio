@@ -85,7 +85,7 @@
 }
 
 .layer-item.active {
-	color: #fff;
+	color: blueviolet;
 	background: rgba(204, 153, 0, 0.5);
 }
 
@@ -103,15 +103,17 @@
 
 .layer-item input {
 	border: 0;
-	width: 135px;
+	width: 125px;
 	height: 20px;
 	line-height: 20px;
 	vertical-align: middle;
-	background: rgba(0, 0, 0, 0)
+	background: rgba(0, 0, 0, 0);
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .layer-item.active input {
-	color: #fff;
+	color: blueviolet;
 }
 
 .layer-item md-icon {

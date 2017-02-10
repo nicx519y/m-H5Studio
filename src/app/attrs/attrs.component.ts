@@ -71,7 +71,11 @@ export class AttrsComponent implements OnInit {
 				obj['frameIndex'] = this.model.get('frameIndex');
 				obj['state'] = {};
 				for(let i in this.data) {
-					(this.data[i] === NaN)? (obj['state'] = this.model.getIn(['states', idx, i])): obj['state'][i] = this.data[i];
+					if(isNaN(this.data[i])) {
+						obj['state'][i] = this.model.getIn(['states', idx, i]);
+					} else {
+						obj['state'][i] = this.data[i];
+					}
 				}
 				data.push(obj);
 			});
@@ -105,7 +109,6 @@ export class AttrsComponent implements OnInit {
 	}
 
 	private singleAlignWithMode(mode: AlignMode = AlignMode.top) {
-
 		let targets = new Map<AlignMode, number>();
 		targets.set(AlignMode.top, 0);
 		targets.set(AlignMode.left, 0);
@@ -132,7 +135,6 @@ export class AttrsComponent implements OnInit {
 	}
 
 	onSubmit() {
-		console.log('submit: ', this.data);
 		this.elementStateSubmit(Object.assign({}, this.data));
 	}
 

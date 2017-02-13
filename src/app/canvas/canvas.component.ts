@@ -123,7 +123,7 @@ export class CanvasComponent implements OnInit {
         if(!this.janvas) return;
         let activeFrame: number = this.getActiveFirstFrame();
         let data = this.makeJanvasData().toJS();
-        console.log('Before janvasUpdate: ', data);
+        console.log('Before janvasUpdate: ', data, JSON.stringify(data));
         let page: string = this.activePageModel.get('id');
         data && this.janvas.updateJanvasData(data, {
             page: page,
@@ -175,6 +175,7 @@ export class CanvasComponent implements OnInit {
      */
     private janvasSelectedHandler(selection: any[]) {
         console.log('Janvas developer seleted event!', selection);
+
         //设置属性面板的展现
         this.propertiesPanelSetup(selection);
 
@@ -196,6 +197,7 @@ export class CanvasComponent implements OnInit {
             
             if(opt.length >= 0)
                 this.timelineService.setActiveOptions(opt, false);
+
         }
     }
 
@@ -206,20 +208,21 @@ export class CanvasComponent implements OnInit {
         if(!eleArr || eleArr.length <= 0) return;
         let ao = eleArr.map(ele => {
             return {
-                elementId: ele.id,
+                elementId: ele.elementId,
                 start: ele.frameIndex,
                 duration: 1,
             };
         });
         let fo = eleArr.map(ele => {
             return {
-                elementId: ele.id,
+                elementId: ele.elementId,
                 isEmptyFrame: false,
                 elementState: ele.state,
             }
         });
         this.timelineService.setTimelineData(this.timelineService.setToKeyFrames(ao, fo));
     }
+
 
     // private janvasAddedHandler(obj: any) {
 

@@ -9,6 +9,7 @@ import { PageConfigerService } from '../page-configer.service';
 import { MdDialog } from '@angular/material';
 import { BitmapImporterComponent } from '../bitmap-importer/bitmap-importer.component';
 import { PageConfigerComponent } from '../page-configer/page-configer.component';
+import { CanvasRenderService } from '../canvas-render.service';
 
 enableProdMode();	//防止出现一些dev版本才会出现的错误 
 
@@ -29,6 +30,7 @@ export class IdeComponent {
 		private bitmapImporterService: BitmapImporterService,
 		private pageConfigerService: PageConfigerService,
 		private attrsService: AttrsService,
+		private canvasRenderService: CanvasRenderService,
 		private dialog: MdDialog,
 	){
 	}

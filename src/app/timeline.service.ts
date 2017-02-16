@@ -11,6 +11,8 @@ import {
 	LayerType,
 	ElementType
 } from './models';
+import { CanvasRenderService } from './canvas-render.service';
+import { ItemsService } from './items.service';
 import { DataResource } from './data-resource';
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
@@ -23,12 +25,14 @@ export class TimelineService {
 	private _dataResourceInstance: DataResource;
 	private _dataResourcePath: any[];
 	private _tempData: PageModel = MF.g(PageModel);
-	private _elementStateCreator: Function;
 
 	@Output()
 	public dataResourceChangeEvent: EventEmitter<PageModel> = new EventEmitter<PageModel>();
 
-	constructor() {
+	constructor(
+		private canvasRenderService: CanvasRenderService,
+		private itemsService: ItemsService,
+	) {
 		
 	}
 
@@ -70,13 +74,6 @@ export class TimelineService {
 			return;
 		}
 		this.setData(this.getData().set('layers', data));
-	}
-
-	/**
-	 * 注册elementState的生成器
-	 */
-	public registerElementStateCreator(creator: Function) {
-		this._elementStateCreator = creator;
 	}
 
 	public getActivePageId(): string {
@@ -133,27 +130,41 @@ export class TimelineService {
 		return count;
 	}
 
+	/**
+	 * 增加一个element
+	 */
 	public addElement(element: ElementModel, layerName: string = 'New Element', index: number = -1) {
-		let newKeyFrame: FrameModel = MF.g(FrameModel, {
-			name: '',
-			isKeyFrame: true,
-			isEmptyFrame: false,
-			index: 0,
-			elementState: new ElementStateModel()
-		});
-		let newLayer: LayerModel = MF.g(LayerModel, {
-			name: layerName,
-			type: LayerType.normal,
-			frameCount: 1,
-			element: element,
-			frames: Immutable.List<LayerModel>().push(newKeyFrame)
+
+		let data = Object.assign(element.toJS(), {
+			library: this.itemsService.getData().toJS()
 		});
 
-		if(index >= 0 && index < this._data.size) {
-			this.setTimelineData(this._data.insert(index, newLayer));
-		} else {
-			this.setTimelineData(this._data.push(newLayer));
-		}
+		let janvasInstance = this.canvasRenderService.getJanvasInstance();
+
+		//新增元素，需要从janvas获取元素初始数据
+		janvasInstance.initElementState(data, (state) => {
+			let newKeyFrame: FrameModel = MF.g(FrameModel, {
+				name: '',
+				isKeyFrame: true,
+				isEmptyFrame: false,
+				index: 0,
+				elementState: new ElementStateModel(state)
+			});
+			let newLayer: LayerModel = MF.g(LayerModel, {
+				name: layerName,
+				type: LayerType.normal,
+				frameCount: 1,
+				element: element,
+				frames: Immutable.List<LayerModel>().push(newKeyFrame)
+			});
+
+			if(index >= 0 && index < this._data.size) {
+				this.setTimelineData(this._data.insert(index, newLayer));
+			} else {
+				this.setTimelineData(this._data.push(newLayer));
+			}
+		});
+
 	}
 
 	/**
@@ -304,8 +315,8 @@ export class TimelineService {
 	} = null): FrameModel {
 		if(elementState) {
 			frame = frame.set('elementState', MF.g(ElementStateModel, elementState));
-		} else if(this._elementStateCreator) {
-			frame = frame.set('elementState', this._elementStateCreator(elementId, index));
+		} else if(this.canvasRenderService.elementStateCreator) {
+			frame = frame.set('elementState', this.canvasRenderService.elementStateCreator(elementId, index));
 		} else {
 			frame = frame.set('elementState', null);
 		}

@@ -33,6 +33,7 @@ import { TimelineService } from '../timeline.service';
 import { OnionSkinComponent } from '../onion-skin/onion-skin.component';
 import { ToolsbarComponent } from '../toolsbar/toolsbar.component';
 import { CanvasComponent } from '../canvas/canvas.component';
+import { CanvasRenderService } from '../canvas-render.service';
 
 import { PageConfigerComponent } from '../page-configer/page-configer.component';
 import { PageConfigerService } from '../page-configer.service';
@@ -41,6 +42,7 @@ import { AttrFormComponent } from '../attr-form/attr-form.component';
 
 import { AttrsComponent } from '../attrs/attrs.component';
 import { AttrsService } from '../attrs.service';
+
 // import { HotKeysComponent } from '../hot-keys/hot-keys.component';
 
 // import { MainService } from '../main.service';
@@ -89,6 +91,7 @@ const ROUTES: Routes = [
 		TimelineService,
 		PageConfigerService,
 		AttrsService,
+		CanvasRenderService,
 	],
 	entryComponents: [
 		CreateItemDialogComponent,

@@ -64,7 +64,7 @@ export class CanvasRenderService {
         let activeFrame: number = this.getActiveFirstFrame();
         let data = this.makeJanvasData().toJS();
         let page: string = this.activePageModel.get('id');
-		console.log('janvas update: ', data);
+		console.log('janvas update: ', data, Math.max(0, activeFrame));
         data && this.janvas.updateJanvasData(data, {
             page: page,
             frameIndex: Math.max(0, activeFrame),
@@ -139,6 +139,7 @@ export class CanvasRenderService {
      * janvas selected 事件触发
      */
     private janvasSelectedHandler(selection: any[]) {
+		console.log('selected handler: ', selection);
         //设置属性面板的展现
         // this.propertiesPanelSetup(selection);
         // if(selection && selection.length > 0) {
@@ -146,16 +147,24 @@ export class CanvasRenderService {
             let eleList: string[] = selection.map(ele => ele.elementId);
             let thisEleList: string[] = this.getActiveElements();
 
-            //事件返回的选中的element和现有的完全一致 最小帧和现在的最小帧一致
+			// console.log(eleList.length == thisEleList.length, Math.min.apply(null, eleList.map(function (ele) { return thisEleList.indexOf(ele); })) >= 0, minFrame == this.getActiveFirstFrame());
+
+            // 事件返回的选中的element和现有的完全一致 最小帧和现在的最小帧一致
             if(eleList.length == thisEleList.length
                 && Math.min.apply(null, eleList.map(ele => thisEleList.indexOf(ele))) >= 0
                 && minFrame == this.getActiveFirstFrame()) {
                 return;
             }
 
-			this.janvasSelectedElements = Immutable.fromJS(selection.map(ele => {
+			let newSelectedElements: List<any> = Immutable.fromJS(selection.map(ele => {
 				return { elementId: ele.elementId, frameIndex: ele.frameIndex, duration: 1 };
 			}));
+
+			this.janvasSelectedElements = newSelectedElements;
+
+			// this.janvasSelectedElements = Immutable.fromJS(selection.map(ele => {
+			// 	return { elementId: ele.elementId, frameIndex: ele.frameIndex, duration: 1 };
+			// }));
 
             // let opt = selection.map(ele => { 
             //     return { elementId: ele.elementId, start: ele.frameIndex, duration: 1 };

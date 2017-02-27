@@ -37,7 +37,7 @@ export class ItemListComponent implements OnInit {
 	private active: number;
 
 	@Input()
-	private editedPage: string;
+	private editingId: string;			//正在编辑的元素id
 
 	constructor(
 		private service: ItemsService,
@@ -73,7 +73,11 @@ export class ItemListComponent implements OnInit {
 	}
 
 	private editActiveItem() {
-		this.timelineService.registerDataSource(this.service, [this.active, 'source']);
+		this.timelineService.registerDataSource(this.getActiveItem.bind(this));
+	}
+
+	private getActiveItem(): ItemModel {
+		return this.model.get(this.active);
 	}
 
 
@@ -83,14 +87,6 @@ export class ItemListComponent implements OnInit {
 			item = item.setIn(['source', 'name'], value);
 		}
 		this.service.setItem(item, index);
-	}
-
-	private isEditedPage(index: number) {
-		if(!this.model || !this.editedPage) return false;
-		let item = this.model.get(index);
-		if(item.get('type') !== ItemType.movieclip)
-			return false;
-		return item.getIn(['source', 'id']) === this.editedPage;
 	}
 
 	private getItemTypeIcon(itemType: ItemType): string {
@@ -109,6 +105,10 @@ export class ItemListComponent implements OnInit {
 
 	private getInsertIcon(): string {
 		return 'add_circle';
+	}
+
+	private getEditingStatus(id: string): boolean {
+		return id === this.editingId;
 	}
 
 	ngAfterViewInit() {

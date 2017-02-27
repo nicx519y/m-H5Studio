@@ -49,7 +49,7 @@ export class AttrsComponent implements OnInit {
             }
         });
 
-        this.timelineService.setTimelineData(this.timelineService.setToKeyFrames(ao, fo));
+        this.timelineService.setData(this.timelineService.setToKeyFrames(ao, fo));
 	}
 
 	/**

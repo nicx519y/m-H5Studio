@@ -1,12 +1,11 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { ItemModel, ItemType, BitmapModel, PageModel, MF } from './models';
-import { DataResource } from './data-resource';
 
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
 
 @Injectable()
-export class ItemsService implements DataResource {
+export class ItemsService {
 
 	private _data: List<ItemModel> = Immutable.List<ItemModel>();
 	private _active: number = -1;
@@ -21,16 +20,6 @@ export class ItemsService implements DataResource {
 
 	public getData() {
 		return this._data;
-	}
-
-	public fetch(path: any[]): any {
-		return this._data.getIn(path);
-	}
-
-	public writeback(data: any, path: any[]) {
-		if(!Immutable.is(this._data.getIn(path), data)) {
-			this._data = this._data.setIn(path, data);
-		}
 	}
 
 	public set active(index: number) {
@@ -52,6 +41,16 @@ export class ItemsService implements DataResource {
 
 	public getItem(index: number): ItemModel {
 		return this._data.get(index);
+	}
+
+	public getItemById(itemId: string): ItemModel {
+		return this._data.find(item => item.get('id') === itemId);
+	}
+
+	public setItemById(data: ItemModel, itemId: string) {
+		this.setData(
+			this._data.set(this._data.findIndex(item => item.get('id') === itemId), data)
+		);
 	}
 
 	public removeItem(index: number) {

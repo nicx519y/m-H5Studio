@@ -201,25 +201,30 @@ export class CanvasComponent implements OnInit {
     ngOnChanges(changes: SimpleChanges) {
         console.log('canvavs changes: ', changes);
         if(changes.hasOwnProperty('activePageModel') && this.hasData) {
-            this.canvasRenderService.activePageModel = this.activePageModel;
-            if(!this.canvasRenderService.getJanvasIsInited()){
-                this.canvasRenderService.janvasInit('dev');
-                this.resizeHandler();
-            } else {
-                this.canvasRenderService.janvasUpdate();
-            }
+            console.log('activePageModel: ', this.activePageModel);
+            // this.canvasRenderService.activePageModel = this.activePageModel;
+            // if(!this.canvasRenderService.getJanvasIsInited()){
+            //     this.canvasRenderService.janvasInit('dev');
+            //     this.resizeHandler();
+            // } else {
+            //     this.canvasRenderService.janvasUpdate();
+            // }
         }
         if(changes.hasOwnProperty('mode')) {
-            this.canvasRenderService.modeChange(this.mode);
+            // this.canvasRenderService.modeChange(this.mode);
+            console.log('canvas mode: ', this.mode);
         }
         if(changes.hasOwnProperty('activeOptions')) {
-            this.canvasRenderService.activeOptions = this.activeOptions;
-            this.canvasRenderService.activeOptionsChange(changes['activeOptions']);
+            // this.canvasRenderService.activeOptions = this.activeOptions;
+            // this.canvasRenderService.activeOptionsChange(changes['activeOptions']);
+            console.log('activeOptions: ', this.activeOptions);
         }
         if(changes.hasOwnProperty('itemsModel')) {
-            this.canvasRenderService.itemsModel = this.itemsModel;
+            // this.canvasRenderService.itemsModel = this.itemsModel;
+            console.log('itemsModel: ', this.itemsModel);
         }
         if(changes.hasOwnProperty('selectedElements')) {
+            console.log('selectedElements: ', this.selectedElements);
             this.timelineService.setActiveOptions(this.selectedElements.toJS(), false);
         }
     }

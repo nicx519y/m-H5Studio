@@ -1,17 +1,17 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { PageModel } from './models';
-import { DataResource } from './data-resource';
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
 
 @Injectable()
-export class PagesService implements DataResource {
+export class PagesService {
 
 	/**
 	 * @desc	active的页面改变事件
 	 */
 
 	private _data: List<PageModel> = Immutable.List<PageModel>();
+	public activePageId: string = '';
 
 	constructor() {
 
@@ -25,22 +25,21 @@ export class PagesService implements DataResource {
 		this._data = options;
 	}
 
-	public fetch(path: any[]): PageModel {
-		return this._data.getIn(path);
-	}
-
-	public writeback(data: any, path: any[]) {
-		if(!Immutable.is(data, this._data.getIn(path)))
-			this._data = this._data.setIn(path, data);
-	}
-
 	public getPage(index: number): PageModel {
 		return this._data.get(index);
+	}
+
+	public getPageById(pageId: string): PageModel {
+		return this._data.find(page => page.get('id') === pageId);
 	}
 
 	public setPage(page: PageModel, index: number) {
 		if(this._data.has(index))
 			this._data = this._data.set(index, page);
+	}
+
+	public setPageById(page: PageModel, pageId: string) {
+		this._data = this._data.set(this._data.findIndex(page => page.get('id') === pageId), page);
 	}
 
 	public addPage(page: PageModel, index: number = -1) {

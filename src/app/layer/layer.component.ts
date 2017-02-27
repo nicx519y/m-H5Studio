@@ -32,17 +32,19 @@ export class LayerComponent implements OnInit {
 	}
 
 	public changeActiveOptions(options: Map<string, number> = null) {
-		if(!options) {
+		console.log('changeActiveOptions: ', options ? options.toJS() : options);
+		if(options === null) {
 			options = Immutable.Map({
 				start: -1,
 				duration: 0,
 			});
 		}
 		if (options.get('duration') > 0) {
+			console.log(options.toJS());
 			this.actionEle.nativeElement.style.left = options.get('start') * this.frameWidth + 'px';
 			this.actionEle.nativeElement.style.width = this.frameWidth * options.get('duration') + 'px';
 		} else {
-			this.actionEle.nativeElement.style.left = -9 * this.frameWidth + 'px';
+			this.actionEle.nativeElement.style.left = -1 * this.frameWidth + 'px';
 			this.actionEle.nativeElement.style.width = 0 + 'px';
 		}
 	}

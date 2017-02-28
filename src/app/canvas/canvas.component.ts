@@ -124,7 +124,10 @@ export class CanvasComponent implements OnInit {
         if(changes.hasOwnProperty('selection')) {
 			//如果选取元素数据变化，同步到时间轴选取区域
 			this.timelineService.updateActiveOptionsFromSelection();
-            this.janvas.selectElement(this.getActiveElements())
+
+            if(this.janvas) {
+                this.janvas.selectElement(this.getActiveElements())
+            }
         }
     }
 

@@ -195,7 +195,7 @@ export class TimelineService {
 			|| !Immutable.is(newAO.map(ao => ao.get('start')), this._activeOptions.map(ao => ao.get('start')))
 		) {
 			console.log('not same: ', newAO.toJS(), this._activeOptions.toJS());
-			// this._activeOptions = newAO;	
+			this._activeOptions = newAO;	
 		}
 	}
 

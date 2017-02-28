@@ -193,7 +193,7 @@ export class CanvasComponent implements OnInit {
         });
 
         this.timelineService.setSelection(MF.g(SelectionModel, {
-            frameIndex: this.timelineService.getSelection().get('start'),
+            frameIndex: this.timelineService.getSelection().get('frameIndex'),
             elements: elements
         }));
     }

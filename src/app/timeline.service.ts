@@ -102,6 +102,7 @@ export class TimelineService {
 	}
 
 	public setSelection(selection: SelectionModel) {
+		console.log('set selection: ', selection.toJS());
 		this._selection = selection;
 	}
 
@@ -117,7 +118,6 @@ export class TimelineService {
 		options: number[] | { elementId: string, start: number, duration: number, }[], 
 		isRange: boolean = true
 	) {
-		console.log('set active options: ', options);
 		let ao: List<Map<string, any>>;
 		if(isRange) {
 			let range = options as number[];
@@ -143,7 +143,6 @@ export class TimelineService {
 		}
 
 		if(!Immutable.is(ao, this._activeOptions)) {
-			console.log('active options change: ', ao);
 			this._activeOptions = ao;
 		}
 	}
@@ -174,17 +173,19 @@ export class TimelineService {
 	 * selection 到 active options 的换算关系
 	 */
 	private selectionToActiveOptions(): Immutable.List<Map<string, any>> {
-		let result: Immutable.List<Immutable.Map<string, any>> =  Immutable.List<Immutable.Map<string, any>>();
+		let result = [];
 		let frameIndex: number = this._selection.get('frameIndex');
+		console.log('selection: ', this._selection.toJS());
 		this._selection.get('elements').forEach(element => {
-			let ele: Immutable.Map<string, any> = Immutable.Map<string, any>({
+			let ele = {
 				elementId: element.get('elementId'),
 				start: frameIndex,
 				duration: 1,
-			});
-			result = result.push(ele);
+			};
+			result.push(ele);
 		});
-		return result;
+		console.log('selectionToActiveOptions: ', result);
+		return Immutable.fromJS(result);
 	}
 
 	public updateActiveOptionsFromSelection() {
@@ -193,13 +194,15 @@ export class TimelineService {
 			|| !Immutable.is(newAO.map(ao => ao.get('elementId')), this._activeOptions.map(ao => ao.get('elementId')))
 			|| !Immutable.is(newAO.map(ao => ao.get('start')), this._activeOptions.map(ao => ao.get('start')))
 		) {
-			this._activeOptions = newAO;	
+			console.log('not same: ', newAO.toJS(), this._activeOptions.toJS());
+			// this._activeOptions = newAO;	
 		}
 	}
 
 	public updateSelectionFromActiveOptions() {
 		let newSelection = this.activeOptionsToSelection();
 		if(!Immutable.is(newSelection, this._selection)) {
+			console.log('update selection: ', newSelection.toJS());
 			this._selection = newSelection;
 		}
 	}

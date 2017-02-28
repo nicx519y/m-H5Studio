@@ -182,8 +182,6 @@ export class CanvasComponent implements OnInit {
 	 */
     private janvasSelectedHandler(selection: any[]) {
         
-        let minFrame: number = Math.min.apply(null, selection.map(ele => ele.frameIndex));
-
         let elements = Immutable.List<SelectionElementModel>();
         
         selection.forEach((ele) => {
@@ -194,13 +192,8 @@ export class CanvasComponent implements OnInit {
             }));
         });
 
-        console.log('!!!!!!!!!!!! ',MF.g(SelectionModel, {
-            frameIndex: minFrame,
-            elements: elements
-        }).toJS());
-
         this.timelineService.setSelection(MF.g(SelectionModel, {
-            frameIndex: minFrame,
+            frameIndex: this.timelineService.getSelection().get('start'),
             elements: elements
         }));
     }

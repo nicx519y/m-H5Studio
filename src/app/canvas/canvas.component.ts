@@ -186,7 +186,7 @@ export class CanvasComponent implements OnInit {
         let elements = Immutable.List<SelectionElementModel>();
         
         selection.map((ele) => {
-            elements.push(MF.g(SelectionModel, {
+            elements = elements.push(MF.g(SelectionModel, {
                 elementId: ele.elementId,
                 elementState: MF.g(ElementStateModel, ele.state),
                 transformBounds: MF.g(Rectangle, ele.transformedBounds)

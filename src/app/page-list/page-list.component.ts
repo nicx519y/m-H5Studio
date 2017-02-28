@@ -1,7 +1,7 @@
 import { Component, Input, ViewChildren, QueryList, ElementRef, OnInit, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { PagesService } from '../pages.service';
-import { TimelineService } from '../timeline.service';
 import { MF, PageModel } from '../models';
+import { TimelineService } from '../timeline.service';
 
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
@@ -18,7 +18,7 @@ export class PageListComponent implements OnInit {
 	private model: List<PageModel>;
 
 	@Input()
-	private editedPageId: string;
+	private editingId: string;
 
 	@ViewChildren('nameInput')
 	nameInputList: QueryList<ElementRef>;
@@ -29,8 +29,8 @@ export class PageListComponent implements OnInit {
 	private active: number = -1;
 
 	constructor(
-		private services: PagesService,
-		private timelineService: TimelineService, 
+		private service: PagesService,
+		private timelineService: TimelineService,
 	) {
 		
 	}
@@ -39,50 +39,57 @@ export class PageListComponent implements OnInit {
 	 * 在最后新增空白页
 	 */
 	public addEmptyPageAtLast() {
-		this.services.addPage(MF.g(PageModel, { name: 'New Page' }), this.model.size);
+		this.service.addPage(MF.g(PageModel, { name: 'New Page' }), this.model.size);
 	}
 
 	/**
 	 * 删除
 	 */
 	public removePage(index: number) {
-		this.services.removePage(index);
+		this.service.removePage(index);
 	}
 	/**
 	 * @dest 上移
 	 */
 	public upPage(index: number) {
-		this.services.upPage(index);
+		this.service.upPage(index);
 	}
 
 	/**
 	 * @dest 下移
 	 */
 	public downPage(index: number) {
-		this.services.downPage(index);
+		this.service.downPage(index);
 	}
 
 	private nameInputSubmit(index: number, value: string) {
-		let page: PageModel = this.services.getPage(index);
-		this.services.setPage(page.set('name', value), index);
+		let page: PageModel = this.service.getPage(index);
+		this.service.setPage(page.set('name', value), index);
 	}
 
 	private editPage(index: number) {
-		this.timelineService.registerDataSource(this.services, [index]);
+		this.service.activePageId = this.model.getIn([index, 'id']);
+		this.timelineService.registerDataSource(this.getActivePage.bind(this));
 	}
 
-	private changePageActive(activePage: PageModel) {
-		if(this.pageList.length > this.active && this.active >= 0)
-			this.pageList.toArray()[this.active].nativeElement.className = 'unactive';
-		this.active = this.model.findIndex(page => Immutable.is(page, activePage));
+	private getActivePage(): PageModel {
+		return this.service.getPageById(this.service.activePageId);
+	}
+
+	// private changePageActive(activePage: PageModel) {
+	// 	if(this.pageList.length > this.active && this.active >= 0)
+	// 		this.pageList.toArray()[this.active].nativeElement.className = 'unactive';
+	// 	this.active = this.model.findIndex(page => Immutable.is(page, activePage));
 		
-		if(this.pageList.length > this.active && this.active >= 0)
-			this.pageList.toArray()[this.active].nativeElement.className = 'active';
-	}
+	// 	if(this.pageList.length > this.active && this.active >= 0)
+	// 		this.pageList.toArray()[this.active].nativeElement.className = 'active';
 
-	private getEditingStatus(index: number): boolean {
-		if(!this.model || !this.editedPageId) return false;
-		return this.model.getIn([index, 'id']) === this.editedPageId;
+	// 	//通知timelineService 当前编辑状态的page改变
+	// 	this.timelineService.registerDataSource(activePage);
+	// }
+
+	private getEditingStatus(id: string): boolean {
+		return this.editingId === id;
 	}
 
 	ngAfterViewInit() {
@@ -97,8 +104,7 @@ export class PageListComponent implements OnInit {
 	}
 
 	ngOnChanges(changes) {
-		if(changes.hasOwnProperty('activePage')) {
-		}
+
 	}
 
 }

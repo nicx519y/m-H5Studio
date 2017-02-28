@@ -1,5 +1,5 @@
-import { Component, ViewChild, ViewChildren, ElementRef, Input, Output, QueryList, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { TimelineService } from '../timeline.service';
+import { Component, ViewChild, ViewChildren, ElementRef, Input, Output, QueryList, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
+import { TimelineService, TimelineDataType } from '../timeline.service';
 import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel } from '../models';
 import { LayerComponent } from '../layer/layer.component';
 import { TimelineRulerComponent } from '../timeline-ruler/timeline-ruler.component';
@@ -46,12 +46,15 @@ export class TimelineComponent implements OnInit {
 	@Input()
 	frameCount: number;
 
+	@Input()
+	dataType: TimelineDataType;
+
 	private frameWidth: number = FRAME_WIDTH;
 	private isRange: boolean;
 	private range: number[] = [-1, -1, -1, -1];
 
 	constructor(
-		private service: TimelineService
+		private service: TimelineService,
 	) {
 	}
 
@@ -72,32 +75,32 @@ export class TimelineComponent implements OnInit {
 	}
 
 	public changeActiveToKeyFrames() {
-		this.service.setTimelineData(this.service.setToKeyFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.setToKeyFrames(this.activeOptions.toJS()));
 	}
 
 	public changeActiveToEmptyKeyFrames() {
-		this.service.setTimelineData(this.service.setToKeyFrames(this.activeOptions.toJS(), { isEmptyFrame: true }));
+		this.service.setData(this.service.setToKeyFrames(this.activeOptions.toJS(), { isEmptyFrame: true }));
 	}
 
 	public changeActiveToFrames() {
-		this.service.setTimelineData(this.service.changeToFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.changeToFrames(this.activeOptions.toJS()));
 	}
 
 	public removeActiveKeyFrames() {
-		this.service.setTimelineData(this.service.removeKeyFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.removeKeyFrames(this.activeOptions.toJS()));
 	}
 
 	public removeActiveFrames() {
-		this.service.setTimelineData(this.service.removeFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.removeFrames(this.activeOptions.toJS()));
 	}
 	
 	public createActiveTweens() {
-		this.service.setTimelineData(this.service.setTweens(this.activeOptions.toJS()));
+		this.service.setData(this.service.setTweens(this.activeOptions.toJS()));
 	}
 
 	public removeActiveTweens() {
 		console.log('remove tweens.');
-		this.service.setTimelineData(this.service.setTweens(this.activeOptions.toJS(), {
+		this.service.setData(this.service.setTweens(this.activeOptions.toJS(), {
 			type: TweenType.none,
 			tween: MF.g(TweenModel),
 		}));
@@ -124,7 +127,7 @@ export class TimelineComponent implements OnInit {
 		let index: number = this.model.findIndex(layer => layer.getIn(['element', 'id']) === eleId);
 		if(index < 0) return;
 		let isVisible: boolean = this.model.getIn([index, 'element', 'visible']);
-		this.service.setTimelineData(this.model.setIn([index, 'element', 'visible'], !isVisible));
+		this.service.setData(this.model.setIn([index, 'element', 'visible'], !isVisible));
 	}
 
 	private timelineBoxMouseEventHandler(evt: MouseEvent) {
@@ -198,6 +201,7 @@ export class TimelineComponent implements OnInit {
 	 * 设置layer component的active状态
 	 */
 	private setLayersActive() {
+		console.log('setLayersActive');
 		if(!this.layers) return;
 		let eles: string[] = this.getActiveElements();
 		let aos = this.activeOptions;
@@ -215,7 +219,7 @@ export class TimelineComponent implements OnInit {
 	 * 更改一个图层的name
 	 */
 	private submitLayerName(index: number, value: string) {
-		this.service.setTimelineData(this.model.setIn([index, 'name'], value));
+		this.service.setData(this.model.setIn([index, 'name'], value));
 	}
 
 	private getLayerVisibleIconName(index: number): string {
@@ -264,7 +268,7 @@ export class TimelineComponent implements OnInit {
 		this.timelineBox.nativeElement.removeEventListener('mouseout', this.timelineBoxMouseEventHandler.bind(this));
 	}
 
-	ngOnChanges(changes) {
+	ngOnChanges(changes: SimpleChanges) {
 		//设置layer组件的active状态
 		if(changes.hasOwnProperty('activeOptions') && this.layers) {
 			this.setLayersActive();
@@ -273,7 +277,9 @@ export class TimelineComponent implements OnInit {
 		if(changes.hasOwnProperty('model')) {
 
 		}
-		
+
+
+
 	}
 
 }

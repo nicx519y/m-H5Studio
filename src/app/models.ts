@@ -214,6 +214,22 @@ export class ElementModel extends Record({
 	}
 }
 
+export class SelectionElementModel extends Record({
+	id: '',
+	elementId: '',
+	elementState: new ElementStateModel(),
+}) {
+
+}
+
+export class SelectionModel extends Record({
+	id: '',
+	frameIndex: 0,
+	elements: Immutable.List<SelectionElementModel>()
+}) {
+
+}
+
 export class FilterModel extends Record({
 	id: ''
 }) {}

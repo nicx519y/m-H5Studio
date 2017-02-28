@@ -2,7 +2,7 @@
 	<li *ngFor="let opt of model; let idx = index;" 
 		[class.active]="idx===service.active"
 		[class.unactive]="idx!==service.active"
-		[class.editing]="isEditedPage(idx)"
+		[class.editing]="getEditingStatus(opt.id)"
 		(click)="changeActive(idx); " #itemContainer  >
 		<div *ngIf="idx===service.active" class="activebox" >
 			<div class="item-pic" >

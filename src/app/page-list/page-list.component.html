@@ -1,5 +1,5 @@
 <ul class="ide-stages"  >
-	<li *ngFor="let stage of model; let i = index" #page  (click)="editPage(i)" [ngClass]="{true: 'active', false: 'unactive'}[getEditingStatus(i)]"   >
+	<li *ngFor="let stage of model; let i = index" #page  (click)="editPage(i)" [ngClass]="{true: 'active', false: 'unactive'}[getEditingStatus(stage.id)]"   >
 		<div class="thumbnail" >
 			<img [src]="stage.thumbnail" />
 			<ide-previewer [src]="stage.thumbnail" [width]="78" [height]="78" ></ide-previewer>

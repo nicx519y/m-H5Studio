@@ -1,83 +1,109 @@
 import { Injectable, QueryList, Output, EventEmitter } from '@angular/core';
 import { 
 	MF,
+	ItemModel,
+	ItemType,
 	PageModel,
 	LayerModel,
 	FrameModel,
 	ElementModel,
+	SelectionElementModel,
+	SelectionModel,
 	ElementStateModel,
 	TweenModel,
 	TweenType,
 	LayerType,
 	ElementType
 } from './models';
-import { CanvasRenderService } from './canvas-render.service';
+import { PagesService } from './pages.service';
 import { ItemsService } from './items.service';
-import { DataResource } from './data-resource';
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
 
+export enum TimelineDataType {
+	Page,
+	Movieclip,
+};
 
 @Injectable()
 export class TimelineService {
 
+	private _selection: SelectionModel = new SelectionModel();				//选中元素
 	private _activeOptions: List<Map<string, number>> = Immutable.List<Map<string, any>>();
-	private _dataResourceInstance: DataResource;
-	private _dataResourcePath: any[];
+	private _dataType: TimelineDataType;
+	private _source: Function;
+	private _dataId: string;
+	private _dataName: string;
 	private _tempData: PageModel = MF.g(PageModel);
 
-	@Output()
-	public dataResourceChangeEvent: EventEmitter<PageModel> = new EventEmitter<PageModel>();
-
 	constructor(
-		private canvasRenderService: CanvasRenderService,
+		private pagesService: PagesService,
 		private itemsService: ItemsService,
 	) {
 		
 	}
 
-	public get _data(): List<LayerModel> {
-		return this.getData().get('layers');
-	}
-
 	/**
 	 * 注册数据来源
 	 */
-	public registerDataSource(instance: DataResource, path: any[]) {
-		if(this._dataResourceInstance != instance || this._dataResourcePath != path) {
-			this._dataResourceInstance = instance;
-			this._dataResourcePath = path;
-			this.dataResourceChangeEvent.emit(this.getData());
+	public registerDataSource(source: Function) {
+		this._source = source;
+		let data: any = source();
+		this._dataId = data.get('id');
+		this._dataName = data.get('name');
+		if(data instanceof PageModel) {
+			this._dataType = TimelineDataType.Page;
+		} else if(data instanceof ItemModel) {
+			this._dataType = TimelineDataType.Movieclip;
 		}
 	}
 
-	public setData(options: PageModel) {
-		if(this._dataResourceInstance && this._dataResourcePath && this._dataResourcePath.length >= 0
-			&& !Immutable.is(this.getData(), options)) {
-			this._dataResourceInstance.writeback(options, this._dataResourcePath);
-		}
+	public getDataId(): string {
+		return this._dataId;
 	}
 
-	public getData(): PageModel {
-		if(!this._dataResourceInstance || !this._dataResourcePath || this._dataResourcePath.length <= 0)
-			return this._tempData;
-		return this._dataResourceInstance.fetch(this._dataResourcePath);
+	public getDataType(): TimelineDataType {
+		return this._dataType;
+	}
+
+	public getDataName(): string {
+		return this._dataName;
 	}
 
 	public hasData(): boolean {
-		return !!(this._dataResourceInstance && this._dataResourcePath);
+		return (this.getData() !== null);
 	}
 
-	public setTimelineData(data: List<LayerModel>) {
-		if(!this.hasData()) {
-			alert('Timeline has no data.');
-			return;
+	public getData(): List<LayerModel> {
+		if(this._dataType === TimelineDataType.Page) {
+			return this._source().get('layers');
+		} else if(this._dataType === TimelineDataType.Movieclip) {
+			return this._source().getIn(['source', 'layers']);
+		} else {
+			return null;
 		}
-		this.setData(this.getData().set('layers', data));
 	}
 
-	public getActivePageId(): string {
-		return this.getData().get('id');	
+	public setData(data: List<LayerModel>) {
+		if(this._dataType === TimelineDataType.Page) {
+			this.pagesService.setPageById(
+				this.pagesService.getPageById(this._dataId).set('layers', data),
+				this._dataId
+			);
+		} else {
+			this.itemsService.setItemById(
+				this.itemsService.getItemById(this._dataId).setIn(['source', 'layers'], data),
+				this._dataId
+			);
+		}
+	}
+
+	public getSelection(): SelectionModel {
+		return this._selection;
+	}
+
+	public setSelection(selection: SelectionModel) {
+		this._selection = selection;
 	}
 
 	public getActiveOptions(): List<Map<string, any>> {
@@ -105,7 +131,7 @@ export class TimelineService {
 			let frame2 = Math.max(range[0], range[2]);
 			let layer2 = Math.max(range[1], range[3]);
 			ao = Immutable.List<Map<string, any>>();
-			this._data.forEach((layer, index) => {
+			this.getData().forEach((layer, index) => {
 				(index >= layer1 && index <= layer2) &&
 				(ao = ao.push(Immutable.Map<string, any>({
 					elementId: layer.getIn(['element', 'id']),
@@ -124,47 +150,35 @@ export class TimelineService {
 	}
 
 	public getFrameCount(): number {
-		if(!this._data || this._data.size <= 0) return 0;
+		if(!this.getData() || this.getData().size <= 0) return 0;
 		let count: number = 0;
-		this._data.forEach(layer => count = Math.max(count, layer.get('frameCount')));
+		this.getData().forEach(layer => count = Math.max(count, layer.get('frameCount')));
 		return count;
 	}
 
 	/**
 	 * 增加一个element
 	 */
-	public addElement(element: ElementModel, layerName: string = 'New Element', index: number = -1) {
+	public addElement(element: ElementModel, layerName: string = 'New Element') {
+		if(!this.hasData()) return;
+		this.setData(
+			this.getData().push(
+				MF.g(LayerModel, {
+					name: layerName,
+					element: element,
+					frames: Immutable.List().push(MF.g(FrameModel)),
+					frameCount: 1,
+				})
+			)
+		);
+	}
 
-		let data = Object.assign(element.toJS(), {
-			library: this.itemsService.getData().toJS()
-		});
-
-		let janvasInstance = this.canvasRenderService.getJanvasInstance();
-
-		//新增元素，需要从janvas获取元素初始数据
-		janvasInstance.initElementState(data, (state) => {
-			let newKeyFrame: FrameModel = MF.g(FrameModel, {
-				name: '',
-				isKeyFrame: true,
-				isEmptyFrame: false,
-				index: 0,
-				elementState: new ElementStateModel(state)
-			});
-			let newLayer: LayerModel = MF.g(LayerModel, {
-				name: layerName,
-				type: LayerType.normal,
-				frameCount: 1,
-				element: element,
-				frames: Immutable.List<LayerModel>().push(newKeyFrame)
-			});
-
-			if(index >= 0 && index < this._data.size) {
-				this.setTimelineData(this._data.insert(index, newLayer));
-			} else {
-				this.setTimelineData(this._data.push(newLayer));
-			}
-		});
-
+	public removeElement(elementId: string) {
+		if(!this.hasData()) return;
+		let model: List<LayerModel> = this.getData();
+		this.setData(
+			model.remove(model.findIndex(layer => layer.get('id') === elementId))
+		);
 	}
 
 	/**
@@ -172,22 +186,22 @@ export class TimelineService {
 	 */
 	public removeElements(eleIds: string[]) {
 		let data: List<LayerModel> = Immutable.List<LayerModel>();
-		data = this._data.filter(layer => eleIds.indexOf(layer.getIn(['element', 'id'])) < 0).toList();
-		(!Immutable.is(this._data, data)) && (this.setTimelineData(data));
+		data = this.getData().filter(layer => eleIds.indexOf(layer.getIn(['element', 'id'])) < 0).toList();
+		(!Immutable.is(this.getData(), data)) && (this.setData(data));
 	}
 
 	public swapElements(eleId1: string, eleId2: string) {
-		let idx1: number = this._data.findIndex(layer => layer.getIn(['element', 'id']) === eleId1);
-		let idx2: number = this._data.findIndex(layer => layer.getIn(['element', 'id']) === eleId2);
+		let idx1: number = this.getData().findIndex(layer => layer.getIn(['element', 'id']) === eleId1);
+		let idx2: number = this.getData().findIndex(layer => layer.getIn(['element', 'id']) === eleId2);
 		if(idx1 >= 0 && idx2 >= 0) {
-			let layer1 = this._data.get(idx1);
-			let layer2 = this._data.get(idx2);
-			this.setTimelineData(this._data.set(idx2, layer1).set(idx1, layer2));
+			let layer1 = this.getData().get(idx1);
+			let layer2 = this.getData().get(idx2);
+			this.setData(this.getData().set(idx2, layer1).set(idx1, layer2));
 		}
 	}
 
 	public upElements(elementIds: string[]) {
-		let eleIdxs: number[] = elementIds.map(id => this._data.findIndex(layer => layer.getIn(['element', 'id']) === id));
+		let eleIdxs: number[] = elementIds.map(id => this.getData().findIndex(layer => layer.getIn(['element', 'id']) === id));
 		eleIdxs = eleIdxs.sort((a, b) => {
 			if(a < b)
 				return -1;
@@ -199,19 +213,19 @@ export class TimelineService {
 		if(eleIdxs[0] <= 0) return;
 
 		let newIdxs: number[] = [];
-		for(let i = 0; i < this._data.size; i ++) {
+		for(let i = 0; i < this.getData().size; i ++) {
 			newIdxs[i] = i;
 			if(eleIdxs.indexOf(i) >= 0) 
 				this.swapArray(newIdxs, i, i - 1);
 		}
 
 		let tempData = Immutable.List<LayerModel>();
-		newIdxs.forEach(idx => tempData = tempData.push(this._data.get(idx)));
-		this.setTimelineData(tempData);
+		newIdxs.forEach(idx => tempData = tempData.push(this.getData().get(idx)));
+		this.setData(tempData);
 	}
 
 	public downElements(elementIds: string[]) {
-		let eleIdxs: number[] = elementIds.map(id => this._data.findIndex(layer => layer.getIn(['element', 'id']) === id));
+		let eleIdxs: number[] = elementIds.map(id => this.getData().findIndex(layer => layer.getIn(['element', 'id']) === id));
 		eleIdxs = eleIdxs.sort((a, b) => {
 			if(a < b)
 				return -1;
@@ -220,18 +234,18 @@ export class TimelineService {
 			else
 				return 0;
 		});
-		if(eleIdxs[eleIdxs.length - 1] >= this._data.size - 1) return;
+		if(eleIdxs[eleIdxs.length - 1] >= this.getData().size - 1) return;
 
 		let newIdxs: number[] = [];
-		for(let i = this._data.size - 1; i >= 0; i --) {
+		for(let i = this.getData().size - 1; i >= 0; i --) {
 			newIdxs[i] = i;
 			if(eleIdxs.indexOf(i) >= 0) 
 				this.swapArray(newIdxs, i, i + 1);
 		}
 		
 		let tempData = Immutable.List<LayerModel>();
-		newIdxs.forEach(idx => tempData = tempData.push(this._data.get(idx)));
-		this.setTimelineData(tempData);
+		newIdxs.forEach(idx => tempData = tempData.push(this.getData().get(idx)));
+		this.setData(tempData);
 	}
 
 	public setToKeyFrames(options: {
@@ -280,10 +294,10 @@ export class TimelineService {
 						if(frameOption.isEmptyFrame) {
 							frame = frame
 								.set('tweenType', TweenType.none)
-								.set('tween', MF.g(TweenModel));
+								.set('tween', MF.g(TweenModel))
+								.set('elementState', frameOption['elementState']);
 						}
-
-						frame = this.createElementStateOfKeyFrame(frame, eleId, i, frameOption.elementState);
+						// frame = this.createElementStateOfKeyFrame(frame, eleId, i, frameOption.elementState);
 						frames = frames.set(fidx, frame);
 					} else {
 						let newFrame: FrameModel;
@@ -297,10 +311,10 @@ export class TimelineService {
 								index: i,
 								tweenType: TweenType.none,
 								tween: MF.g(TweenModel),
+								elementState: frameOption['elementState'],
 							});
 						}
-
-						newFrame = this.createElementStateOfKeyFrame(newFrame, eleId, i, frameOption.elementState);
+						// newFrame = this.createElementStateOfKeyFrame(newFrame, eleId, i, frameOption.elementState);
 						frames = frames.insert(frames.findLastIndex(frame => frame.get('index') < i) + 1, newFrame);
 					}
 				}
@@ -309,26 +323,12 @@ export class TimelineService {
 		return this.resetDuration(data);
 	}
 
-	private createElementStateOfKeyFrame(frame: FrameModel, elementId: string, index: number, elementState: {
-		isEmptyFrame: boolean,
-		elementState?: ElementStateModel,
-	} = null): FrameModel {
-		if(elementState) {
-			frame = frame.set('elementState', MF.g(ElementStateModel, elementState));
-		} else if(this.canvasRenderService.elementStateCreator) {
-			frame = frame.set('elementState', this.canvasRenderService.elementStateCreator(elementId, index));
-		} else {
-			frame = frame.set('elementState', null);
-		}
-		return frame;
-	}
-
 	public changeToFrames(options: {
 		elementId: string,
 		start: number,
 		duration: number,
 	}[]): List<LayerModel> {
-		let data: List<LayerModel> = this._data.map(layer => {
+		let data: List<LayerModel> = this.getData().map(layer => {
 			let obj = options.find(opt => opt.elementId === layer.getIn(['element', 'id']));
 			if(obj)
 				return layer.set('frameCount', Math.max(layer.get('frameCount'), obj.start + obj.duration));
@@ -343,7 +343,7 @@ export class TimelineService {
 		start: number,
 		duration: number,
 	}[]): List<LayerModel> {
-		let data: List<LayerModel> = this._data.map(layer => {
+		let data: List<LayerModel> = this.getData().map(layer => {
 			let obj = options.find(opt => opt.elementId === layer.getIn(['element', 'id']));
 			if(!obj) return layer;
 			let idx: number = obj.start;
@@ -398,7 +398,7 @@ export class TimelineService {
 		type: TweenType.normal,
 		tween: MF.g(TweenModel)
 	}): List<LayerModel> {
-		let data: List<LayerModel> = this._data.map(layer => {
+		let data: List<LayerModel> = this.getData().map(layer => {
 			let obj = options.find(opt => opt.elementId === layer.getIn(['element', 'id']));
 			if(!obj) return layer;
 			let idx: number = obj.start;

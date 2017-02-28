@@ -114,12 +114,12 @@ export class CanvasComponent implements OnInit {
 
         if(changes.hasOwnProperty('activeOptions')) {
             //如果时间轴选取区域变化，同步到janvas选取元素
-            this.timelineService.setSelectionFromActiveOptions();
+            this.timelineService.updateSelectionFromActiveOptions();
         }
 
         if(changes.hasOwnProperty('selection')) {
 			//如果选取元素数据变化，同步到时间轴选取区域
-			this.timelineService.setActiveOptionsFromSelection();
+			this.timelineService.updateActiveOptionsFromSelection();
         }
     }
 
@@ -168,10 +168,31 @@ export class CanvasComponent implements OnInit {
         });
     }
 
-    private janvasSelectedHandler(result) {
-        this.timelineService.setSelection
+    /**
+	 * janvas选中元素后操作
+	 */
+    private janvasSelectedHandler(selection: any[]) {
+        
+        let minFrame: number = Math.min.apply(null, selection.map(ele => ele.frameIndex));
+
+        let elements = Immutable.List<SelectionElementModel>();
+        
+        selection.map((ele) => {
+            elements.push(MF.g(SelectionModel, {
+                elementId: ele.elementId,
+                elementState: MF.g(ElementStateModel, ele.state)
+            }));
+        });
+
+        this.timelineService.setSelection(MF.g(SelectionModel, {
+            frameIndex: minFrame,
+            elements: elements
+        }));
     }
 
+    /**
+	 * janvas修改元素后操作
+	 */
     private janvasChangedHandler(eleArr: any[]) {
         if(!eleArr || eleArr.length <= 0) return;
         let ao = eleArr.map(ele => {

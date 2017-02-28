@@ -187,7 +187,7 @@ export class TimelineService {
 		return result;
 	}
 
-	public setActiveOptionsFromSelection() {
+	public updateActiveOptionsFromSelection() {
 		let newAO = this.selectionToActiveOptions();
 		if(newAO.size != this._activeOptions.size
 			|| !Immutable.is(newAO.map(ao => ao.get('elementId')), this._activeOptions.map(ao => ao.get('elementId')))
@@ -197,7 +197,7 @@ export class TimelineService {
 		}
 	}
 
-	public setSelectionFromActiveOptions() {
+	public updateSelectionFromActiveOptions() {
 		let newSelection = this.activeOptionsToSelection();
 		if(!Immutable.is(newSelection, this._selection)) {
 			this._selection = newSelection;

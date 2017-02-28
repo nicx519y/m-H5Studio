@@ -15,7 +15,7 @@ import {
     SimpleChanges,
     SimpleChange,
 } from '@angular/core';
-import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, MF } from '../models';
+import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF } from '../models';
 import { TimelineService } from '../timeline.service';
 import { AttrsService, AttrsMod } from '../attrs.service';
 import Developer from '../janvas/main/developer';
@@ -180,7 +180,8 @@ export class CanvasComponent implements OnInit {
         selection.map((ele) => {
             elements.push(MF.g(SelectionModel, {
                 elementId: ele.elementId,
-                elementState: MF.g(ElementStateModel, ele.state)
+                elementState: MF.g(ElementStateModel, ele.state),
+                transformBounds: MF.g(Rectangle, ele.transformedBounds)
             }));
         });
 

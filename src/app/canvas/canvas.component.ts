@@ -122,6 +122,7 @@ export class CanvasComponent implements OnInit {
         }
 
         if(changes.hasOwnProperty('selection')) {
+            console.log('selection: ', this.selection.toJS());
 			//如果选取元素数据变化，同步到时间轴选取区域
 			this.timelineService.updateActiveOptionsFromSelection();
 
@@ -192,6 +193,11 @@ export class CanvasComponent implements OnInit {
                 transformBounds: MF.g(Rectangle, ele.transformedBounds)
             }));
         });
+
+        console.log('!!!!!!!!!!!! ',MF.g(SelectionModel, {
+            frameIndex: minFrame,
+            elements: elements
+        }).toJS());
 
         this.timelineService.setSelection(MF.g(SelectionModel, {
             frameIndex: minFrame,

@@ -147,6 +147,9 @@ export default class Developer {
 			this.janvasCanvas = janvasCanvas;
 		}
 
+		console.log('---------------------');
+		console.log(this.janvasSetting.data);
+
 		new window['Janvas']('janvas', this.janvasSetting.data, (janvas)=> {
             window['app'] = this.janvas = janvas;
 

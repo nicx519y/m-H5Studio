@@ -93,7 +93,6 @@ export class CanvasComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        this.janvasInit(this.CANVAS_ELEMENT_ID);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -103,8 +102,13 @@ export class CanvasComponent implements OnInit {
         }
 
         //页面数据变化
-        if(changes.hasOwnProperty('activePageModel') && this.hasData) {
-            this.janvasUpdate();
+        if(changes.hasOwnProperty('activePageModel') && this.timelineService.hasData()) {
+            if(this.isJanvasInited) {
+                this.janvasUpdate();
+            } else {
+                this.janvasInit(this.CANVAS_ELEMENT_ID);
+                this.resizeHandler();
+            }
         }
 
         //lib数据变化
@@ -227,7 +231,9 @@ export class CanvasComponent implements OnInit {
 	 */
 	public makeJanvasData(): MainModel {
 		let data: MainModel = MF.g(MainModel, {
-			pages: Immutable.List<PageModel>().push(this.activePageModel),
+			pages: Immutable.List<PageModel>().push(MF.g(PageModel, {
+                layers: this.activePageModel
+            })),
 			library: this.itemsModel,
 		});
 

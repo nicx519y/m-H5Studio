@@ -28,13 +28,12 @@ export enum TimelineDataType {
 @Injectable()
 export class TimelineService {
 
-	private _selection: SelectionModel = new SelectionModel();				//选中元素
-	private _activeOptions: List<Map<string, number>> = Immutable.List<Map<string, any>>();
-	private _dataType: TimelineDataType;
-	private _source: Function;
-	private _dataId: string;
-	private _dataName: string;
-	private _tempData: PageModel = MF.g(PageModel);
+	private _selection: SelectionModel = new SelectionModel();									//用于跟janvas交互的选取元素
+	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
+	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
+	private _source: Function;																	//数据来源
+	private _dataId: string;																	//数据id
+	private _dataName: string;																	//数据name,用于展现
 
 	constructor(
 		private pagesService: PagesService,
@@ -146,6 +145,62 @@ export class TimelineService {
 		if(!Immutable.is(ao, this._activeOptions)) {
 			console.log('active options change: ', ao);
 			this._activeOptions = ao;
+		}
+	}
+
+	/***
+	 * active options 到 selection 的换算关系
+	 */
+	private activeOptionsToSelection(): SelectionModel {
+		let frameIndex: number = Math.min.apply(null, 
+			this._activeOptions.filter(ao => ao.get('duration') > 0)
+				.map(ao => ao.get('start')).toArray()
+		);
+		let elements: Immutable.List<SelectionElementModel> = Immutable.List<SelectionElementModel>();
+		this._activeOptions.forEach(ao => {
+			elements = elements.push(MF.g(SelectionElementModel, {
+				elementId: ao.get('elementId'),
+				elementState: null,
+			}));
+		});
+		
+		return MF.g(SelectionModel, {
+			frameIndex: frameIndex,
+			elements: elements
+		});
+	}
+
+	/**
+	 * selection 到 active options 的换算关系
+	 */
+	private selectionToActiveOptions(): Immutable.List<Map<string, any>> {
+		let result: Immutable.List<Immutable.Map<string, any>> =  Immutable.List<Immutable.Map<string, any>>();
+		let frameIndex: number = this._selection.get('frameIndex');
+		this._selection.get('elements').forEach(element => {
+			let ele: Immutable.Map<string, any> = Immutable.Map<string, any>({
+				elementId: element.get('elementId'),
+				start: frameIndex,
+				duration: 1,
+			});
+			result = result.push(ele);
+		});
+		return result;
+	}
+
+	public setActiveOptionsFromSelection() {
+		let newAO = this.selectionToActiveOptions();
+		if(newAO.size != this._activeOptions.size
+			|| !Immutable.is(newAO.map(ao => ao.get('elementId')), this._activeOptions.map(ao => ao.get('elementId')))
+			|| !Immutable.is(newAO.map(ao => ao.get('start')), this._activeOptions.map(ao => ao.get('start')))
+		) {
+			this._activeOptions = newAO;	
+		}
+	}
+
+	public setSelectionFromActiveOptions() {
+		let newSelection = this.activeOptionsToSelection();
+		if(!Immutable.is(newSelection, this._selection)) {
+			this._selection = newSelection;
 		}
 	}
 

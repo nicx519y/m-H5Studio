@@ -15,7 +15,7 @@ import {
     SimpleChanges,
     SimpleChange,
 } from '@angular/core';
-import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, MF } from '../models';
+import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, MF } from '../models';
 import { TimelineService } from '../timeline.service';
 import { AttrsService, AttrsMod } from '../attrs.service';
 import Developer from '../janvas/main/developer';
@@ -42,22 +42,23 @@ export class CanvasComponent implements OnInit {
     private box: ElementRef;
 
     @Input()
-    private mode: EditorState = EditorState.choose;
+    private mode: EditorState = EditorState.choose;	//渲染区域操作模式
 
     @Input()
-    private hasData: boolean;
+    private hasData: boolean;				//标识时间轴是否有数据
 
     @Input()
-    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();
+    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();		//时间轴选中区域
+
+	@Input()
+	private selection: SelectionModel;		//janvas选中元素
 
     @Input()
-    private activePageModel: PageModel;
+    private activePageModel: PageModel;		//当前编辑的page数据
 
     @Input()
-    private itemsModel: List<ItemModel>;
+    private itemsModel: List<ItemModel>;	//素材库数据
 
-    @Input()
-    private selectedElements: List<ImmutableMap<string, any>>;
 
     @Input()
     private selectedObject: ImmutableMap<string, any>;
@@ -96,6 +97,11 @@ export class CanvasComponent implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        //编辑模式变化
+        if(changes.hasOwnProperty('mode')) {
+            this.modeChange(this.mode);
+        }
+
         //页面数据变化
         if(changes.hasOwnProperty('activePageModel') && this.hasData) {
             this.janvasUpdate();
@@ -106,21 +112,15 @@ export class CanvasComponent implements OnInit {
             this.janvasUpdate();
         }
 
-        //编辑模式变化
-        if(changes.hasOwnProperty('mode')) {
-            this.modeChange(this.mode);
+        if(changes.hasOwnProperty('activeOptions')) {
+            //如果时间轴选取区域变化，同步到janvas选取元素
+            this.timelineService.setSelectionFromActiveOptions();
         }
 
-        // if(changes.hasOwnProperty('activeOptions')) {
-        //     // this.canvasRenderService.activeOptions = this.activeOptions;
-        //     // this.canvasRenderService.activeOptionsChange(changes['activeOptions']);
-        //     console.log('activeOptions: ', this.activeOptions);
-        // }
-
-        // if(changes.hasOwnProperty('selectedElements')) {
-        //     console.log('selectedElements: ', this.selectedElements);
-        //     this.timelineService.setActiveOptions(this.selectedElements.toJS(), false);
-        // }
+        if(changes.hasOwnProperty('selection')) {
+			//如果选取元素数据变化，同步到时间轴选取区域
+			this.timelineService.setActiveOptionsFromSelection();
+        }
     }
 
     /**
@@ -169,11 +169,26 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasSelectedHandler(result) {
-
+        this.timelineService.setSelection
     }
 
-    private janvasChangedHandler(result) {
-
+    private janvasChangedHandler(eleArr: any[]) {
+        if(!eleArr || eleArr.length <= 0) return;
+        let ao = eleArr.map(ele => {
+            return {
+                elementId: ele.elementId,
+                start: ele.frameIndex,
+                duration: 1,
+            };
+        });
+        let fo = eleArr.map(ele => {
+            return {
+                elementId: ele.elementId,
+                isEmptyFrame: false,
+                elementState: ele.state,
+            }
+        });
+        this.timelineService.setToKeyFrames(ao, fo);
     }
 
     /**

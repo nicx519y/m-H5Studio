@@ -210,16 +210,16 @@ export class CanvasComponent implements OnInit {
         }
         if(changes.hasOwnProperty('activeOptions')) {
             console.log('activeOptions: ', this.activeOptions);
+			//如果时间轴选取区域变化，同步到janvas选取元素
+			this.timelineService.updateSelectionFromActiveOptions();
         }
         if(changes.hasOwnProperty('selection')) {
             console.log('selection: ', this.selection);
 			//如果选取元素数据变化，同步到时间轴选取区域
-			this.timelineService.setActiveOptionsFromSelection();
+			this.timelineService.updateActiveOptionsFromSelection();
         }
         if(changes.hasOwnProperty('itemsModel')) {
             console.log('itemsModel: ', this.itemsModel);
-			//如果时间轴选取区域变化，同步到janvas选取元素
-			this.timelineService.setSelectionFromActiveOptions();
         }
     }
     

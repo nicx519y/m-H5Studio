@@ -118,6 +118,14 @@ export class MF {
 	}
 }
 
+export class Rectangle extends Record({
+	id: '',
+	x: 0,
+	y: 0,
+	width: 0,
+	height: 0,
+}) {}
+
 export class BackgroundModel extends Record({
 	id: '',
 	color: '#ffffff',
@@ -218,6 +226,7 @@ export class SelectionElementModel extends Record({
 	id: '',
 	elementId: '',
 	elementState: new ElementStateModel(),
+	transformBounds: new Rectangle(),
 }) {
 
 }

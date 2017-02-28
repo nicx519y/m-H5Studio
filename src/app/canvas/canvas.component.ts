@@ -124,6 +124,7 @@ export class CanvasComponent implements OnInit {
         if(changes.hasOwnProperty('selection')) {
 			//如果选取元素数据变化，同步到时间轴选取区域
 			this.timelineService.updateActiveOptionsFromSelection();
+            this.janvas.selectElement(this.getActiveElements())
         }
     }
 
@@ -245,5 +246,13 @@ export class CanvasComponent implements OnInit {
      */
     public modeChange(mode: EditorState = EditorState.choose) {
 		this.isJanvasInited && this.janvas.changeMode(this.modeMap[mode]);
+    }
+
+    /**
+     * 获取当前active的 element
+     */
+    public getActiveElements(ao: List<Map<string, any>> = null): string[] {
+        if(!ao) ao = this.activeOptions;
+        return ao.map(a => a.get('elementId')).toArray();
     }
 }

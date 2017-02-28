@@ -30,7 +30,7 @@ import { List, Map as ImmutableMap, Record } from 'immutable';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CanvasComponent implements OnInit {
-
+    private CANVAS_ELEMENT_ID:string = 'dev';
     private janvas:any;
     private isJanvasInited:boolean = false;
     private modeMap: Map<EditorState, any> = new Map<EditorState, any>();
@@ -85,7 +85,7 @@ export class CanvasComponent implements OnInit {
     }
     
     ngOnInit() {
-        this.janvasInit('div');
+        
     }
 
     ngOnDestroy() {
@@ -93,7 +93,7 @@ export class CanvasComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        // this.timelineService.registerElementStateCreator(this.elementStateCreator.bind(this));
+        this.janvasInit(this.CANVAS_ELEMENT_ID);
     }
 
     ngOnChanges(changes: SimpleChanges) {

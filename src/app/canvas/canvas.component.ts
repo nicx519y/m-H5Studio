@@ -122,8 +122,6 @@ export class CanvasComponent implements OnInit {
         }
 
         if(changes.hasOwnProperty('selection')) {
-            console.log('=====================');
-            console.log(this.selection.toJS());
 			//如果选取元素数据变化，同步到时间轴选取区域
 			this.timelineService.updateActiveOptionsFromSelection();
 
@@ -188,7 +186,7 @@ export class CanvasComponent implements OnInit {
         let elements = Immutable.List<SelectionElementModel>();
         
         selection.forEach((ele) => {
-            elements = elements.push(MF.g(SelectionModel, {
+            elements = elements.push(MF.g(SelectionElementModel, {
                 elementId: ele.elementId,
                 elementState: MF.g(ElementStateModel, ele.state),
                 transformBounds: MF.g(Rectangle, ele.transformedBounds)

@@ -42,8 +42,7 @@
 					[activePageModel]="timelineService.getData()" 
 					[itemsModel]="itemsService.getData()"
 					[activeOptions]="timelineService.getActiveOptions()"
-					[selectedElements]="canvasRenderService.getSelectedElements()"
-					
+					[selection]="timelineService.getSelection()"
 				></ide-canvas>
 			</div>
 			<div block="bottom">

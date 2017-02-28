@@ -15,7 +15,7 @@ import {
     SimpleChanges,
     SimpleChange,
 } from '@angular/core';
-import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, MF } from '../models';
+import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, MF } from '../models';
 import { TimelineService } from '../timeline.service';
 import { AttrsService, AttrsMod } from '../attrs.service';
 import { CanvasRenderService } from '../canvas-render.service';
@@ -40,22 +40,23 @@ export class CanvasComponent implements OnInit {
     private box: ElementRef;
 
     @Input()
-    private mode: EditorState = EditorState.choose;
+    private mode: EditorState = EditorState.choose;	//渲染区域操作模式
 
     @Input()
-    private hasData: boolean;
+    private hasData: boolean;				//标识时间轴是否有数据
 
     @Input()
-    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();
+    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();		//时间轴选中区域
+
+	@Input()
+	private selection: SelectionModel;		//janvas选中元素
 
     @Input()
-    private activePageModel: PageModel;
+    private activePageModel: PageModel;		//当前编辑的page数据
 
     @Input()
-    private itemsModel: List<ItemModel>;
+    private itemsModel: List<ItemModel>;	//素材库数据
 
-    @Input()
-    private selectedElements: List<ImmutableMap<string, any>>;
 
     constructor(
         private timelineService: TimelineService,
@@ -199,33 +200,26 @@ export class CanvasComponent implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('canvavs changes: ', changes);
+        // console.log('canvavs changes: ', changes);
         if(changes.hasOwnProperty('activePageModel') && this.hasData) {
             console.log('activePageModel: ', this.activePageModel);
-            // this.canvasRenderService.activePageModel = this.activePageModel;
-            // if(!this.canvasRenderService.getJanvasIsInited()){
-            //     this.canvasRenderService.janvasInit('dev');
-            //     this.resizeHandler();
-            // } else {
-            //     this.canvasRenderService.janvasUpdate();
-            // }
         }
         if(changes.hasOwnProperty('mode')) {
             // this.canvasRenderService.modeChange(this.mode);
             console.log('canvas mode: ', this.mode);
         }
         if(changes.hasOwnProperty('activeOptions')) {
-            // this.canvasRenderService.activeOptions = this.activeOptions;
-            // this.canvasRenderService.activeOptionsChange(changes['activeOptions']);
             console.log('activeOptions: ', this.activeOptions);
         }
-        if(changes.hasOwnProperty('itemsModel')) {
-            // this.canvasRenderService.itemsModel = this.itemsModel;
-            console.log('itemsModel: ', this.itemsModel);
+        if(changes.hasOwnProperty('selection')) {
+            console.log('selection: ', this.selection);
+			//如果选取元素数据变化，同步到时间轴选取区域
+			this.timelineService.setActiveOptionsFromSelection();
         }
-        if(changes.hasOwnProperty('selectedElements')) {
-            console.log('selectedElements: ', this.selectedElements);
-            this.timelineService.setActiveOptions(this.selectedElements.toJS(), false);
+        if(changes.hasOwnProperty('itemsModel')) {
+            console.log('itemsModel: ', this.itemsModel);
+			//如果时间轴选取区域变化，同步到janvas选取元素
+			this.timelineService.setSelectionFromActiveOptions();
         }
     }
     

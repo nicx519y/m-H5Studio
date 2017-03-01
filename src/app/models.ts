@@ -191,7 +191,7 @@ export class ElementStateModel extends Record({
 	scaleY: 1,
 	skewX: 0,
 	skewY: 0,
-	alpha: 100,
+	alpha: 1,
 	matrix: new Matrix2D(),
 }) {}
 
@@ -257,10 +257,6 @@ export class FrameModel extends Record({
 			elementState: frame.get('elementState'),
 			duration: frame.get('duration'),
 		});
-		if(newFrame.has('tween') && newFrame.get('tween'))
-			newFrame = newFrame.setIn(['tween', 'id'], createNewId());
-		if(newFrame.has('elementState') && newFrame.get('elementState'))
-			newFrame = newFrame.setIn(['elementState', 'id'], createNewId());
 		return newFrame;
 	}
 }

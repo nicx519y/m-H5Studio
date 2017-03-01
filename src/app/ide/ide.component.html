@@ -41,8 +41,8 @@
 					[hasData]="timelineService.hasData()"
 					[activePageModel]="timelineService.getData()" 
 					[itemsModel]="itemsService.getData()"
-					[activeOptions]="timelineService.getActiveOptions()"
 					[selection]="timelineService.getSelection()"
+					[activeFrameIndex]="timelineService.getActiveFrameIndex()"
 				></ide-canvas>
 			</div>
 			<div block="bottom">
@@ -54,6 +54,8 @@
 								[dataType]="timelineService.getDataType()"
 								[activeOptions]="timelineService.getActiveOptions()"
 								[frameCount]="timelineService.getFrameCount()" 
+								[activeOptions]="timelineService.getActiveOptions()"
+								[selection]="timelineService.getSelection()"
 							></ide-timeline>
 						</div>
 						<div block="tools">

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewChildren, ElementRef, Input, Output, QueryList, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
 import { TimelineService, TimelineDataType } from '../timeline.service';
-import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel } from '../models';
+import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel, SelectionModel } from '../models';
 import { LayerComponent } from '../layer/layer.component';
 import { TimelineRulerComponent } from '../timeline-ruler/timeline-ruler.component';
 
@@ -42,6 +42,9 @@ export class TimelineComponent implements OnInit {
 
 	@Input()
 	activeOptions: List<Map<string, any>>;
+
+	@Input()
+	selection: SelectionModel;
 
 	@Input()
 	frameCount: number;
@@ -272,12 +275,18 @@ export class TimelineComponent implements OnInit {
 		//设置layer组件的active状态
 		if(changes.hasOwnProperty('activeOptions') && this.layers) {
 			this.setLayersActive();
+			//如果时间轴选取区域变化，同步到janvas选取元素
+            this.service.updateSelectionFromActiveOptions();
+		}
+
+		if(changes.hasOwnProperty('selection')) {
+			//如果选取元素数据变化，同步到时间轴选取区域
+			this.service.updateActiveOptionsFromSelection();
 		}
 
 		if(changes.hasOwnProperty('model')) {
 
 		}
-
 
 
 	}

@@ -57,6 +57,9 @@ export class CanvasComponent implements OnInit {
     private activePageModel: PageModel;		//当前编辑的page数据
 
     @Input()
+    private activeFrameIndex: number;       //当前渲染的帧
+
+    @Input()
     private itemsModel: List<ItemModel>;	//素材库数据
 
 
@@ -102,7 +105,8 @@ export class CanvasComponent implements OnInit {
         }
 
         //页面数据变化
-        if(changes.hasOwnProperty('activePageModel') && this.timelineService.hasData()) {
+        if(this.timelineService.hasData() && 
+        (changes.hasOwnProperty('activePageModel') || changes.hasOwnProperty('activeFrameIndex'))) {
             if(this.isJanvasInited) {
                 this.janvasUpdate();
             } else {
@@ -116,18 +120,10 @@ export class CanvasComponent implements OnInit {
             this.janvasUpdate();
         }
 
-        if(changes.hasOwnProperty('activeOptions')) {
-            //如果时间轴选取区域变化，同步到janvas选取元素
-            this.timelineService.updateSelectionFromActiveOptions();
-        }
-
         if(changes.hasOwnProperty('selection')) {
             console.log('selection: ', this.selection.toJS());
-			//如果选取元素数据变化，同步到时间轴选取区域
-			this.timelineService.updateActiveOptionsFromSelection();
-
             if(this.janvas) {
-                this.janvas.selectElement(this.getActiveElements())
+                this.janvas.selectElement(this.getSelectionElements())
             }
         }
     }
@@ -166,14 +162,14 @@ export class CanvasComponent implements OnInit {
      */
     public janvasUpdate() {
         if(!this.isJanvasInited) return;
-        let activeFrame: number = this.getActiveFirstFrame();
+        let activeFrame: number = this.activeFrameIndex;
         let data = this.makeJanvasData().toJS();
         let page: string = this.activePageModel.get('id');
 
         data && this.janvas.updateJanvasData(data, {
             page: page,
             frameIndex: Math.max(0, activeFrame),
-            elementList: this.activeOptions.map(ao => ao.get('elementId')).toArray()
+            elementList: this.getSelectionElements()
         });
     }
 
@@ -229,15 +225,6 @@ export class CanvasComponent implements OnInit {
     }
 
     /**
-	 * 获取active状态的最小帧，最小值0，默认0
-	 */
-	public getActiveFirstFrame(ao: List<Map<string, any>> = null): number {
-        if(!ao) ao = this.activeOptions;
-		if(ao.size <= 0) return -1;
-		return Math.max(Math.min.apply(null, ao.map(ao => ao.get('start')).toArray()));
-	}
-
-    /**
 	 * 合成传入janvas内部的数据
 	 */
 	public makeJanvasData(): MainModel {
@@ -258,11 +245,8 @@ export class CanvasComponent implements OnInit {
 		this.isJanvasInited && this.janvas.changeMode(this.modeMap[mode]);
     }
 
-    /**
-     * 获取当前active的 element
-     */
-    public getActiveElements(ao: List<Map<string, any>> = null): string[] {
-        if(!ao) ao = this.activeOptions;
-        return ao.map(a => a.get('elementId')).toArray();
+    private getSelectionElements(): string[] {
+        return this.selection.get('elements').map(ele => ele.get('elementId')).toArray();
     }
+
 }

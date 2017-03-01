@@ -148,6 +148,13 @@ export class TimelineService {
 		}
 	}
 
+	/**
+	 * 获取当前active的帧
+	 */
+	public getActiveFrameIndex(): number {
+		return Math.max(0, Math.min.apply(null, this._activeOptions.map(opt => opt.get('start')).toArray()));
+	}
+
 	/***
 	 * active options 到 selection 的换算关系
 	 */
@@ -474,7 +481,7 @@ export class TimelineService {
 					frame => frame.get('index') <= i 
 					&& frame.get('index') + frame.get('duration') - 1 >= i 
 					&& (frame.get('tweenType') !== tweenOptions.type
-					|| !Immutable.is(frame.get('tween').set('id', ''), tweenOptions.tween.set('id', '')))
+					|| !Immutable.is(frame.get('tween'), tweenOptions.tween))
 				);
 				if(fidx >= 0) {
 					frames = frames.setIn([fidx, 'tweenType'], tweenOptions.type);

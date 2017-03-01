@@ -152,10 +152,13 @@ export class TimelineService {
 	 * active options 到 selection 的换算关系
 	 */
 	private activeOptionsToSelection(): SelectionModel {
-		let frameIndex: number = Math.min.apply(null, 
-			this._activeOptions.filter(ao => ao.get('duration') > 0)
-				.map(ao => ao.get('start')).toArray()
-		);
+		let frameIndex: number = 0;
+		if(this._activeOptions.size > 0) {
+			frameIndex = Math.min.apply(null, 
+				this._activeOptions.filter(ao => ao.get('duration') > 0)
+					.map(ao => ao.get('start')).toArray()
+			);
+		}
 		let elements: Immutable.List<SelectionElementModel> = Immutable.List<SelectionElementModel>();
 		this._activeOptions.forEach(ao => {
 			elements = elements.push(MF.g(SelectionElementModel, {

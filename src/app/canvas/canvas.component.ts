@@ -199,8 +199,6 @@ export class CanvasComponent implements OnInit {
             frameIndex = Math.min.apply(null, selection.map(ele => ele.frameIndex));
         }
 
-        console.log('section:', section);
-
         this.timelineService.setSelection(MF.g(SelectionModel, {
             frameIndex: frameIndex,
             elements: elements

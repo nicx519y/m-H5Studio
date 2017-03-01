@@ -126,7 +126,6 @@ export class Rectangle extends Record({
 }) {}
 
 export class BackgroundModel extends Record({
-	id: '',
 	color: '#ffffff',
 	image: '',
 	repeat: false,
@@ -174,7 +173,6 @@ export class VideoModel extends Record({
 }) {}
 
 export class Matrix2D extends Record({
-	id: '',
 	a: 1,
 	b: 0,
 	c: 0,
@@ -198,7 +196,6 @@ export class ElementStateModel extends Record({
 }) {}
 
 export class TweenModel extends Record({
-	id: '',
 	type: TweenType.normal,
 	loop: false,
 	ease: Ease.linear,
@@ -236,7 +233,6 @@ export class SelectionModel extends Record({
 }
 
 export class FilterModel extends Record({
-	id: ''
 }) {}
 
 export class FrameModel extends Record({
@@ -291,7 +287,6 @@ export class PageModel extends Record({
 }) {}
 
 export class SwiperModel extends Record({
-	id: '',
 	initialSlide: 1,
 	direction: Direction.vertial,
 	speed: 100,
@@ -310,7 +305,6 @@ export class ItemModel extends Record({
 
 
 export class HotKeyModel extends Record({
-	id: '',
 	target: '',
 	shift: false,
 	ctrl: false,
@@ -329,7 +323,6 @@ export class StageModel extends Record({
 }) {}
 
 export class MainModel extends Record({
-	id: '',
 	stage: new StageModel(),
 	swiper: new SwiperModel(),
 	pages: Immutable.List<PageModel>(),

@@ -224,7 +224,8 @@ export class CanvasComponent implements OnInit {
                 elementState: ele.state,
             }
         });
-        this.timelineService.setToKeyFrames(ao, fo);
+
+        this.timelineService.setData(this.timelineService.setToKeyFrames(ao, fo));
     }
 
     /**

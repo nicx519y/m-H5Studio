@@ -102,8 +102,9 @@ export class TimelineService {
 	}
 
 	public setSelection(selection: SelectionModel) {
-		console.log('set selection: ', selection.toJS());
-		this._selection = selection;
+		if(!Immutable.fromJS(selection.toJS()).equals(Immutable.fromJS(this._selection.toJS()))) {
+			this._selection = selection;
+		}
 	}
 
 	public getActiveOptions(): List<Map<string, any>> {
@@ -175,7 +176,6 @@ export class TimelineService {
 	private selectionToActiveOptions(): Immutable.List<Map<string, any>> {
 		let result = [];
 		let frameIndex: number = this._selection.get('frameIndex');
-		console.log('selection: ', this._selection.toJS());
 		this._selection.get('elements').forEach(element => {
 			let ele = {
 				elementId: element.get('elementId'),
@@ -184,7 +184,6 @@ export class TimelineService {
 			};
 			result.push(ele);
 		});
-		console.log('selectionToActiveOptions: ', result);
 		return Immutable.fromJS(result);
 	}
 
@@ -201,7 +200,7 @@ export class TimelineService {
 
 	public updateSelectionFromActiveOptions() {
 		let newSelection = this.activeOptionsToSelection();
-		if(!Immutable.is(newSelection, this._selection)) {
+		if(!Immutable.is(Immutable.fromJS(newSelection.toJS()), Immutable.fromJS(this._selection.toJS()))) {
 			console.log('update selection: ', newSelection.toJS());
 			this._selection = newSelection;
 		}
@@ -245,7 +244,7 @@ export class TimelineService {
 	public removeElements(eleIds: string[]) {
 		let data: List<LayerModel> = Immutable.List<LayerModel>();
 		data = this.getData().filter(layer => eleIds.indexOf(layer.getIn(['element', 'id'])) < 0).toList();
-		(!Immutable.is(this.getData(), data)) && (this.setData(data));
+		(!Immutable.is(Immutable.fromJS(this.getData().toJS()), Immutable.fromJS(data).toJS())) && (this.setData(data));
 	}
 
 	public swapElements(eleId1: string, eleId2: string) {

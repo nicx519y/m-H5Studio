@@ -109,17 +109,16 @@ function createNewId() {
 
 export class MF {
 	static g(model, options: any = {}) {
-		if(!options.id || options.id == '') {
-			Object.assign(options, {
-				id: createNewId()
-			})
+		let obj = new model(options);
+		if(obj.has('id') && obj.get('id') == '') {
+			obj = obj.set('id', createNewId());
 		}
-		return new model(options);
+
+		return obj;
 	}
 }
 
 export class Rectangle extends Record({
-	id: '',
 	x: 0,
 	y: 0,
 	width: 0,
@@ -185,7 +184,6 @@ export class Matrix2D extends Record({
 }) {}
 
 export class ElementStateModel extends Record({
-	id: '',
 	x: 0,
 	y: 0,
 	originX: undefined,
@@ -223,7 +221,6 @@ export class ElementModel extends Record({
 }
 
 export class SelectionElementModel extends Record({
-	id: '',
 	elementId: '',
 	elementState: new ElementStateModel(),
 	transformBounds: new Rectangle(),
@@ -232,7 +229,6 @@ export class SelectionElementModel extends Record({
 }
 
 export class SelectionModel extends Record({
-	id: '',
 	frameIndex: 0,
 	elements: Immutable.List<SelectionElementModel>()
 }) {

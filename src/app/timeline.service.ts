@@ -325,6 +325,8 @@ export class TimelineService {
 	}): List<LayerModel> {
 		if(!frameOptions) return;
 		let fos: any;
+		console.log('setToKeyFrame: ', frameOptions);
+		
 		if(!frameOptions.hasOwnProperty('length')) {
 			let fo = frameOptions;
 			fos = options.map(opt => {
@@ -355,6 +357,9 @@ export class TimelineService {
 							frame = frame
 								.set('tweenType', TweenType.none)
 								.set('tween', MF.g(TweenModel))
+								.set('elementState', frameOption['elementState']);
+						} else {
+							frame = frame
 								.set('elementState', frameOption['elementState']);
 						}
 						// frame = this.createElementStateOfKeyFrame(frame, eleId, i, frameOption.elementState);

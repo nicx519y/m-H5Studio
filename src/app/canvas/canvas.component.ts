@@ -181,9 +181,10 @@ export class CanvasComponent implements OnInit {
 	 * janvas选中元素后操作
 	 */
     private janvasSelectedHandler(selection: any[]) {
-        
         let elements = Immutable.List<SelectionElementModel>();
-        
+        let section = this.timelineService.getSelection();
+        let frameIndex;
+
         selection.forEach((ele) => {
             elements = elements.push(MF.g(SelectionElementModel, {
                 elementId: ele.elementId,
@@ -192,8 +193,16 @@ export class CanvasComponent implements OnInit {
             }));
         });
 
+        if(section) {
+            frameIndex = section.get('frameIndex');
+        } else {
+            frameIndex = Math.min.apply(null, selection.map(ele => ele.frameIndex));
+        }
+
+        console.log('section:', section);
+
         this.timelineService.setSelection(MF.g(SelectionModel, {
-            frameIndex: this.timelineService.getSelection().get('frameIndex'),
+            frameIndex: frameIndex,
             elements: elements
         }));
     }

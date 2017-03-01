@@ -162,13 +162,14 @@ export class CanvasComponent implements OnInit {
      */
     public janvasUpdate() {
         if(!this.isJanvasInited) return;
-        let activeFrame: number = this.activeFrameIndex;
         let data = this.makeJanvasData().toJS();
         let page: string = this.activePageModel.get('id');
 
+        console.log('janvasUpdate: ', data, this.activeFrameIndex);
+
         data && this.janvas.updateJanvasData(data, {
             page: page,
-            frameIndex: Math.max(0, activeFrame),
+            frameIndex: this.activeFrameIndex,
             elementList: this.getSelectionElements()
         });
     }

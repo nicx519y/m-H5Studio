@@ -199,6 +199,7 @@ export class TimelineService {
 
 	public updateActiveOptionsFromSelection() {
 		let newAO = this.selectionToActiveOptions();
+		if(newAO.size === 0) return;		//如果selection为空，则不更新activeOption
 		if(newAO.size != this._activeOptions.size
 			|| !Immutable.is(newAO.map(ao => ao.get('elementId')), this._activeOptions.map(ao => ao.get('elementId')))
 			|| !Immutable.is(newAO.map(ao => ao.get('start')), this._activeOptions.map(ao => ao.get('start')))
@@ -332,7 +333,7 @@ export class TimelineService {
 	}): List<LayerModel> {
 		if(!frameOptions) return;
 		let fos: any;
-		console.log('setToKeyFrame: ', frameOptions);
+		console.log('setToKeyFrame: ', options, frameOptions);
 		
 		if(!frameOptions.hasOwnProperty('length')) {
 			let fo = frameOptions;
@@ -375,8 +376,15 @@ export class TimelineService {
 						let newFrame: FrameModel;
 						//克隆上一个关键帧，作为新的关键帧
 						if(!frameOption.isEmptyFrame) {
-							newFrame = FrameModel.clone(frames.findLast(frame => frame.get('index') < i))
-								.set('index', i);
+							let lastFrame: FrameModel = frames.findLast(frame => frame.get('index') < i);
+							newFrame = MF.g(FrameModel, {
+								index: i,
+								isKeyFrame: true,
+								isEmptyFrame: false,
+								tween: lastFrame.get('tween'),
+								tweenType: lastFrame.get('tweenType'),
+								elementState: frameOption['elementState']
+							})
 						} else {
 							newFrame = MF.g(FrameModel, {
 								isEmptyFrame: frameOption.isEmptyFrame,

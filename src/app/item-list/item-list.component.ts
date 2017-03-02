@@ -10,6 +10,7 @@ import {
 	Input,
 	OnInit,
 	ChangeDetectionStrategy,
+	SimpleChanges,
 } from '@angular/core';
 import { ItemsService } from '../items.service';
 import { TimelineService } from '../timeline.service';
@@ -73,7 +74,7 @@ export class ItemListComponent implements OnInit {
 	}
 
 	private editActiveItem() {
-		this.timelineService.registerDataSource(this.getActiveItem.bind(this));
+		this.timelineService.registerDataSource(this.service.findItemByIndexes.bind(this.service), this.model.getIn([this.active, 'id']));
 	}
 
 	private getActiveItem(): ItemModel {
@@ -109,6 +110,13 @@ export class ItemListComponent implements OnInit {
 
 	private getEditingStatus(id: string): boolean {
 		return id === this.editingId;
+	}
+
+	ngOnChanges(changes: SimpleChanges) {
+		if(changes.hasOwnProperty('model')) {
+			//每次数据改变，建立索引
+			this.service.createIndexes();
+		}
 	}
 
 	ngAfterViewInit() {

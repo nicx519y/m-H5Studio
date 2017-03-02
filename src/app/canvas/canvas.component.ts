@@ -107,6 +107,7 @@ export class CanvasComponent implements OnInit {
         //页面数据变化
         if(this.timelineService.hasData() && 
         (changes.hasOwnProperty('activePageModel') || changes.hasOwnProperty('activeFrameIndex'))) {
+            console.log(changes);
             if(this.isJanvasInited) {
                 this.janvasUpdate();
             } else {
@@ -117,11 +118,14 @@ export class CanvasComponent implements OnInit {
 
         //lib数据变化
         if(changes.hasOwnProperty('itemsModel')) {
-            this.janvasUpdate();
+            console.log('itemsModel change');
+            if(this.isJanvasInited) {
+                this.janvasUpdate();
+            }
         }
 
         if(changes.hasOwnProperty('selection')) {
-            console.log('selection: ', this.selection.toJS());
+            console.log('selection change: ', this.selection.toJS());
             if(this.janvas) {
                 this.janvas.selectElement(this.getSelectionElements())
             }

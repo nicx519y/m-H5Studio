@@ -31,7 +31,7 @@ export class TimelineService {
 	private _selection: SelectionModel = new SelectionModel();									//用于跟janvas交互的选取元素
 	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
-	private _source: Function;																	//数据来源
+	private _dataGetter: Function;																	//数据来源
 	private _dataId: string;																	//数据id
 	private _dataName: string;																	//数据name,用于展现
 
@@ -45,10 +45,11 @@ export class TimelineService {
 	/**
 	 * 注册数据来源
 	 */
-	public registerDataSource(source: Function) {
-		this._source = source;
-		let data: any = source();
-		this._dataId = data.get('id');
+	public registerDataSource(dataGetter: Function, dataId: string) {
+		this._dataGetter = dataGetter;
+		this._dataId = dataId;
+		let data: any = dataGetter(dataId);
+		console.log(dataGetter, dataId, data);
 		this._dataName = data.get('name');
 		if(data instanceof PageModel) {
 			this._dataType = TimelineDataType.Page;
@@ -75,9 +76,9 @@ export class TimelineService {
 
 	public getData(): List<LayerModel> {
 		if(this._dataType === TimelineDataType.Page) {
-			return this._source().get('layers');
+			return this._dataGetter(this._dataId).get('layers');
 		} else if(this._dataType === TimelineDataType.Movieclip) {
-			return this._source().getIn(['source', 'layers']);
+			return this._dataGetter(this._dataId).getIn(['source', 'layers']);
 		} else {
 			return null;
 		}

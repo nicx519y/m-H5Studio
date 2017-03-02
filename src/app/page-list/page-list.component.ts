@@ -1,4 +1,4 @@
-import { Component, Input, ViewChildren, QueryList, ElementRef, OnInit, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ElementRef, OnInit, OnChanges, ChangeDetectionStrategy, SimpleChanges } from '@angular/core';
 import { PagesService } from '../pages.service';
 import { MF, PageModel } from '../models';
 import { TimelineService } from '../timeline.service';
@@ -69,7 +69,7 @@ export class PageListComponent implements OnInit {
 
 	private editPage(index: number) {
 		this.service.activePageId = this.model.getIn([index, 'id']);
-		this.timelineService.registerDataSource(this.getActivePage.bind(this));
+		this.timelineService.registerDataSource(this.service.findPageByIndexes.bind(this.service), this.model.getIn([index, 'id']));
 	}
 
 	private getActivePage(): PageModel {
@@ -103,8 +103,11 @@ export class PageListComponent implements OnInit {
 
 	}
 
-	ngOnChanges(changes) {
-
+	ngOnChanges(changes: SimpleChanges) {
+		if(changes.hasOwnProperty('model')) {
+			//数据更新，同时索引更新
+			this.service.createIndexes();
+		}
 	}
 
 }

@@ -8,6 +8,7 @@ import { List, Map, Record } from 'immutable';
 export class ItemsService {
 
 	private _data: List<ItemModel> = Immutable.List<ItemModel>();
+	private _dataIndexes: Map<string, number> = Immutable.Map<string, number>();
 	private _active: number = -1;
 
 	constructor() {
@@ -98,5 +99,20 @@ export class ItemsService {
 			source: bitmap,
 		}));
 		this.addItems(items as List<ItemModel>);
+	}
+
+	/**
+	 * 建立id=>index索引
+	 */
+	public createIndexes() {
+		this._dataIndexes = this._dataIndexes.clear();
+		this._data.forEach((item, key) => this._dataIndexes = this._dataIndexes.set(item.get('id'), key));
+	}
+
+	/**
+	 * 通过索引查找元素
+	 */
+	public findItemByIndexes(id: string): ItemModel {
+		return this._data.get(this._dataIndexes.get(id));
 	}
 }

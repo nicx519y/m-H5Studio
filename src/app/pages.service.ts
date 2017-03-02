@@ -6,11 +6,8 @@ import { List, Map, Record } from 'immutable';
 @Injectable()
 export class PagesService {
 
-	/**
-	 * @desc	active的页面改变事件
-	 */
-
 	private _data: List<PageModel> = Immutable.List<PageModel>();
+	private _dataIndexes: Map<string, number> = Immutable.Map<string, number>();
 	public activePageId: string = '';
 
 	constructor() {
@@ -72,6 +69,13 @@ export class PagesService {
 		this.swapPages(index, index + 1);
 	}
 
+	public createIndexes() {
+		this._dataIndexes = this._dataIndexes.clear();
+		this._data.forEach((page, key) => this._dataIndexes = this._dataIndexes.set(page.get('id'), key));
+	}
 
+	public findPageByIndexes(id: string): PageModel {
+		return this._data.get(this._dataIndexes.get(id));
+	}
 
 }

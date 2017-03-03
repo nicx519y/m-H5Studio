@@ -17,7 +17,6 @@ import {
 } from '@angular/core';
 import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF } from '../models';
 import { TimelineService } from '../timeline.service';
-import { AttrsService, AttrsMod } from '../attrs.service';
 import Developer from '../janvas/main/developer';
 
 import * as Immutable from 'immutable';
@@ -68,7 +67,6 @@ export class CanvasComponent implements OnInit {
 
     constructor(
         private timelineService: TimelineService,
-        private attrsService: AttrsService,
         private container: ViewContainerRef,
     ) {
         this.modeMap.set(EditorState.none, Developer.MODE.READ_MODE);

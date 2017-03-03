@@ -1,44 +1,43 @@
 <div class="ide-attrs" >
-	<div *ngIf="attrsMod===1||attrsMod===2" >
+	<div *ngIf="mode===1||mode===2" >
 		<form #attrsForm="ngForm" (ngSubmit)="onSubmit()"    >
 			<md-input-container >
-				<input [(ngModel)]="data.originX" type="number"  md-input placeholder="x轴中心点坐标" name="originX" autocomplete="off" />
+				<input [(ngModel)]="formData.originX" type="number"  md-input placeholder="x轴中心点坐标" name="originX" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.originY" type="number"  md-input placeholder="y轴中心点坐标" name="originY" autocomplete="off" />
+				<input [(ngModel)]="formData.originY" type="number"  md-input placeholder="y轴中心点坐标" name="originY" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.x" type="number"  md-input placeholder="x轴坐标" name="x" autocomplete="off" />
+				<input [(ngModel)]="formData.x" type="number"  md-input placeholder="x轴坐标" name="x" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.y" type="number"  md-input placeholder="y轴坐标" name="y" autocomplete="off" />
+				<input [(ngModel)]="formData.y" type="number"  md-input placeholder="y轴坐标" name="y" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.scaleX" type="number" step="0.01"  md-input placeholder="x轴缩放比例" name="scaleX" autocomplete="off" />
+				<input [(ngModel)]="formData.scaleX" type="number" step="0.01"  md-input placeholder="x轴缩放比例" name="scaleX" autocomplete="off" />
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.scaleY" type="number" step="0.01"  md-input placeholder="y轴缩放比例" name="scaleY" autocomplete="off" />
+				<input [(ngModel)]="formData.scaleY" type="number" step="0.01"  md-input placeholder="y轴缩放比例" name="scaleY" autocomplete="off" />
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.skewX" type="number" step="0.01" min="-180" max="180"  md-input placeholder="x轴倾斜角度" name="skewX" autocomplete="off" />
+				<input [(ngModel)]="formData.skewX" type="number" step="0.01" min="-180" max="180"  md-input placeholder="x轴倾斜角度" name="skewX" autocomplete="off" />
 				<span md-suffix >°</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.skewY" type="number" step="0.01" min="-180" max="180"  md-input placeholder="y轴倾斜角度" name="skewY" autocomplete="off" />
+				<input [(ngModel)]="formData.skewY" type="number" step="0.01" min="-180" max="180"  md-input placeholder="y轴倾斜角度" name="skewY" autocomplete="off" />
 				<span md-suffix >°</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.rotation" type="number" placeholder="旋转角度" md-input name="rotation" autocomplete="off" min="-180" max="180"  />
+				<input [(ngModel)]="formData.rotation" type="number" placeholder="旋转角度" md-input name="rotation" autocomplete="off" min="-180" max="180"  />
 				<span md-suffix >°</span>
 			</md-input-container>
 			
 			<md-input-container >
-				<input [(ngModel)]="data.alpha" type="number" placeholder="透明度"  md-input name="alpha" autocomplete="off" min="0" max="100"  />
-				<span md-suffix >%</span>
+				<input [(ngModel)]="formData.alpha" type="number" step="0.01" placeholder="透明度"  md-input name="alpha" autocomplete="off" min="0" max="100"  />
 			</md-input-container>
 			
 			<button type="submit" hidden >submit</button>
@@ -65,35 +64,35 @@
 	</div>
 	<div *ngIf="attrsMod===3"  >
 		<form #fontSettingForm="ngForm" (ngSubmit)="onSubmit()"   >
-			<input type="text" name="eleId" hidden [(ngModel)]="data.id" />
-			<input type="number" name="frameIndex" hidden [(ngModel)]="data.frameIndex" />
-			<input type="text" name="text" hidden [(ngModel)]="data.text" />
+			<input type="text" name="eleId" hidden [(ngModel)]="formData.id" />
+			<input type="number" name="frameIndex" hidden [(ngModel)]="formData.frameIndex" />
+			<input type="text" name="text" hidden [(ngModel)]="formData.text" />
 			<md-input-container >
-				<input [(ngModel)]="data.width" type="number"  md-input placeholder="文本框宽度" name="width" autocomplete="off" />
+				<input [(ngModel)]="formData.width" type="number"  md-input placeholder="文本框宽度" name="width" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.height" type="number"  md-input placeholder="文本框高度" name="height" autocomplete="off" />
+				<input [(ngModel)]="formData.height" type="number"  md-input placeholder="文本框高度" name="height" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
-			<md-select [(ngModel)]="data.font" placeholder="字体" name="font" >
+			<md-select [(ngModel)]="formData.font" placeholder="字体" name="font" >
 				<md-option [value]="arial" >Arial</md-option>
 				<md-option [value]="simsun" >宋体</md-option>
 			</md-select>
 			<md-input-container >
-				<input [(ngModel)]="data.color" type="text" placeholder="文本色" maxlength="7" md-input name="color" autocomplete="off"  />
-				<input [(ngModel)]="data.color" type="color" md-suffix />
+				<input [(ngModel)]="formData.color" type="text" placeholder="文本色" maxlength="7" md-input name="color" autocomplete="off"  />
+				<input [(ngModel)]="formData.color" type="color" md-suffix />
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.backgroundColor" type="text" placeholder="背景色" maxlength="7" md-input name="backgroundColor" autocomplete="off"  />
-				<input [(ngModel)]="data.backgroundColor" type="color" md-suffix />
+				<input [(ngModel)]="formData.backgroundColor" type="text" placeholder="背景色" maxlength="7" md-input name="backgroundColor" autocomplete="off"  />
+				<input [(ngModel)]="formData.backgroundColor" type="color" md-suffix />
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.fontSize" type="number"  md-input placeholder="字号" name="fontSize" autocomplete="off" />
+				<input [(ngModel)]="formData.fontSize" type="number"  md-input placeholder="字号" name="fontSize" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-input-container >
-				<input [(ngModel)]="data.lineheight" type="number"  md-input placeholder="行高" name="lineheight" autocomplete="off" />
+				<input [(ngModel)]="formData.lineheight" type="number"  md-input placeholder="行高" name="lineheight" autocomplete="off" />
 				<span md-suffix >px</span>
 			</md-input-container>
 			<md-button-toggle-group multiple >

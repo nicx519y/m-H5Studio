@@ -49,7 +49,6 @@ export class TimelineService {
 		this._dataGetter = dataGetter;
 		this._dataId = dataId;
 		let data: any = dataGetter(dataId);
-		console.log(dataGetter, dataId, data);
 		this._dataName = data.get('name');
 		if(data instanceof PageModel) {
 			this._dataType = TimelineDataType.Page;

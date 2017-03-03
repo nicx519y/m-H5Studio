@@ -41,7 +41,6 @@ import { PageConfigerService } from '../page-configer.service';
 import { AttrFormComponent } from '../attr-form/attr-form.component';
 
 import { AttrsComponent } from '../attrs/attrs.component';
-import { AttrsService } from '../attrs.service';
 
 // import { HotKeysComponent } from '../hot-keys/hot-keys.component';
 
@@ -90,7 +89,6 @@ const ROUTES: Routes = [
 		BitmapImporterService,
 		TimelineService,
 		PageConfigerService,
-		AttrsService,
 		CanvasRenderService,
 	],
 	entryComponents: [

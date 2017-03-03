@@ -116,7 +116,7 @@
 					</ide-panel>
 					<ide-panel [title]="'属性'">
 						<div block="main">
-							<ide-attrs [attrsMod]="attrsService.mod" [model]="attrsService.getData()" ></ide-attrs>
+							<ide-attrs [model]="timelineService.getSelection()" ></ide-attrs>
 						</div>
 					</ide-panel>
 				</ide-accordion>

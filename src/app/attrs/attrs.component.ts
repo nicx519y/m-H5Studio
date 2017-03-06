@@ -8,11 +8,14 @@ import { List, Map as ImmutableMap, Record } from 'immutable';
 const SCREEN_WIDTH: number = 750;	//编辑框宽度
 const SCREEN_HEIGHT: number = 1334;	//编辑框高度
 
+function isEquals(): boolean {
+	return (new Set(arguments).size === 1);
+}
+
 export enum AttrsMode {
 	none,
 	elementProperty,
 	MultiProperties,
-	fontSetting,
 };
 
 export enum AlignMode {
@@ -22,36 +25,6 @@ export enum AlignMode {
 	left,
 	center,
 	right
-}
-
-export class ElementWithBounds {
-	x: number = 0;
-	y: number = 0;
-	bounds: {
-		x: number,
-		y: number,
-		width: number,
-		height: number,
-	} = {
-		x: 0,
-		y: 0,
-		width: 0,
-		height: 0,
-	};
-	constructor(options: {
-		x?: number,
-		y?: number,
-		bounds?: {
-			x: number,
-			y: number,
-			width: number,
-			height: number,
-		}
-	}) {
-		this.x = options.x || 0;
-		this.y = options.y || 0;
-		options.bounds && (this.bounds = options.bounds);
-	}
 }
 
 @Component({
@@ -107,13 +80,15 @@ export class AttrsComponent implements OnInit {
 		} else if(this.mode === AttrsMode.MultiProperties) {
 			let data = [];
 			this.model.get('elements').forEach((ele, idx) => {
-				let obj = {};
-				obj['transformedBounds'] = this.model.getIn(['transformedBounds', idx]);
-				obj['frameIndex'] = this.model.get('frameIndex');
-				obj['state'] = {};
+				let obj = {
+					'frameIndex': this.model.get('frameIndex'),
+					'id': ele.get('elementId'),
+					'state': {},
+				};
+
 				for(let i in this.formData) {
 					if(isNaN(this.formData[i])) {
-						obj['state'][i] = this.model.getIn(['states', idx, i]);
+						obj['state'][i] = ele.getIn(['elementState', i]);
 					} else {
 						obj['state'][i] = this.formData[i];
 					}
@@ -154,6 +129,9 @@ export class AttrsComponent implements OnInit {
 		}
 	}
 
+	/**
+	 * 单选元素属性面板数据拼合
+	 */
 	private makeSinglePropertyFormData() {
 		this.mode = AttrsMode.elementProperty;
 		let state = this.model.getIn(['elements', 0, 'elementState']);
@@ -163,19 +141,39 @@ export class AttrsComponent implements OnInit {
 			this.formData.hasOwnProperty('skewX') && (this.formData['skewX'] = this.angleInit(this.formData['skewX']));
 			this.formData.hasOwnProperty('skewY') && (this.formData['skewY'] = this.angleInit(this.formData['skewY']));
 			this.accuracyControl();
-			console.log('fromData: ', this.formData);
 		}
 	}
 
+	/**
+	 * 多选元素属性面板数据拼合
+	 */
 	private makeSingleMultiPropertiesData() {
 		this.mode = AttrsMode.MultiProperties;
+		['originX', 'originY', 'x', 'y', 'scaleX', 'scaleY', 'skewX', 'skewY', 'rotation', 'alpha'].forEach(key => {
+			let isSame: boolean = isEquals.apply(null, this.model.get('elements').map(element => element.getIn(['elementState', key])).toJS());
+			if(isSame) {
+				this.formData[key] = this.model.getIn(['elements', 0, 'elementState', key]);
+				if(['rotation', 'skewX', 'skewY'].indexOf(key) >= 0) {
+					this.formData[key] = this.angleInit(this.formData[key]);
+				}
+				this.accuracyControl();
+			} else {
+				this.formData[key] = NaN;
+			}
+		});
 	}
 
+	/**
+	 * 清空表单面板
+	 */
 	private clearFormData() {
 		this.mode = AttrsMode.none;
 		this.formData = {};
 	}
 
+	/**
+	 * 表单数据精度控制
+	 */
 	private accuracyControl() {
 		['originX', 'originY', 'skewX', 'skewY', 'x', 'y', 'rotation'].forEach(key => {
 			this.formData.hasOwnProperty(key) && (this.formData[key] = Math.round(this.formData[key]));
@@ -185,6 +183,17 @@ export class AttrsComponent implements OnInit {
 		});
 	}
 
+	private alignWithMode(mode: AlignMode = AlignMode.top) {
+		if(this.mode === AttrsMode.elementProperty) {
+			this.singleAlignWithMode(mode);
+		} else if(this.mode === AttrsMode.MultiProperties) {
+			this.mutliAlignWithMode(mode);
+		}
+	}
+
+	/**
+	 * 单选对齐
+	 */
 	private singleAlignWithMode(mode: AlignMode = AlignMode.top) {
 		let targets = new Map<AlignMode, number>();
 		targets.set(AlignMode.top, 0);
@@ -194,46 +203,55 @@ export class AttrsComponent implements OnInit {
 		targets.set(AlignMode.middle, SCREEN_HEIGHT / 2);
 		targets.set(AlignMode.center, SCREEN_WIDTH / 2);
 
-		let ele: ElementWithBounds = new ElementWithBounds({
-			x: this.formData['x'],
-			y: this.formData['y'],
-			bounds: this.model.getIn(['elements', 0, 'transformBounds']),
-		});
-
-		let result = this.singleAlign(ele, targets.get(mode), mode);
-		this.formData['x'] = result.x;
-		this.formData['y'] = result.y;
+		let result = this.singleAlign(this.model.getIn(['elements', 0]), targets.get(mode), mode);
+		this.formData['x'] = result.getIn(['elementState', 'x']);
+		this.formData['y'] = result.getIn(['elementState', 'y']);
+		this.accuracyControl();
 
 		this.onSubmit();
 	}
 
-	private mutliAlignWithMode() {
-
+	/**
+	 * 多选对齐
+	 */
+	private mutliAlignWithMode(mode: AlignMode = AlignMode.top) {
+		let data = this.multiAlign(this.model.get('elements'), mode)
+			.map((ele, idx) => {
+				return {
+					'transformedBounds': ele.get('transformBounds'),
+					'frameIndex': this.model.get('frameIndex'),
+					'id': ele.get('elementId'),
+					'state': ele.get('elementState').toJS()
+				};
+			}).toArray();
+		this.changeElementStateInActionFrame(data);
 	}
 
 	/**
 	 * 单元素对齐
 	 */
-	public singleAlign(element: ElementWithBounds, target: number, mode: AlignMode = AlignMode.top): ElementWithBounds {
+	public singleAlign(element: SelectionElementModel, target: number, mode: AlignMode = AlignMode.top): SelectionElementModel {
 		let result = element;
+		let bounds: Rectangle = element.get('transformBounds').toJS();
+		let state: ElementStateModel = result.get('elementState').toJS();
 		switch(mode) {
 			case AlignMode.top:
-				result.y -= element.bounds.y - target;
+				result = result.setIn(['elementState', 'y'], state['y'] - (bounds['y'] - target));
 				break;
 			case AlignMode.middle:
-				result.y -= element.bounds.y + element.bounds.height / 2 - target;
+				result = result.setIn(['elementState', 'y'], state['y'] - (bounds['y'] + bounds['height'] / 2 - target));
 				break;
 			case AlignMode.bottom:
-				result.y -= element.bounds.y + element.bounds.height - target;
+				result = result.setIn(['elementState', 'y'], state['y'] - (bounds['y'] + bounds['height'] - target));
 				break;
 			case AlignMode.left:
-				result.x -= element.bounds.x - target;
+				result = result.setIn(['elementState', 'x'], state['x'] - (bounds['x'] - target));
 				break;
 			case AlignMode.center:
-				result.x -= element.bounds.x + element.bounds.width / 2 - target;
+				result = result.setIn(['elementState', 'x'], state['x'] - (bounds['x'] + bounds['width'] / 2 - target));
 				break;
 			case AlignMode.right:
-				result.x -= element.bounds.x + element.bounds.width - target;
+				result = result.setIn(['elementState', 'x'], state['x'] - (bounds['x'] + bounds['width'] - target));
 				break;
 		}
 
@@ -243,33 +261,35 @@ export class AttrsComponent implements OnInit {
 	/**
 	 * 多元素对齐
 	 */
-	public multiAlign(selection: ElementWithBounds[], mode: AlignMode = AlignMode.top): ElementWithBounds[] {
+	public multiAlign(selection: List<SelectionElementModel>, mode: AlignMode = AlignMode.top): List<SelectionElementModel> {
 		let target: number;
+		let selectionArr = selection.toJS();
 		switch(mode) {
 			case AlignMode.top:
-				target = Math.min.apply(null, selection.map(ele => ele.y));
+				target = Math.min.apply(null, selectionArr.map(ele => ele['transformBounds']['y']));
 				break;
 			case AlignMode.middle:
-				let top: number = Math.min.apply(null, selection.map(ele => ele.bounds.y));
-				let bottom: number = Math.max.apply(null, selection.map(ele => ele.bounds.y + ele.bounds.height));
+				let top: number = Math.min.apply(null, selectionArr.map(ele => ele['transformBounds']['y']));
+				let bottom: number = Math.max.apply(null, selectionArr.map(ele => ele['transformBounds']['y'] + ele['transformBounds']['height']));
 				target = (top + bottom) / 2;
 				break;
 			case AlignMode.bottom:
-				target = Math.max.apply(null, selection.map(ele => ele.bounds.y + ele.bounds.height));
+				target = Math.max.apply(null, selectionArr.map(ele => ele['transformBounds']['y'] + ele['transformBounds']['height']));
 				break;
 			case AlignMode.left:
-				target = Math.min.apply(null, selection.map(ele => ele.bounds.x));
+				target = Math.min.apply(null, selectionArr.map(ele => ele['transformBounds']['x']));
 				break;
 			case AlignMode.center:
-				let left: number = Math.min.apply(null, selection.map(ele => ele.bounds.x));
-				let right: number = Math.max.apply(null, selection.map(ele => ele.bounds.x + ele.bounds.width));
+				let left: number = Math.min.apply(null, selectionArr.map(ele => ele['transformBounds']['x']));
+				let right: number = Math.max.apply(null, selectionArr.map(ele => ele['transformBounds']['x'] + ele['transformBounds']['width']));
 				target = (left + right) / 2;
 				break;
-			case AlignMode.bottom:
-				target = Math.max.apply(null, selection.map(ele => ele.bounds.x + ele.bounds.width));
+			case AlignMode.right:
+				target = Math.max.apply(null, selectionArr.map(ele => ele['transformBounds']['x'] + ele['transformBounds']['width']));
 				break;
 		}
-		return selection.map(ele => this.singleAlign(ele, target, mode));
+		let result = selection.map(ele => this.singleAlign(ele, target, mode)).toList();
+		return result;
 	}
 
 	onSubmit() {

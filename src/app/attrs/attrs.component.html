@@ -37,28 +37,28 @@
 			</md-input-container>
 			
 			<md-input-container >
-				<input [(ngModel)]="formData.alpha" type="number" step="0.01" placeholder="透明度"  md-input name="alpha" autocomplete="off" min="0" max="100"  />
+				<input [(ngModel)]="formData.alpha" type="number" step="0.01" placeholder="透明度"  md-input name="alpha" autocomplete="off" min="0" max="1"  />
 			</md-input-container>
 			
 			<button type="submit" hidden >submit</button>
 		</form>
-		<button md-icon-button (click)="singleAlignWithMode(3)" >
+		<button md-icon-button (click)="alignWithMode(3)" >
 			<md-icon class="md-14" >format_align_left</md-icon>
 		</button>
-		<button md-icon-button (click)="singleAlignWithMode(4)" >
+		<button md-icon-button (click)="alignWithMode(4)" >
 			<md-icon class="md-14" >format_align_center</md-icon>
 		</button>
-		<button md-icon-button (click)="singleAlignWithMode(5)" >
+		<button md-icon-button (click)="alignWithMode(5)" >
 			<md-icon class="md-14" >format_align_right</md-icon>
 		</button>
 
-		<button md-icon-button (click)="singleAlignWithMode(0)" >
+		<button md-icon-button (click)="alignWithMode(0)" >
 			<md-icon class="md-14" >vertical_align_top</md-icon>
 		</button>
-		<button md-icon-button (click)="singleAlignWithMode(1)" >
+		<button md-icon-button (click)="alignWithMode(1)" >
 			<md-icon class="md-14" >vertical_align_center</md-icon>
 		</button>
-		<button md-icon-button (click)="singleAlignWithMode(2)" >
+		<button md-icon-button (click)="alignWithMode(2)" >
 			<md-icon class="md-14" >vertical_align_bottom</md-icon>
 		</button>
 	</div>

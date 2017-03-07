@@ -31,7 +31,7 @@ export class OnionSkinComponent implements OnInit {
 
 	}
 
-	ngOnChange(changes: SimpleChanges) {
+	ngOnChanges(changes: SimpleChanges) {
 		if(changes.hasOwnProperty('zoom')) {
 			if(this.formData.zoom !== this.zoom)
 				this.formData.zoom = this.zoom;

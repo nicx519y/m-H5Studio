@@ -216,8 +216,6 @@ export default class Developer {
 		this.stage.on('stagemousedown', (event) => {
 			this.isShift = event.nativeEvent.shiftKey; //判断是否是shift
 
-			console.log(this.devMode);
-
 			switch(this.devMode) {
 				case Developer.MODE.SCALE_MODE: {
 					let rate = 10; //每次点击的倍率10%
@@ -660,6 +658,8 @@ export default class Developer {
 	*/
 	public changeMode(modeType:number) {
 		this.devMode = modeType;
+		this.nowChooseElement = [];
+		this.controlMask.selectedElement(this.nowChooseElement);
 	}
 
 	/*

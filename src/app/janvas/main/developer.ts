@@ -221,7 +221,7 @@ export default class Developer {
 					let rate = 10; //每次点击的倍率10%
 					let nowScale = parseFloat(this.getScale());
 					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-					console.log(beforePoint);
+					
 					this.setScale(nowScale + (event.nativeEvent.altKey ? -rate : rate), () => {
 						let afterPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
 						console.log(afterPoint);
@@ -512,8 +512,8 @@ export default class Developer {
 	 * 缩放janvasDev
 	*/
 	public setScale(scale:number, callback?:Function) {
-		if(!scale) {
-			console.error('输入缩放比有误');
+		if(!scale || scale <= 0) {
+			console.log('输入缩放比有误');
 			return;
 		}
 

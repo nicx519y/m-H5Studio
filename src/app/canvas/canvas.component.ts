@@ -69,7 +69,7 @@ export class CanvasComponent implements OnInit {
         private timelineService: TimelineService,
         private container: ViewContainerRef,
     ) {
-        this.modeMap.set(EditorState.none, Developer.MODE.READ_MODE);
+        this.modeMap.set(EditorState.move, Developer.MODE.READ_MODE);
 		this.modeMap.set(EditorState.choose, Developer.MODE.EDIT_MODE);
 		this.modeMap.set(EditorState.text, Developer.MODE.TEXT_MODE);
 		this.modeMap.set(EditorState.zoom, Developer.MODE.SCALE_MODE);
@@ -245,7 +245,7 @@ export class CanvasComponent implements OnInit {
      * 面板操作模式改变
      */
     public modeChange(mode: EditorState = EditorState.choose) {
-		this.isJanvasInited && this.janvas.changeMode(this.modeMap[mode]);
+		this.isJanvasInited && this.janvas.changeMode(this.modeMap.get(mode));
     }
 
     private getSelectionElements(): string[] {

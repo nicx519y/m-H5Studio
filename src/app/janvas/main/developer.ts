@@ -147,9 +147,6 @@ export default class Developer {
 			this.janvasCanvas = janvasCanvas;
 		}
 
-		console.log('---------------------');
-		console.log(this.janvasSetting.data);
-
 		new window['Janvas']('janvas', this.janvasSetting.data, (janvas)=> {
             window['app'] = this.janvas = janvas;
 
@@ -219,11 +216,7 @@ export default class Developer {
 		this.stage.on('stagemousedown', (event) => {
 			this.isShift = event.nativeEvent.shiftKey; //判断是否是shift
 
-			// 点击canvas上任意地方，更新janvas text，销毁input框
-			// if (this.textInput) {
-			// 	this.textInput.updateJanvasText();
-			// 	this.textInput.destroy()
-			// }
+			console.log(this.devMode);
 
 			switch(this.devMode) {
 				case Developer.MODE.SCALE_MODE: {

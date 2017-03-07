@@ -99,6 +99,7 @@ export class CanvasComponent implements OnInit {
     ngOnChanges(changes: SimpleChanges) {
         //编辑模式变化
         if(changes.hasOwnProperty('mode')) {
+            console.log('change mode: ', this.mode);
             this.modeChange(this.mode);
         }
 

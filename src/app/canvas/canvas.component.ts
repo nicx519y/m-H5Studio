@@ -154,6 +154,11 @@ export class CanvasComponent implements OnInit {
                     this.janvasChangedHandler.bind(this)
                 );
 
+                target.addEventHandler(
+                    Developer.EVENTS.SCALE_CHANGED, 
+                    this.janvasScaleHandler.bind(this)
+                );
+
 				this.isJanvasInited = true;
             }
         );
@@ -225,6 +230,10 @@ export class CanvasComponent implements OnInit {
         });
 
         this.timelineService.setData(this.timelineService.setToKeyFrames(ao, fo));
+    }
+
+    private janvasScaleHandler(scaleNum) {
+        console.log('scaleNum', scaleNum);
     }
 
     /**

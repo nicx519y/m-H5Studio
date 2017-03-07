@@ -24,7 +24,7 @@ export class OnionSkinComponent implements OnInit {
 	}
 
 	private onZoomSubmit() {
-		
+		this.timelineService.setZoom(this.formData.zoom);
 	}
 
 	ngOnInit() {
@@ -33,7 +33,8 @@ export class OnionSkinComponent implements OnInit {
 
 	ngOnChange(changes: SimpleChanges) {
 		if(changes.hasOwnProperty('zoom')) {
-			this.formData.zoom = this.zoom;
+			if(this.formData.zoom !== this.zoom)
+				this.formData.zoom = this.zoom;
 		}
 	}
 

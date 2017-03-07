@@ -98,7 +98,7 @@ export default class Developer {
 		//设置背景
 		this.stageBg = new createjs.Shape(
 			new createjs.Graphics().
-				beginFill('#ececec').
+				beginFill('#f5f5f5').
 				drawRect(0, 0, this.canvasElement.width, this.canvasElement.height)
 		);
 		this.stageBg.name = this.BACKGROUND_NAME;
@@ -523,7 +523,7 @@ export default class Developer {
 		this.scaleCanvas(100 / scale);
 
 		//重新绘制背景
-		this.stageBg.graphics.clear().beginFill('#ececec').
+		this.stageBg.graphics.clear().beginFill('#f5f5f5').
 			drawRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 		
 		//重新定位janvasContainer
@@ -658,8 +658,12 @@ export default class Developer {
 	*/
 	public changeMode(modeType:number) {
 		this.devMode = modeType;
-		this.nowChooseElement = [];
-		this.controlMask.selectedElement(this.nowChooseElement);
+		
+		if(modeType == Developer.MODE.EDIT_MODE) {
+			this.controlMask.selectedElement(this.nowChooseElement);
+		} else {
+			this.controlMask.hide();
+		}
 	}
 
 	/*

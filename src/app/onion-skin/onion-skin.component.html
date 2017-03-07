@@ -1,3 +1,10 @@
 <div class="onion-skin" >
-	<span>{{stageName}}</span>
+	<span class="stage-name-field" >{{stageName}}</span>
+	<div class="zoom-field" >
+		<form #zoomForm="ngForm" (ngSubmit)="onZoomSubmit()"    >
+			<span md-prefix >视图缩放比例：</span>
+			<input [(ngModel)]="formData.zoom" type="number" name="zoom" autocomplete="off"  />
+			<span md-suffix >%</span>
+		</form>
+	</div>
 </div>

@@ -29,6 +29,7 @@ export enum TimelineDataType {
 export class TimelineService {
 
 	private _selection: SelectionModel = new SelectionModel();									//用于跟janvas交互的选取元素
+	private _zoom: number = NaN;
 	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
 	private _dataGetter: Function;																	//数据来源
@@ -95,6 +96,14 @@ export class TimelineService {
 				this._dataId
 			);
 		}
+	}
+
+	public getZoom(): number {
+		return this._zoom;
+	}
+
+	public setZoom(zoom: number) {
+		this._zoom = zoom;
 	}
 
 	public getSelection(): SelectionModel {

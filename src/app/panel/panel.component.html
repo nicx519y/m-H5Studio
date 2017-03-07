@@ -1,5 +1,9 @@
 <div class="ide-panel" #container >
-	<div class="ide-panel-title" #titleContainer (click)="toggle()" *ngIf="hasTitle" >{{title}}</div>
+	<div class="ide-panel-title" #titleContainer (click)="toggle()" *ngIf="hasTitle" >
+		<md-icon *ngIf="isOpen" class="md-18" >expand_more</md-icon>
+		<md-icon *ngIf="!isOpen" class="md-18" >expand_less</md-icon>
+		<span>{{title}}</span>
+	</div>
 	<div class="ide-panel-content" *ngIf="isOpen" #contentContainer >
 		<ng-content select="[block=main]" ></ng-content>
 	</div>

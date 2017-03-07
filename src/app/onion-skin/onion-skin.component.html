@@ -1,9 +1,12 @@
 <div class="onion-skin" >
-	<span class="stage-name-field" >{{stageName}}</span>
+	<span class="stage-name-field" >
+		<md-icon class="md-18" >keyboard_arrow_right</md-icon>
+		<span>{{stageName}}</span>
+	</span>
 	<div class="zoom-field" >
 		<form #zoomForm="ngForm" (ngSubmit)="onZoomSubmit()"    >
 			<span md-prefix >视图缩放比例：</span>
-			<input [(ngModel)]="formData.zoom" type="number" name="zoom" autocomplete="off"  />
+			<input [(ngModel)]="formData.zoom" onfocus="this.select()" type="number" name="zoom" required autocomplete="off" min="0"  />
 			<span md-suffix >%</span>
 			<button type="submit" hidden ></button>
 		</form>

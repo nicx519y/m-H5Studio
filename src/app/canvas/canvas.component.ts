@@ -65,7 +65,7 @@ export class CanvasComponent implements OnInit {
     private selectedObject: ImmutableMap<string, any>;
 
     @Input()
-    private zoom: number;
+    private scaleNum: number;
 
     constructor(
         private timelineService: TimelineService,
@@ -131,9 +131,9 @@ export class CanvasComponent implements OnInit {
             }
         }
 
-        if(changes.hasOwnProperty('zoom')) {
+        if(changes.hasOwnProperty('scaleNum')) {
             if(this.janvas) {
-                this.janvas.setScale(this.zoom);
+                this.janvas.setScale(this.scaleNum);
             }
         }
     }
@@ -241,6 +241,7 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasScaleHandler(scaleNum) {
+        console.log(scaleNum);
         this.timelineService.setZoom(scaleNum);
     }
 

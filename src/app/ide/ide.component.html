@@ -30,7 +30,7 @@
 				</ide-accordion>
 			</div>
 			<div block="centertop" >
-				<ide-onion-skin [stageName]="timelineService.getDataName()" ></ide-onion-skin>
+				<ide-onion-skin [stageName]="timelineService.getDataName()" [zoom]="timelineService.getZoom()" ></ide-onion-skin>
 			</div>
 			<div block="centerleft">
 				<ide-toolsbar #toolsbar ></ide-toolsbar>
@@ -43,7 +43,7 @@
 					[itemsModel]="itemsService.getData()"
 					[selection]="timelineService.getSelection()"
 					[activeFrameIndex]="timelineService.getActiveFrameIndex()"
-					[zoom]="timelineService.getZoom()"
+					[scaleNum]="timelineService.getZoom()"
 				></ide-canvas>
 			</div>
 			<div block="bottom">

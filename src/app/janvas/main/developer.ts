@@ -404,7 +404,9 @@ export default class Developer {
 			this.nowChooseElement.push(element);
 		}
 
-		this.controlMask.selectedElement(this.nowChooseElement);
+		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
+			this.controlMask.selectedElement(this.nowChooseElement);
+		}
 	}
 
 	/*
@@ -539,7 +541,7 @@ export default class Developer {
 		this.controlMask.scaleCase(100 / scale);
 
 		//重新选取选择的element
-		if(this.nowChooseElement.length > 0) {
+		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
 			this.controlMask.selectedElement(this.nowChooseElement);
 		}
 
@@ -583,7 +585,10 @@ export default class Developer {
 		});
 
 		this.nowChooseElement = elementList;
-		this.controlMask.selectedElement(elementList);
+		
+		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
+			this.controlMask.selectedElement(this.nowChooseElement);
+		}
 	}
 
 	/*
@@ -599,7 +604,7 @@ export default class Developer {
 	public gotoFrame(frameIndex?:Number) {
 		this.janvas.API.gotoFrame(frameIndex);
 		
-		if(this.nowChooseElement) {
+		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
 			this.controlMask.selectedElement(this.nowChooseElement);
 		}
 	}

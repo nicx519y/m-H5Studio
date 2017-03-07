@@ -26,6 +26,7 @@
 	border-bottom: 0;
 }
 .ide-panel-title {
+	display: flex;
 	flex-grow: 0;
 	height: 25px;
 	padding: 0 8px;
@@ -51,6 +52,17 @@
 	border-top: solid 1px #eee;
 }
 
-.ide-panel-title span, md-icon {
+.ide-panel-title span {
+	vertical-align: middle;
+	flex: 1;
+}
+
+.ide-panel-title .icon {
+	width: 18px;
+}
+
+.ide-panel-title .icon md-icon {
+	cursor: default;
 	vertical-align: middle;
 }
+

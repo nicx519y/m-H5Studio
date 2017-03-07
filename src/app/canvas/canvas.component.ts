@@ -61,9 +61,11 @@ export class CanvasComponent implements OnInit {
     @Input()
     private itemsModel: List<ItemModel>;	//素材库数据
 
-
     @Input()
     private selectedObject: ImmutableMap<string, any>;
+
+    @Input()
+    private zoom: number;
 
     constructor(
         private timelineService: TimelineService,
@@ -125,7 +127,13 @@ export class CanvasComponent implements OnInit {
         if(changes.hasOwnProperty('selection')) {
             console.log('selection change: ', this.selection.toJS());
             if(this.janvas) {
-                this.janvas.selectElement(this.getSelectionElements())
+                this.janvas.selectElement(this.getSelectionElements());
+            }
+        }
+
+        if(changes.hasOwnProperty('zoom')) {
+            if(this.janvas) {
+                this.janvas.setScale(this.zoom);
             }
         }
     }
@@ -233,7 +241,7 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasScaleHandler(scaleNum) {
-        console.log('scaleNum', scaleNum);
+        this.timelineService.setZoom(scaleNum);
     }
 
     /**

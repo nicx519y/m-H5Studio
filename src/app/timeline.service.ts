@@ -33,8 +33,8 @@ export class TimelineService {
 	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
 	private _dataGetter: Function;																	//数据来源
-	private _dataId: string;																	//数据id
-	private _dataName: string;																	//数据name,用于展现
+	private _dataId: string;	
+	private _dataName: string = '';																//数据id
 
 	constructor(
 		private pagesService: PagesService,
@@ -49,8 +49,8 @@ export class TimelineService {
 	public registerDataSource(dataGetter: Function, dataId: string) {
 		this._dataGetter = dataGetter;
 		this._dataId = dataId;
+		this._dataName = '';
 		let data: any = dataGetter(dataId);
-		this._dataName = data.get('name');
 		if(data instanceof PageModel) {
 			this._dataType = TimelineDataType.Page;
 		} else if(data instanceof ItemModel) {
@@ -67,7 +67,11 @@ export class TimelineService {
 	}
 
 	public getDataName(): string {
-		return this._dataName;
+		if(this._dataName === '' && this._dataGetter) {
+			return this._dataGetter(this._dataId).get('name');
+		} else {
+			return this._dataName;
+		}
 	}
 
 	public hasData(): boolean {

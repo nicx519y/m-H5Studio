@@ -26,12 +26,13 @@
 	border-bottom: 0;
 }
 .ide-panel-title {
+	display: flex;
 	flex-grow: 0;
 	height: 25px;
 	padding: 0 8px;
 	font-size: 12px;
 	font-weight: bold;
-	line-height: 25px;
+	line-height: 23px;
 	border-bottom: solid 1px #eee;
 	background: #f5f5f5;
 }
@@ -50,3 +51,18 @@
 	text-align: left;
 	border-top: solid 1px #eee;
 }
+
+.ide-panel-title span {
+	vertical-align: middle;
+	flex: 1;
+}
+
+.ide-panel-title .icon {
+	width: 18px;
+}
+
+.ide-panel-title .icon md-icon {
+	cursor: default;
+	vertical-align: middle;
+}
+

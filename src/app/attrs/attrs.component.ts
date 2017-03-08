@@ -36,6 +36,9 @@ export enum AlignMode {
 export class AttrsComponent implements OnInit {
 
 	@Input()
+	private toolbarState: EditorState;
+
+	@Input()
 	private model: SelectionModel;
 
 	private mode: AttrsMode = AttrsMode.none;

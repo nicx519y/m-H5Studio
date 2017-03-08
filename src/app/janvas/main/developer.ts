@@ -652,13 +652,6 @@ export default class Developer {
 	}
 
 	/*
-	 * 获取所有页面截图
-	*/
-	public getAllPagesImg() {
-		return [];
-	}
-
-	/*
 	 * 切换模式
 	*/
 	public changeMode(modeType:number) {

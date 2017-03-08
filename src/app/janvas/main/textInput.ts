@@ -20,7 +20,7 @@ export default class TextInput {
     }
 
     constructor(element:any, public setting:any) {
-
+        console.log('in text');
         this.textContainer = new createjs.Container();
 
         this.textContainer.set({
@@ -129,6 +129,7 @@ export default class TextInput {
         eleStyle.outline = 'none';
         eleStyle.resize = 'none';
         eleStyle.overflow = 'hidden';
+        eleStyle.zIndex = '99';
 
         htmlEle.value = this.textValue;
 

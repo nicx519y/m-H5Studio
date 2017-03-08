@@ -59,6 +59,7 @@ export class TimelineComponent implements OnInit {
 	constructor(
 		private service: TimelineService,
 	) {
+		
 	}
 
 

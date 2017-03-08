@@ -42,7 +42,7 @@ import { AttrFormComponent } from '../attr-form/attr-form.component';
 
 import { AttrsComponent } from '../attrs/attrs.component';
 
-// import { HotKeysComponent } from '../hot-keys/hot-keys.component';
+import { HotKeysComponent } from '../hot-keys/hot-keys.component';
 
 // import { MainService } from '../main.service';
 
@@ -80,7 +80,7 @@ const ROUTES: Routes = [
 		AttrFormComponent,
 		CreateItemDialogComponent,
 		AttrsComponent,
-		// HotKeysComponent,
+		HotKeysComponent,
 	],
 	providers: [
 		// MainService,

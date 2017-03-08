@@ -30,11 +30,11 @@ export class ToolsbarComponent implements OnInit {
 			state: EditorState.zoom,
 			class: 'zoom_in'
 		},
-		{
-			name: '绘制图形',
-			state: EditorState.draw,
-			class: 'brush'
-		},
+		// {
+		// 	name: '绘制图形',
+		// 	state: EditorState.draw,
+		// 	class: 'brush'
+		// },
 	];
 	
 	constructor() {
@@ -43,6 +43,26 @@ export class ToolsbarComponent implements OnInit {
 
 	public changeState( state: EditorState ) {
 		this.state = state;
+	}
+
+	public changeSelectMode() {
+		this.changeState(EditorState.choose);
+	}
+
+	public changeZoomMode() {
+		this.changeState(EditorState.zoom);
+	}
+
+	public changeTextEditMode() {
+		this.changeState(EditorState.text);
+	}
+
+	// public changeDrawMode() {
+	// 	this.changeState(EditorState.draw);
+	// }
+
+	public changeMoveMode() {
+		this.changeState(EditorState.move);
 	}
 
 	ngOnInit() {

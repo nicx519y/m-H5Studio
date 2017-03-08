@@ -301,13 +301,11 @@ export class ItemModel extends Record({
 
 
 export class HotKeyModel extends Record({
-	target: '',
+	api: '',
+	key: '',
 	shift: false,
 	ctrl: false,
 	alt: false,
-	key: '',
-	api: '',
-	arguments: Immutable.List<any>(),
 	desc: '',
 }) {}
 

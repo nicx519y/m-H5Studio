@@ -13,7 +13,9 @@ import {
 	TweenModel,
 	TweenType,
 	LayerType,
-	ElementType
+	ElementType,
+	TextModel,
+	BackgroundModel,
 } from './models';
 import { PagesService } from './pages.service';
 import { ItemsService } from './items.service';
@@ -29,7 +31,8 @@ export enum TimelineDataType {
 export class TimelineService {
 
 	private _selection: SelectionModel = new SelectionModel();									//用于跟janvas交互的选取元素
-	private _zoom: number = NaN;
+	private _texting: TextModel = null;														//当前编辑的文本
+	private _zoom: number = NaN;																//当前视图缩放比例
 	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
 	private _dataGetter: Function;																	//数据来源
@@ -118,6 +121,40 @@ export class TimelineService {
 		if(!Immutable.fromJS(selection.toJS()).equals(Immutable.fromJS(this._selection.toJS()))) {
 			this._selection = selection;
 		}
+	}
+
+	public getTexting(): TextModel {
+		return this._texting;
+	}
+
+	public setTexting(options: {
+		id?: string,
+		text?: string,
+		width?: number,								//宽度
+		height?: number,							//高度
+		font?: string,								//字体
+		color?: string,								//颜色
+		backgroundColor?: string,					//背景色
+		fontSize?: number,							//字号
+		bold?: boolean,								//粗体
+		italic?: boolean,							//斜体
+		underline?: boolean,						//下划线
+		lineheight?: number,						//行高
+	}) {
+		if(options.hasOwnProperty('backgroundColor')) {
+			Object.assign(options, {
+				background: new BackgroundModel({ color: options.backgroundColor })
+			});
+		}
+		if(options.hasOwnProperty('id') && options['id'] != '') {
+			this._texting = new TextModel(options);	
+		} else {
+			this._texting = MF.g(TextModel, options);
+		}
+	}
+
+	public clearTexting() {
+		this._texting = null;
 	}
 
 	public getActiveOptions(): List<Map<string, any>> {

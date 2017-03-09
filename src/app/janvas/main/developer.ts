@@ -655,8 +655,12 @@ export default class Developer {
 	/*
 	 * 获取指定页面截图
 	*/
-	public getPageImg(pageId:any, frameIndex?:number) {
-		return {};
+	public getPageImage(pageId: string, callback?: Function) {
+		this.janvas.API.getPageImage(pageId, (image) => {
+			if(callback) {
+				callback(image);
+			}
+		});
 	}
 
 	/*

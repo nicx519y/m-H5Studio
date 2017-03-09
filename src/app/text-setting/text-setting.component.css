@@ -1,0 +1,32 @@
+.ide-text-setting {
+	flex-grow: 1;
+	overflow-y: auto;
+	padding: 10px 8px;
+}
+
+md-input-container {
+	width: 48%;
+}
+
+md-select {
+	padding: 10px 0;
+}
+
+.block-input {
+	width: 96%;
+}
+
+[md-suffix] {
+	color: #ccc;
+}
+
+input[type="color"] {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	background: none;
+	width:15px;
+	height: 19px;
+	position: absolute;
+	right: 1px;
+}

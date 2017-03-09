@@ -6,7 +6,6 @@ import { AppComponent } from './app/app.component';
 import { ProductsModule } from './products/products.module';
 import { IdeModule } from './ide/ide.module';
 
-
 const ROUTES: Routes = [
 	{path: '', redirectTo: 'products', pathMatch: 'full'}
 ];

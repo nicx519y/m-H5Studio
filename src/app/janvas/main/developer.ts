@@ -2,6 +2,7 @@ declare var createjs: any;
 import ControlMask from './controlMask';
 import Mouse from './mouse';
 import TextInput from './textInput';
+import TextControl from './textControl';
 import Event from './event';
 
 export default class Developer {
@@ -29,6 +30,7 @@ export default class Developer {
 	private janvasCanvas:any;			
 	private mouse:any					//鼠标
 	private textInput:any;
+	private textControl:any;
 
 	private isShift:boolean = false;	//是否按住shift
 
@@ -132,6 +134,8 @@ export default class Developer {
 				callback(this);
 			}
 		});
+
+		this.textControl = new TextControl(this.canvasElement, this.stage);
 	}
 
 	/*
@@ -269,21 +273,25 @@ export default class Developer {
 						this.stage
 					);
 
-					if(this.textInput && this.textInput.isLock()) {
-						return;
-					}
-
 					let textPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
 
-					//建立一个textInput元素
-					this.textInput = new TextInput(element.text ? element.parent : null, {
-						x: event.nativeEvent.clientX,
-						y: event.nativeEvent.clientY,
-						canvasScale: this.canvasScale,
-						point: textPoint
-					});
+					this.textControl.chooseText(element, textPoint);
 
-					this.stage.addChild(this.textInput.getInstance());
+					// if(this.textInput && this.textInput.isLock()) {
+					// 	return;
+					// }
+
+					// let textPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+
+					// //建立一个textInput元素
+					// this.textInput = new TextInput(element.text ? element.parent : null, {
+					// 	x: event.nativeEvent.clientX,
+					// 	y: event.nativeEvent.clientY,
+					// 	canvasScale: this.canvasScale,
+					// 	point: textPoint
+					// });
+
+					// this.stage.addChild(this.textInput.getInstance());
 					break;
 				}
 			}
@@ -662,6 +670,9 @@ export default class Developer {
 		} else {
 			this.controlMask.hide();
 		}
+
+		//处理text
+		this.textControl.destroy();
 	}
 
 	/*

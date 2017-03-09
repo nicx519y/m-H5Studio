@@ -107,7 +107,6 @@ export class CanvasComponent implements OnInit {
         //页面数据变化
         if(this.timelineService.hasData() && 
         (changes.hasOwnProperty('activePageModel') || changes.hasOwnProperty('activeFrameIndex'))) {
-            console.log(changes);
             if(this.isJanvasInited) {
                 this.janvasUpdate();
             } else {
@@ -118,14 +117,12 @@ export class CanvasComponent implements OnInit {
 
         //lib数据变化
         if(changes.hasOwnProperty('itemsModel')) {
-            console.log('itemsModel change');
             if(this.isJanvasInited) {
                 this.janvasUpdate();
             }
         }
 
         if(changes.hasOwnProperty('selection')) {
-            console.log('selection change: ', this.selection.toJS());
             if(this.janvas) {
                 this.janvas.selectElement(this.getSelectionElements());
             }
@@ -167,6 +164,11 @@ export class CanvasComponent implements OnInit {
                     this.janvasScaleHandler.bind(this)
                 );
 
+                target.addEventHandler(
+                    Developer.EVENTS.TEXT_CHANGED, 
+                    this.janvastextHandler.bind(this)
+                );
+
 				this.isJanvasInited = true;
             }
         );
@@ -179,8 +181,6 @@ export class CanvasComponent implements OnInit {
         if(!this.isJanvasInited) return;
         let data = this.makeJanvasData().toJS();
         let page: string = this.activePageModel.get('id');
-
-        console.log('janvasUpdate: ', data, this.activeFrameIndex);
 
         data && this.janvas.updateJanvasData(data, {
             page: page,
@@ -241,8 +241,15 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasScaleHandler(scaleNum) {
-        console.log(scaleNum);
         this.timelineService.setZoom(scaleNum);
+    }
+
+    private janvastextHandler(returnObj:any) {
+        if(returnObj.isDestroy) {
+            this.timelineService.clearTexting();
+        } else {
+            this.timelineService.setTexting(returnObj);
+        }
     }
 
     /**

@@ -20,7 +20,6 @@ export default class TextInput {
     }
 
     constructor(element:any, public setting:any) {
-        console.log('in text');
         this.textContainer = new createjs.Container();
 
         this.textContainer.set({

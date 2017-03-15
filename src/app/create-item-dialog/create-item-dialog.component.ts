@@ -3,7 +3,7 @@ import { List, Map, Record } from 'immutable';
 import { Component, OnInit, ChangeDetectionStrategy, } from '@angular/core';
 import { MF, ItemModel, ItemType, PageModel, ElementModel, ElementType } from '../models';
 import { ItemsService } from '../items.service';
-import { MdDialog } from '@angular/material';
+import { MdDialog, MdDialogRef } from '@angular/material';
 
 @Component({
 	templateUrl: './create-item-dialog.component.html',
@@ -18,6 +18,7 @@ export class CreateItemDialogComponent implements OnInit {
 	constructor(
 		private service: ItemsService,
 		private dialog: MdDialog,
+		private dref: MdDialogRef<CreateItemDialogComponent>,
 	) { 
 
 	}
@@ -35,7 +36,7 @@ export class CreateItemDialogComponent implements OnInit {
 			source: source,
 		});
 		this.service.addItem(newItem);
-		this.dialog.closeAll();
+		this.dref.close();
 	}
 
 	ngOnInit() {

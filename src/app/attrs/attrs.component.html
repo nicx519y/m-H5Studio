@@ -1,5 +1,5 @@
 <div class="ide-attrs" >
-	<div *ngIf="toolbarState===1&&(mode===1||mode===2)" >
+	<div *ngIf="mode===1||mode===2" >
 		<form #attrsForm="ngForm" (ngSubmit)="onSubmit()"    >
 			<md-input-container >
 				<input [(ngModel)]="formData.originX" type="number"  md-input placeholder="x轴中心点坐标" name="originX" autocomplete="off" />

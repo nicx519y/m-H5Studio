@@ -18,6 +18,8 @@ import {
 import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF } from '../models';
 import { TimelineService } from '../timeline.service';
 import Developer from '../janvas/main/developer';
+import { CreateTextDialogComponent } from '../create-text-dialog/create-text-dialog.component';
+import { MdDialog, MdDialogRef } from '@angular/material';
 
 import * as Immutable from 'immutable';
 import { List, Map as ImmutableMap, Record } from 'immutable';
@@ -70,6 +72,7 @@ export class CanvasComponent implements OnInit {
     constructor(
         private timelineService: TimelineService,
         private container: ViewContainerRef,
+        private dialog: MdDialog,
     ) {
         this.modeMap.set(EditorState.move, Developer.MODE.READ_MODE);
 		this.modeMap.set(EditorState.choose, Developer.MODE.EDIT_MODE);
@@ -181,7 +184,7 @@ export class CanvasComponent implements OnInit {
         if(!this.isJanvasInited) return;
         let data = this.makeJanvasData().toJS();
         let page: string = this.activePageModel.get('id');
-
+        console.log('janvas update: ', data);
         data && this.janvas.updateJanvasData(data, {
             page: page,
             frameIndex: this.activeFrameIndex,
@@ -248,7 +251,19 @@ export class CanvasComponent implements OnInit {
         if(returnObj.isDestroy) {
             this.timelineService.clearTexting();
         } else {
-            this.timelineService.setTexting(returnObj);
+            // this.timelineService.setTexting(returnObj);
+            console.log('text click: ', returnObj);
+            //打开新建文字文本框
+            if(!returnObj.hasOwnProperty('id') || returnObj.id == '') {
+                this.dialog.open(CreateTextDialogComponent, {
+                    width: '400px',
+                    height: '200px',
+                });
+            } else {
+                this.timelineService.setTexting(
+                    this.timelineService.getTextById(returnObj.id)
+                );
+            }
         }
     }
 

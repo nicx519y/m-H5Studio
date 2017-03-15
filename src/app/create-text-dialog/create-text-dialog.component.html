@@ -1,0 +1,13 @@
+<form #addTextForm="ngForm" (ngSubmit)="onSubmit()" >
+	<md-dialog-content >
+		<div class="form-row" >
+			<md-input-container >
+				<input md-input placeholder="新增文本" [(ngModel)]="text" name="text" #nameInput required autocomplete="off" />
+			</md-input-container>
+		</div>
+	</md-dialog-content>
+	<md-dialog-actions >
+		<button type="submit" color="accent" md-raised-button >确&nbsp;定</button>&nbsp;
+		<button type="button" md-raised-button (click)="dialog.closeAll()">取&nbsp;消</button>
+	</md-dialog-actions>
+</form>

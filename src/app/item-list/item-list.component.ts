@@ -94,7 +94,6 @@ export class ItemListComponent implements OnInit {
 		let icons = [
 			'movie_creation',
 			'image',
-			'font_download',
 			'ondemand_video',
 		];
 		return icons[itemType];

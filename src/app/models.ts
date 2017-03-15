@@ -31,7 +31,7 @@ export enum SourceType {
 export enum ElementType {
 	symbol,		//元件库元件的实例
 	shape,		//图形
-	text,		//文字
+	text,		//文本
 }
 
 export enum TweenType {
@@ -138,8 +138,8 @@ export class TextModel extends Record({
 	text: '',							//文字内容
 	font: 'arial',						//字体
 	color: '#000000',					//颜色
-	background: new BackgroundModel(),	//背景色
-	fontSize: 12,							//字号
+	background: new BackgroundModel(),	//背景
+	fontSize: 12,						//字号
 	bold: false,						//粗体
 	italic: false,						//斜体
 	underline: false,					//下划线
@@ -207,11 +207,19 @@ export class ElementModel extends Record({
 	visible: true,
 	type: ElementType.symbol,
 	item: '',
+	source: null,
 }) {
 	public static fromItem( item: ItemModel ) {
 		let ele: ElementModel = MF.g(ElementModel, {
 			type: ElementType.symbol,
 			item: item.get('id')
+		});
+		return ele;
+	}
+	public static fromText( text: TextModel ) {
+		let ele: ElementModel = MF.g(ElementModel, {
+			type: ElementType.text,
+			source: text
 		});
 		return ele;
 	}

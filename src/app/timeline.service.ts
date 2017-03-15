@@ -113,48 +113,64 @@ export class TimelineService {
 		this._zoom = zoom;
 	}
 
+	/**
+	 * 获取正在选中的元素信息
+	 */
 	public getSelection(): SelectionModel {
 		return this._selection;
 	}
 
+	/**
+	 * 设置正在选中的元素信息
+	 */
 	public setSelection(selection: SelectionModel) {
 		if(!Immutable.fromJS(selection.toJS()).equals(Immutable.fromJS(this._selection.toJS()))) {
 			this._selection = selection;
 		}
 	}
 
+	/**
+	 * 获取正在选中的文本信息
+	 */
 	public getTexting(): TextModel {
 		return this._texting;
 	}
 
-	public setTexting(options: {
-		id?: string,
-		text?: string,
-		width?: number,								//宽度
-		height?: number,							//高度
-		font?: string,								//字体
-		color?: string,								//颜色
-		backgroundColor?: string,					//背景色
-		fontSize?: number,							//字号
-		bold?: boolean,								//粗体
-		italic?: boolean,							//斜体
-		underline?: boolean,						//下划线
-		lineheight?: number,						//行高
-	}) {
-		if(options.hasOwnProperty('backgroundColor')) {
-			Object.assign(options, {
-				background: new BackgroundModel({ color: options.backgroundColor })
-			});
-		}
-		if(options.hasOwnProperty('id') && options['id'] != '') {
-			this._texting = new TextModel(options);	
+	/**
+	 * 设置正在选中的文本信息
+	 */
+	public setTexting(texting: TextModel) {
+		this._texting = texting;
+	}
+
+	/**
+	 * 清除
+	 */
+	public clearTexting() {
+		this._texting = null;
+	}
+
+	/**
+	 * 根据id获取text source
+	 */
+	public getTextById(id: string): TextModel {
+		let layer: LayerModel = this.getData().find(layer => layer.getIn(['element', 'source', 'id']) === id);
+		if(layer) {
+			return layer.getIn(['element', 'source']);
 		} else {
-			this._texting = MF.g(TextModel, options);
+			return undefined;
 		}
 	}
 
-	public clearTexting() {
-		this._texting = null;
+	/**
+	 * 根据id设置text source
+	 */
+	public setTextById(id: string, text: TextModel) {
+		let tmpText: TextModel = this.getTextById(id);
+		if(tmpText === undefined) return;
+		let data: List<LayerModel> = this.getData();
+		let layerIdx: number = data.findIndex(layer => layer.getIn(['element', 'source', 'id']) === id);
+		this.setData(data.setIn([layerIdx, 'element', 'source'], text));
 	}
 
 	public getActiveOptions(): List<Map<string, any>> {

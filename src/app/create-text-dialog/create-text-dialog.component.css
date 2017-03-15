@@ -1,0 +1,26 @@
+.form-row {
+	padding: 10px;
+}
+
+md-dialog-content, md-dialog-actions {
+	text-align: center;
+}
+
+md-dialog-actions {
+	padding: 20px;
+}
+
+md-input-container, md-select {
+	width: 200px;
+	text-align: left;
+}
+
+md-radio-group {
+	display: inline-block;
+	text-align: left;
+	width: 200px;
+}
+
+md-radio-button {
+	margin-right: 10px;
+}

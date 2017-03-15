@@ -117,8 +117,8 @@
 					</ide-panel>
 					<ide-panel [title]="'属性'">
 						<div block="main">
-							<ide-attrs style="display:none" [model]="timelineService.getSelection()" [toolbarState]="toolsbar.state" ></ide-attrs>
-							<ide-text-setting></ide-text-setting>
+							<ide-attrs [model]="timelineService.getSelection()" *ngIf="toolsbar.state==1" ></ide-attrs>
+							<ide-text-setting [model]="timelineService.getTexting()" *ngIf="toolsbar.state==2" ></ide-text-setting>
 						</div>
 					</ide-panel>
 				</ide-accordion>

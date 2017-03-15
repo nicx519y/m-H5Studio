@@ -31,6 +31,7 @@ import { PageConfigerService } from '../page-configer.service';
 import { AttrsComponent } from '../attrs/attrs.component';
 import { TextSettingComponent } from '../text-setting/text-setting.component';
 import { HotKeysComponent } from '../hot-keys/hot-keys.component';
+import { CreateTextDialogComponent } from '../create-text-dialog/create-text-dialog.component';
 
 // import { MainService } from '../main.service';
 
@@ -69,6 +70,7 @@ const ROUTES: Routes = [
 		AttrsComponent,
 		TextSettingComponent,
 		HotKeysComponent,
+		CreateTextDialogComponent,
 	],
 	providers: [
 		// MainService,
@@ -83,6 +85,7 @@ const ROUTES: Routes = [
 		CreateItemDialogComponent,
 		BitmapImporterComponent,
 		PageConfigerComponent,
+		CreateTextDialogComponent,
 	],
 	exports: [
 		IdeComponent

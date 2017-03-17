@@ -2,8 +2,6 @@ import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
-import { TimelineService } from '../timeline.service';
-import { MF, TextModel, ElementModel, ElementType } from '../models';
 
 @Component({
 	selector: 'app-create-text-dialog',
@@ -17,7 +15,6 @@ export class CreateTextDialogComponent implements OnInit {
 
 	constructor(
 		private dialog: MdDialog,
-		private timelineService: TimelineService,
 		private dref: MdDialogRef<CreateTextDialogComponent>,
 		
 	) {
@@ -28,9 +25,7 @@ export class CreateTextDialogComponent implements OnInit {
 	 * 新建一个text element
 	 */
 	onSubmit() {
-		let newElement: ElementModel = ElementModel.fromText(MF.g(TextModel, { text: this.text }));
-		this.timelineService.addElement(newElement, this.text);
-		this.dref.close();
+		this.dref.close(this.text);
 	}
 
 	ngOnInit() {

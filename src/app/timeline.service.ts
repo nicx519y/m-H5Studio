@@ -293,18 +293,29 @@ export class TimelineService {
 	/**
 	 * 增加一个element
 	 */
-	public addElement(element: ElementModel, layerName: string = 'New Element') {
+	public addElement(element: ElementModel, layerName: string = 'New Element', firstFrameState: ElementStateModel = new ElementStateModel()) {
 		if(!this.hasData()) return;
+		console.log(firstFrameState.toJS());
 		this.setData(
 			this.getData().push(
 				MF.g(LayerModel, {
 					name: layerName,
 					element: element,
-					frames: Immutable.List().push(MF.g(FrameModel)),
+					frames: Immutable.List().push(MF.g(FrameModel, {
+						elementState: firstFrameState
+					})),
 					frameCount: 1,
 				})
 			)
 		);
+	}
+
+	/**
+	 * 增加一个text element
+	 */
+	public addTextElement(text: string, layerName: string = 'New Text', firstFrameState: ElementStateModel = new ElementStateModel()) {
+		let newElement: ElementModel = ElementModel.fromText(MF.g(TextModel, { text: text }));
+		this.addElement(newElement, layerName, firstFrameState);
 	}
 
 	public removeElement(elementId: string) {

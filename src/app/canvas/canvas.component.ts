@@ -15,7 +15,7 @@ import {
     SimpleChanges,
     SimpleChange,
 } from '@angular/core';
-import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF } from '../models';
+import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF, TextModel } from '../models';
 import { TimelineService } from '../timeline.service';
 import Developer from '../janvas/main/developer';
 import { CreateTextDialogComponent } from '../create-text-dialog/create-text-dialog.component';
@@ -255,10 +255,7 @@ export class CanvasComponent implements OnInit {
             console.log('text click: ', returnObj);
             //打开新建文字文本框
             if(!returnObj.hasOwnProperty('id') || returnObj.id == '') {
-                this.dialog.open(CreateTextDialogComponent, {
-                    width: '400px',
-                    height: '200px',
-                });
+                this.openCreateTextDialog(returnObj.x, returnObj.y);
             } else {
                 this.timelineService.setTexting(
                     this.timelineService.getTextById(returnObj.id)
@@ -290,6 +287,25 @@ export class CanvasComponent implements OnInit {
 
     private getSelectionElements(): string[] {
         return this.selection.get('elements').map(ele => ele.get('elementId')).toArray();
+    }
+
+    /**
+     * 打开新建文本浮层
+     */
+    private openCreateTextDialog(posx: number, posy: number) {
+        let def: MdDialogRef<CreateTextDialogComponent> = this.dialog.open(CreateTextDialogComponent, {
+            width: '400px',
+            height: '200px',
+            disableClose: true,
+        });
+        def.afterClosed().subscribe(result => {
+            if(typeof result === 'string' && result != '') {
+                this.timelineService.addTextElement(result, result, new ElementStateModel({
+                    x: posx,
+                    y: posy,
+                }));
+            }
+        });
     }
 
 }

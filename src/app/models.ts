@@ -133,8 +133,8 @@ export class BackgroundModel extends Record({
 
 export class TextModel extends Record({
 	id: '',
-	width: 0,							//宽度
-	height: 0,							//高度
+	width: undefined,							//宽度
+	height: undefined,							//高度
 	text: '',							//文字内容
 	font: 'arial',						//字体
 	color: '#000000',					//颜色

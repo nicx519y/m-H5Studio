@@ -376,6 +376,12 @@ export default class Developer {
 			this.stage
 		);
 
+		console.log('-------------');
+		
+		element = element.text ? element.parent : element;
+
+		console.log(element);
+
 		//如果点击到元素控制框或者被选中的元素，则返回
 		let elementName = element.name;
 
@@ -712,9 +718,12 @@ export default class Developer {
 
 		returnData.instance = instance;
 		returnData.elementId = instance.id;
-		returnData.itemId = instance.item.id;
 		returnData.layerId = instance.parent.id;
 		returnData.frameIndex = instance.parent.currentFrame;
+
+		if(instance.item) {
+			returnData.itemId = instance.item.id;
+		}
 
 		if(!returnData.state) {
 			returnData.state = instance.getState();
@@ -759,5 +768,9 @@ export default class Developer {
 		);
 
 		return matrix;
+	}
+
+	public textEditOver() {
+		this.textControl.destroy();
 	}
 }

@@ -192,6 +192,10 @@ export class CanvasComponent implements OnInit {
         });
     }
 
+    public textEditOver() {
+        this.janvas.textEditOver();
+    }
+
     /**
 	 * janvas选中元素后操作
 	 */

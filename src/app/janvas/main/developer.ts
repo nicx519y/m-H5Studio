@@ -108,8 +108,8 @@ export default class Developer {
 
 		this.controlMask = new ControlMask({
 			color: '#000000',
-			width: 1,
-			dotRadius: 3
+			width: 2,
+			dotRadius: 5
 		});
 
 		//设置鼠标
@@ -493,7 +493,7 @@ export default class Developer {
 		let scaleX = this.JANVAS_WIDTH * 1.04 / this.janvasSetting.canvasWidth;
 		let scaleY = this.JANVAS_HEIGHT * 1.04 / this.janvasSetting.canvasHeight;
 
-		this.setScale(100 / (scaleX > scaleY ? scaleX : scaleY), callback);
+		this.setScale(200 / (scaleX > scaleY ? scaleX : scaleY), callback);
 
 		this.controlMask.setPosition({
 			x: this.janvasContainer.x,
@@ -507,19 +507,23 @@ export default class Developer {
 	private scaleCanvas(scale:number) {
 		this.canvasScale = scale;
 
-		this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale;
-		this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale;
+		this.canvasElement.width = this.janvasSetting.canvasWidth ;
+		this.canvasElement.height = this.janvasSetting.canvasHeight;
 
-		this.canvasElement.setAttribute('style', 
-			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
-		);
+		if (this.janvas) {
+			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, this.canvasScale * 2);
+		}
+
+		// this.canvasElement.setAttribute('style', 
+		// 	'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
+		// );
 	}
 
 	/*
 	 * 获取janvasDev缩放比
 	*/
 	public getScale() {
-		return (100 / this.canvasScale).toFixed(2);
+		return (100  / this.canvasScale).toFixed(2);
 	}
 
 	/*

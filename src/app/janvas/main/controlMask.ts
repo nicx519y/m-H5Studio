@@ -828,9 +828,9 @@ export default class ControlMask {
         let dotRadius = this.controlConf.dotRadius;
 
         let rt_point = matrix.transformPoint(elementBounds.x + elementBounds.width, elementBounds.y);
-        let rb_point = matrix.transformPoint(elementBounds.x + elementBounds.width,elementBounds.y + elementBounds.height);
-        let lb_point = matrix.transformPoint(elementBounds.x,elementBounds.y + elementBounds.height);
-        let lt_point = matrix.transformPoint(elementBounds.x,elementBounds.y);
+        let rb_point = matrix.transformPoint(elementBounds.x + elementBounds.width, elementBounds.y + elementBounds.height);
+        let lb_point = matrix.transformPoint(elementBounds.x, elementBounds.y + elementBounds.height);
+        let lt_point = matrix.transformPoint(elementBounds.x, elementBounds.y);
 
         //绘制坐标原点
         let ori_point = matrix.transformPoint(0, 0);

@@ -129,6 +129,7 @@ export class BackgroundModel extends Record({
 	color: '#ffffff',
 	image: '',
 	repeat: false,
+	alpha: 0,
 }) {}
 
 export class TextModel extends Record({

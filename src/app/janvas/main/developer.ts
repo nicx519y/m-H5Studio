@@ -361,6 +361,9 @@ export default class Developer {
 		});
 
 		Event.addEventHandler('textChanged', (addedData) => {
+			let point = this.janvas.API.parseStateData({x: addedData.x, y: addedData.y});
+			addedData.x = point.x;
+			addedData.y = point.y;
 			this.triggerHandler(Developer.EVENTS.TEXT_CHANGED, addedData);
 		});
 
@@ -376,7 +379,11 @@ export default class Developer {
 			this.stage
 		);
 
-		element = element.text ? element.parent : element;
+		// element = element.text ? element.parent : element;
+
+		if(element.isText) {
+			element = element.janvasInstance.instance;
+		}
 
 		//如果点击到元素控制框或者被选中的元素，则返回
 		let elementName = element.name;
@@ -401,8 +408,8 @@ export default class Developer {
 			return;
 		}
 
+		//处理MC嵌套选取item的MC
 		var elementMC = element.janvasInstance.getItemMovieClip()
-
 		if (elementMC) {
 			element = elementMC.instance;
 		}

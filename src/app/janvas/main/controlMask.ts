@@ -659,7 +659,7 @@ export default class ControlMask {
             this.markElement(elementList[0]);
 
             Event.triggerHandler('elementMarked', {
-                state: this.oriTransformData
+                state: Object.assign({}, this.oriTransformData)
             });
         } else {
             this.markElements();
@@ -741,24 +741,24 @@ export default class ControlMask {
             return;
         }
 
-        this.oriTransformData = this.element.janvasInstance.getState();
+        this.oriTransformData = Object.assign({}, this.element.janvasInstance.getState());
 
         let elementBounds = this.getElementBounds(element);
 
         //let elementImg = this.getElementImg(this.element);
 
         //添加图片时，旋转中心值undefined，设置默认在中间
-        if(typeof this.oriTransformData.originX != 'number' || typeof this.oriTransformData.originY != 'number') {
+        // if(typeof this.oriTransformData.originX != 'number' || typeof this.oriTransformData.originY != 'number') {
 
-            let relativeWidth = elementBounds.x + elementBounds.width / 2;
-            let relativeHeight = elementBounds.y + elementBounds.height / 2;
+        //     let relativeWidth = elementBounds.x + elementBounds.width / 2;
+        //     let relativeHeight = elementBounds.y + elementBounds.height / 2;
 
-            this.element.regX = this.element.x = relativeWidth;
-            this.element.regY = this.element.y = relativeHeight;
+        //     this.element.regX = this.element.x = relativeWidth;
+        //     this.element.regY = this.element.y = relativeHeight;
 
-            this.oriTransformData.originX = this.oriTransformData.x = relativeWidth;
-            this.oriTransformData.originY = this.oriTransformData.y = relativeHeight;
-        }
+        //     this.oriTransformData.originX = this.oriTransformData.x = relativeWidth;
+        //     this.oriTransformData.originY = this.oriTransformData.y = relativeHeight;
+        // }
 
         this.copyElement = element.clone();
 
@@ -1084,7 +1084,7 @@ export default class ControlMask {
      * 传入option参数都是相对值
     */
     public setTransform(element:any, option:any) {
-        let data = this.oriTransformData;
+        let data = Object.assign({}, this.oriTransformData);
 
         let matrix = new createjs.Matrix2D();
 

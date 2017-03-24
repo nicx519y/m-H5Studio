@@ -340,7 +340,7 @@ export default class Developer {
 
 			let returnData = [];
 			changedData.map((data, index) => {
-				returnData.push(this.fmtReturnObj(data.element, data));
+				returnData.push(this.fmtReturnObj(Object.assign({}, data.element), data));
 			});
 
 			this.triggerHandler(Developer.EVENTS.ELEMENT_CHANGED, returnData);
@@ -448,8 +448,6 @@ export default class Developer {
 	public updateJanvasData(janvasData:any, option:any, callback?:Function) {
 		this.janvasSetting.data = janvasData;
 		this.janvas.update(this.janvasSetting.data, option, (janvas) => {
-			console.info('update janvas data over!');
-
 			this.janvas = janvas;
 
 			this.janvasContainer.removeChild(this.janvasStage);

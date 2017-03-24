@@ -741,6 +741,8 @@ export default class ControlMask {
             return;
         }
 
+        this.transformData = {};
+
         this.oriTransformData = Object.assign({}, this.element.janvasInstance.getState());
 
         let elementBounds = this.getElementBounds(element);

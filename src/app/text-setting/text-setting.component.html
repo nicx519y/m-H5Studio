@@ -1,43 +1,43 @@
 <div class="ide-text-setting" *ngIf="formData!==null" >
 	<form #textSettingForm="ngForm" (ngSubmit)="onSubmit()"   >
 		<md-input-container class="block-input" >
-			<input #textInput [(ngModel)]="formData.options.text" type="text" autofocus="autofocus" required  md-input placeholder="文本内容" name="text" autocomplete="off" />
+			<input #textInput [(ngModel)]="formData.text" type="text" autofocus="autofocus" required  md-input placeholder="文本内容" name="text" autocomplete="off" />
 		</md-input-container>
-		<md-select class="block-input" [(ngModel)]="formData.options.font" placeholder="字体" name="font" >
-			<md-option value="arial" >Arial</md-option>
+		<md-select class="block-input" [(ngModel)]="formData.font" placeholder="字体" name="font" (ngModelChange)="fontChanged($event)" >
 			<md-option value="simsun" >宋体</md-option>
+			<md-option value="arial" >Arial</md-option>
 		</md-select>
 		<md-input-container >
-			<input [(ngModel)]="formData.options.width" type="number" min="0" step="1"  md-input placeholder="文本框宽度" name="width" autocomplete="off" />
+			<input [(ngModel)]="formData.width" type="number" min="0" step="1"  md-input placeholder="文本框宽度" name="width" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="formData.options.height" type="number" min="0" step="1"  md-input placeholder="文本框高度" name="height" autocomplete="off" />
+			<input [(ngModel)]="formData.height" type="number" min="0" step="1"  md-input placeholder="文本框高度" name="height" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 		
 		<md-input-container >
-			<input [(ngModel)]="formData.options.fontSize" type="number" min="10" step="1"  md-input placeholder="字号" name="fontSize" autocomplete="off" />
+			<input [(ngModel)]="formData.fontSize" type="number" min="10" step="1"  md-input placeholder="字号" name="fontSize" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 		<md-input-container >
-			<input [(ngModel)]="formData.options.lineheight" type="number" min="0" step="1"  md-input placeholder="行高" name="lineheight" autocomplete="off" />
+			<input [(ngModel)]="formData.lineheight" type="number" min="0" step="1"  md-input placeholder="行高" name="lineheight" autocomplete="off" />
 			<span md-suffix >px</span>
 		</md-input-container>
 
 		<md-input-container >
-			<input [(ngModel)]="formData.options.color" type="text" placeholder="文本色" maxlength="7" md-input name="color" autocomplete="off"  />
-			<input [(ngModel)]="formData.options.color" [ngModelOptions]="{standalone: true}"  type="color" md-suffix />
+			<input [(ngModel)]="formData.color" type="text" placeholder="文本色" maxlength="7" md-input name="color" autocomplete="off"  />
+			<input [(ngModel)]="formData.color" [ngModelOptions]="{standalone: true}"  type="color" md-suffix />
 		</md-input-container>
 		<div style="text-align: center" >
 			<md-button-toggle-group multiple  >
-				<md-button-toggle>
+				<md-button-toggle name="bold" [checked]="formData.bold" (change)="btnsChanged($event)" >
 					<md-icon class="md-18" >format_bold</md-icon>
 				</md-button-toggle>
-				<md-button-toggle>
+				<md-button-toggle name="italic" (change)="btnsChanged($event)" >
 					<md-icon class="md-18" >format_italic</md-icon>
 				</md-button-toggle>
-				<md-button-toggle>
+				<md-button-toggle name="underline" (change)="btnsChanged($event)" >
 					<md-icon class="md-18" >format_underlined</md-icon>
 				</md-button-toggle>
 			</md-button-toggle-group>

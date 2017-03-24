@@ -1,26 +1,24 @@
 import * as Immutable from 'immutable';
 import { List, Map, Record } from 'immutable';
 
-Immutable.List;
-
 export enum Direction {
-	vertial,		//垂直
-	horizontal		//水平
+	vertial,		// 垂直
+	horizontal		// 水平
 }
 
 export enum PageType {
 	none,
-	swiper 
+	swiper
 }
 
 export enum SwiperEffect {
 	slide
 }
 
-export enum ItemType { 
-	movieclip, 	//影片剪辑
-	bitmap, 	//位图
-	video,		//视频
+export enum ItemType {
+	movieclip, 	// 影片剪辑
+	bitmap, 	// 位图
+	video,		// 视频
 }
 
 export enum SourceType {
@@ -29,27 +27,27 @@ export enum SourceType {
 }
 
 export enum ElementType {
-	symbol,		//元件库元件的实例
-	shape,		//图形
-	text,		//文本
+	symbol,		// 元件库元件的实例
+	shape,		// 图形
+	text,		// 文本
 }
 
 export enum TweenType {
-	none,				//没有动画
-	normal,				//补间动画
-	shape				//图形动画
+	none,				// 没有动画
+	normal,				// 补间动画
+	shape				// 图形动画
 }
 
 export enum EditorState {
 	none,
-	choose,				//选择
-	text,				//文字
-	zoom,				//放大缩小
-	draw,				//绘制
-	move,				//移动视图
+	choose,				// 选择
+	text,				// 文字
+	zoom,				// 放大缩小
+	draw,				// 绘制
+	move,				// 移动视图
 }
 
-export enum Ease {		//具体请参照createjs Ease类
+export enum Ease {		// 具体请参照createjs Ease类
 	backIn,
 	backInOut,
 	backOut,
@@ -88,21 +86,21 @@ export enum Ease {		//具体请参照createjs Ease类
 	quintOut,
 	sineIn,
 	sineInOut,
-	sineOut 
+	sineOut
 }
 
 export enum LayerType {
-	normal,				//普通图层
-	mask,				//遮罩层
-	path				//引导层
+	normal,				// 普通图层
+	mask,				// 遮罩层
+	path				// 引导层
 }
 
 function createNewId() {
 	function S4() {
-		return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+		return (((1 + Math.random() ) * 0x10000) | 0).toString(16).substring(1);
 	}
 	function guid() {
-		return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+		return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4());
 	}
 	return 'm' + guid();
 }
@@ -110,7 +108,7 @@ function createNewId() {
 export class MF {
 	static g(model, options: any = {}) {
 		let obj = new model(options);
-		if(obj.has('id') && obj.get('id') == '') {
+		if (obj.has('id') && obj.get('id') === '') {
 			obj = obj.set('id', createNewId());
 		}
 
@@ -134,19 +132,19 @@ export class BackgroundModel extends Record({
 
 export class TextModel extends Record({
 	id: '',
-	width: undefined,							//宽度
-	height: undefined,							//高度
-	text: '',							//文字内容
-	font: 'arial',						//字体
-	color: '#000000',					//颜色
-	background: new BackgroundModel(),	//背景
-	fontSize: 12,						//字号
-	bold: false,						//粗体
-	italic: false,						//斜体
-	underline: false,					//下划线
-	lineheight: 20,						//行高
+	width: undefined,							// 宽度
+	height: undefined,							// 高度
+	text: '',							// 文字内容
+	font: 'arial',						// 字体
+	color: '#000000',					// 颜色
+	background: new BackgroundModel(),	// 背景
+	fontSize: 12,						// 字号
+	bold: false,						// 粗体
+	italic: false,						// 斜体
+	underline: false,					// 下划线
+	lineheight: 20,						// 行高
 }) {
-	
+
 }
 
 export class ShapeModel extends Record({
@@ -155,12 +153,12 @@ export class ShapeModel extends Record({
 
 export class BitmapModel extends Record({
 	id: '',
-	url: '',			
+	url: '',
 	width: 0,
 	height: 0,
 	name: '',
 	fileName: '',
-	fileSize: 0,				
+	fileSize: 0,
 }) {}
 
 
@@ -211,14 +209,14 @@ export class ElementModel extends Record({
 	source: null,
 }) {
 	public static fromItem( item: ItemModel ) {
-		let ele: ElementModel = MF.g(ElementModel, {
+		const ele: ElementModel = MF.g(ElementModel, {
 			type: ElementType.symbol,
 			item: item.get('id')
 		});
 		return ele;
 	}
 	public static fromText( text: TextModel ) {
-		let ele: ElementModel = MF.g(ElementModel, {
+		const ele: ElementModel = MF.g(ElementModel, {
 			type: ElementType.text,
 			source: text
 		});
@@ -256,7 +254,7 @@ export class FrameModel extends Record({
 	duration: 1,
 }) {
 	static clone(frame: FrameModel): FrameModel {
-		let newFrame: FrameModel = MF.g(FrameModel, {
+		const newFrame: FrameModel = MF.g(FrameModel, {
 			name: frame.get('name'),
 			index: frame.get('index'),
 			isKeyFrame: frame.get('isKeyFrame'),
@@ -341,7 +339,7 @@ export class ProductModel extends Record({
 }) {}
 
 // export var ProductModel = new BasicModel({
-	
+
 // 	title: '',
 // 	user: '',
 // 	lastModify: 0,

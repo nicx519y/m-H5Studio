@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { MF, TextModel } from '../models';
 import { TimelineService } from '../timeline.service';
-import { CreateTextDialogComponent } from '../create-text-dialog/create-text-dialog.component';
-import { MdDialog } from '@angular/material';
+import { MdSelect } from '@angular/material';
 
 @Component({
 	selector: 'ide-text-setting',
@@ -25,6 +24,7 @@ export class TextSettingComponent implements OnInit {
 			color: string,
 			image: string,
 			repeat: boolean,
+			alpha: number,
 		},
 		fontSize: number,						//字号
 		bold: boolean,							//粗体
@@ -35,7 +35,6 @@ export class TextSettingComponent implements OnInit {
 
 	constructor(
 		private timelineService: TimelineService,
-		private dialog: MdDialog,
 	) { 
 
 	}
@@ -44,27 +43,31 @@ export class TextSettingComponent implements OnInit {
 		return !(this.formData === null);
 	}
 
-	private showCreateTextDailog() {
-		this.dialog.open(CreateTextDialogComponent, {
-			width: '450px',
-			height: '200px',
-		});
-	}
-
 	private dataChange() {
-		if(!this.model) {
+		if (!this.model) {
 			this.formData = null;
-			return;
-		}
-		if(this.model.get('id') === '') {
-			this.showCreateTextDailog();
+			console.log('text change: ', this.model);
 		} else {
+			console.log('text change: ', this.model.toJS());
 			this.formData = this.model.toJS();
 		}
 	}
 
 	private onSubmit() {
-		
+		console.log('submit text setting: ', this.formData);
+		this.timelineService.setTextByTextId(this.formData.id, new TextModel(this.formData));
+	}
+
+	private btnsChanged(evt) {
+		// console.log('btnchanges', evt);
+		if(this.formData.hasOwnProperty(evt.source.name)) {
+			this.formData[evt.source.name] = evt.source.checked;
+			this.onSubmit();
+		}
+	}
+
+	private fontChanged(evt) {
+		this.onSubmit();
 	}
 
 	ngAfterViewInit() {
@@ -77,13 +80,6 @@ export class TextSettingComponent implements OnInit {
 
 	ngOnChanges(changes: SimpleChanges) {
 		if(changes.hasOwnProperty('model')) {
-			let result;
-			if(this.model) {
-				result = this.model.toJS();
-			} else {
-				result = this.model;
-			}
-			console.log('text change: ', result);
 			this.dataChange();
 		}
 	}

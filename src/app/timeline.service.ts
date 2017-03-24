@@ -151,10 +151,10 @@ export class TimelineService {
 	}
 
 	/**
-	 * 根据id获取text source
+	 * 根据element id获取text source
 	 */
 	public getTextById(id: string): TextModel {
-		let layer: LayerModel = this.getData().find(layer => layer.getIn(['element', 'source', 'id']) === id);
+		let layer: LayerModel = this.getData().find(layer => layer.getIn(['element', 'id']) === id);
 		if(layer) {
 			return layer.getIn(['element', 'source']);
 		} else {
@@ -163,14 +163,19 @@ export class TimelineService {
 	}
 
 	/**
-	 * 根据id设置text source
+	 * 根据element id设置text source
 	 */
 	public setTextById(id: string, text: TextModel) {
 		let tmpText: TextModel = this.getTextById(id);
 		if(tmpText === undefined) return;
 		let data: List<LayerModel> = this.getData();
-		let layerIdx: number = data.findIndex(layer => layer.getIn(['element', 'source', 'id']) === id);
+		let layerIdx: number = data.findIndex(layer => layer.getIn(['element', 'id']) === id);
 		this.setData(data.setIn([layerIdx, 'element', 'source'], text));
+	}
+
+	public setTextByTextId(id: string, text: TextModel) {
+		let eleId: string = this.getData().find(layer => layer.getIn(['element', 'source', 'id']) === id).getIn(['element', 'id']);
+		this.setTextById(eleId, text);
 	}
 
 	public getActiveOptions(): List<Map<string, any>> {

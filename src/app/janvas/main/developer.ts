@@ -9,8 +9,8 @@ export default class Developer {
 	//project static name
 	public CANVAS_NAME = 'janvas-dev';
 	private BACKGROUND_NAME = 'dev-background';
-	private JANVAS_WIDTH = 750;
-	private JANVAS_HEIGHT = 1334;
+	private JANVAS_WIDTH = 375 * window.devicePixelRatio;
+	private JANVAS_HEIGHT = 667 * window.devicePixelRatio;
 	private JANVAS_SCALE = 1.04;
 
 	//project properties
@@ -361,7 +361,9 @@ export default class Developer {
 		});
 
 		Event.addEventHandler('textChanged', (addedData) => {
+			console.log(111, addedData)
 			let point = this.janvas.API.parseStateData({x: addedData.x, y: addedData.y});
+			console.log(222, point)
 			addedData.x = point.x;
 			addedData.y = point.y;
 			this.triggerHandler(Developer.EVENTS.TEXT_CHANGED, addedData);
@@ -494,7 +496,7 @@ export default class Developer {
 		let scaleX = this.JANVAS_WIDTH * 1.04 / this.janvasSetting.canvasWidth;
 		let scaleY = this.JANVAS_HEIGHT * 1.04 / this.janvasSetting.canvasHeight;
 
-		this.setScale(200 / (scaleX > scaleY ? scaleX : scaleY), callback);
+		this.setScale(100 * window.devicePixelRatio / (scaleX > scaleY ? scaleX : scaleY), callback);
 
 		this.controlMask.setPosition({
 			x: this.janvasContainer.x,
@@ -512,7 +514,7 @@ export default class Developer {
 		this.canvasElement.height = this.janvasSetting.canvasHeight;
 
 		if (this.janvas) {
-			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, this.canvasScale * 2);
+			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, this.canvasScale * window.devicePixelRatio);
 		}
 
 		// this.canvasElement.setAttribute('style', 

@@ -15,13 +15,13 @@
     "import-blacklist": [true, "rxjs"],
     "import-spacing": true,
     "indent": [
-      true,
-      "spaces"
+      false,
+      "tabs"
     ],
     "interface-over-type-literal": true,
     "label-position": true,
     "max-line-length": [
-      true,
+      false,
       140
     ],
     "member-access": false,

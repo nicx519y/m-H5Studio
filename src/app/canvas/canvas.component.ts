@@ -1,12 +1,12 @@
-import { 
-    Component, 
-    OnInit, 
-    OnChanges, 
-    ViewChild, 
-    ElementRef, 
-    ViewContainerRef, 
-    HostListener, 
-    Input, 
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    ViewChild,
+    ElementRef,
+    ViewContainerRef,
+    HostListener,
+    Input,
     Output,
     ChangeDetectionStrategy,
     EventEmitter,
@@ -15,7 +15,10 @@ import {
     SimpleChanges,
     SimpleChange,
 } from '@angular/core';
-import { MainModel, EditorState, ElementModel, ElementStateModel, FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF, TextModel } from '../models';
+import {
+    MainModel, EditorState, ElementModel, ElementStateModel,
+    FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF, TextModel
+} from '../models';
 import { TimelineService } from '../timeline.service';
 import Developer from '../janvas/main/developer';
 import { CreateTextDialogComponent } from '../create-text-dialog/create-text-dialog.component';
@@ -31,9 +34,9 @@ import { List, Map as ImmutableMap, Record } from 'immutable';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CanvasComponent implements OnInit {
-    private CANVAS_ELEMENT_ID:string = 'dev';
-    private janvas:any;
-    private isJanvasInited:boolean = false;
+    private CANVAS_ELEMENT_ID = 'dev';
+    private janvas: any;
+    private isJanvasInited = false;
     private modeMap: Map<EditorState, any> = new Map<EditorState, any>();
 
     @ViewChild('dev')
@@ -43,25 +46,26 @@ export class CanvasComponent implements OnInit {
     private box: ElementRef;
 
     @Input()
-    private mode: EditorState = EditorState.choose;	//渲染区域操作模式
+    private mode: EditorState = EditorState.choose;	// 渲染区域操作模式
 
     @Input()
-    private hasData: boolean;				//标识时间轴是否有数据
+    private hasData: boolean;				// 标识时间轴是否有数据
 
     @Input()
-    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();		//时间轴选中区域
+    private activeOptions: List<Map<string, any>> = Immutable.List<Map<string, number>>();		// 时间轴选中区域
 
+	// tslint:disable-next-line:indent
 	@Input()
-	private selection: SelectionModel;		//janvas选中元素
+	private selection: SelectionModel;		// janvas选中元素
 
     @Input()
-    private activePageModel: PageModel;		//当前编辑的page数据
+    private activePageModel: PageModel;		// 当前编辑的page数据
 
     @Input()
-    private activeFrameIndex: number;       //当前渲染的帧
+    private activeFrameIndex: number;       // 当前渲染的帧
 
     @Input()
-    private itemsModel: List<ItemModel>;	//素材库数据
+    private itemsModel: List<ItemModel>;	// 素材库数据
 
     @Input()
     private selectedObject: ImmutableMap<string, any>;
@@ -82,35 +86,28 @@ export class CanvasComponent implements OnInit {
 
     @HostListener('window:resize')
     private resizeHandler() {
-        let w: number = this.container.element.nativeElement.offsetWidth;
-        let h: number = this.container.element.nativeElement.offsetHeight;
+        const w: number = this.container.element.nativeElement.offsetWidth;
+        const h: number = this.container.element.nativeElement.offsetHeight;
         this.box.nativeElement.style.width = w + 'px';
         this.box.nativeElement.style.height = h + 'px';
 
         this.janvas.resizeJanvasDev(w, h);
     }
-    
+
     ngOnInit() {
-        
-    }
 
-    ngOnDestroy() {
-
-    }
-
-    ngAfterViewInit() {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        //编辑模式变化
-        if(changes.hasOwnProperty('mode')) {
+        // 编辑模式变化
+        if (changes.hasOwnProperty('mode')) {
             this.modeChange(this.mode);
         }
 
-        //页面数据变化
-        if(this.timelineService.hasData() && 
+        // 页面数据变化
+        if (this.timelineService.hasData() &&
         (changes.hasOwnProperty('activePageModel') || changes.hasOwnProperty('activeFrameIndex'))) {
-            if(this.isJanvasInited) {
+            if (this.isJanvasInited) {
                 this.janvasUpdate();
             } else {
                 this.janvasInit(this.CANVAS_ELEMENT_ID);
@@ -118,21 +115,21 @@ export class CanvasComponent implements OnInit {
             }
         }
 
-        //lib数据变化
-        if(changes.hasOwnProperty('itemsModel')) {
-            if(this.isJanvasInited) {
+        // lib数据变化
+        if (changes.hasOwnProperty('itemsModel')) {
+            if (this.isJanvasInited) {
                 this.janvasUpdate();
             }
         }
 
-        if(changes.hasOwnProperty('selection')) {
-            if(this.janvas) {
+        if (changes.hasOwnProperty('selection')) {
+            if (this.janvas) {
                 this.janvas.selectElement(this.getSelectionElements());
             }
         }
 
-        if(changes.hasOwnProperty('scaleNum')) {
-            if(this.janvas) {
+        if (changes.hasOwnProperty('scaleNum')) {
+            if (this.janvas) {
                 this.janvas.setScale(this.scaleNum);
             }
         }
@@ -142,33 +139,35 @@ export class CanvasComponent implements OnInit {
      * janvas初始化
      */
     private janvasInit(containerId: string) {
-        if(this.isJanvasInited) return;
-        let data = this.makeJanvasData().toJS();
+        if (this.isJanvasInited) {
+            return;
+        }
+        const data = this.makeJanvasData().toJS();
         this.janvas = new Developer(
             containerId,
             {
-                canvasWidth: 10, //canvas width
-                canvasHeight: 10, //canvas height
-                data: data //janvas data
+                canvasWidth: 10, // canvas width
+                canvasHeight: 10, // canvas height
+                data: data // janvas data
             },
             (target) => {
                 target.addEventHandler(
-                    Developer.EVENTS.ELEMENT_SELECTED, 
+                    Developer.EVENTS.ELEMENT_SELECTED,
                     this.janvasSelectedHandler.bind(this)
                 );
 
                 target.addEventHandler(
-                    Developer.EVENTS.ELEMENT_CHANGED, 
+                    Developer.EVENTS.ELEMENT_CHANGED,
                     this.janvasChangedHandler.bind(this)
                 );
 
                 target.addEventHandler(
-                    Developer.EVENTS.SCALE_CHANGED, 
+                    Developer.EVENTS.SCALE_CHANGED,
                     this.janvasScaleHandler.bind(this)
                 );
 
                 target.addEventHandler(
-                    Developer.EVENTS.TEXT_CHANGED, 
+                    Developer.EVENTS.TEXT_CHANGED,
                     this.janvastextHandler.bind(this)
                 );
 
@@ -181,9 +180,11 @@ export class CanvasComponent implements OnInit {
      * 更新janvas，timeline数据有改变的时候更新
      */
     public janvasUpdate() {
-        if(!this.isJanvasInited) return;
-        let data = this.makeJanvasData().toJS();
-        let page: string = this.activePageModel.get('id');
+        if (!this.isJanvasInited) {
+            return;
+        }
+        const data = this.makeJanvasData().toJS();
+        const page: string = this.activePageModel.get('id');
         console.log('janvas update: ', data);
         data && this.janvas.updateJanvasData(data, {
             page: page,
@@ -192,16 +193,12 @@ export class CanvasComponent implements OnInit {
         });
     }
 
-    public textEditOver() {
-        this.janvas.textEditOver();
-    }
-
     /**
 	 * janvas选中元素后操作
 	 */
     private janvasSelectedHandler(selection: any[]) {
         let elements = Immutable.List<SelectionElementModel>();
-        let section = this.timelineService.getSelection();
+        const section = this.timelineService.getSelection();
         let frameIndex;
 
         selection.forEach((ele) => {
@@ -212,7 +209,7 @@ export class CanvasComponent implements OnInit {
             }));
         });
 
-        if(section) {
+        if (section) {
             frameIndex = section.get('frameIndex');
         } else {
             frameIndex = Math.min.apply(null, selection.map(ele => ele.frameIndex));
@@ -228,20 +225,20 @@ export class CanvasComponent implements OnInit {
 	 * janvas修改元素后操作
 	 */
     private janvasChangedHandler(eleArr: any[]) {
-        if(!eleArr || eleArr.length <= 0) return;
-        let ao = eleArr.map(ele => {
+        if (!eleArr || eleArr.length <= 0) return;
+        const ao = eleArr.map(ele => {
             return {
                 elementId: ele.elementId,
                 start: ele.frameIndex,
                 duration: 1,
             };
         });
-        let fo = eleArr.map(ele => {
+        const fo = eleArr.map(ele => {
             return {
                 elementId: ele.elementId,
                 isEmptyFrame: false,
                 elementState: ele.state,
-            }
+            };
         });
 
         this.timelineService.setData(this.timelineService.setToKeyFrames(ao, fo));
@@ -251,14 +248,14 @@ export class CanvasComponent implements OnInit {
         this.timelineService.setZoom(scaleNum);
     }
 
-    private janvastextHandler(returnObj:any) {
-        if(returnObj.isDestroy) {
+    private janvastextHandler(returnObj: any) {
+        if (returnObj.isDestroy) {
             this.timelineService.clearTexting();
         } else {
             // this.timelineService.setTexting(returnObj);
             console.log('text click: ', returnObj);
-            //打开新建文字文本框
-            if(!returnObj.hasOwnProperty('id') || returnObj.id == '') {
+            // 打开新建文字文本框
+            if (!returnObj.hasOwnProperty('id') || returnObj.id === '') {
                 this.openCreateTextDialog(returnObj.x, returnObj.y);
             } else {
                 this.timelineService.setTexting(
@@ -272,7 +269,7 @@ export class CanvasComponent implements OnInit {
 	 * 合成传入janvas内部的数据
 	 */
 	public makeJanvasData(): MainModel {
-		let data: MainModel = MF.g(MainModel, {
+		const data: MainModel = MF.g(MainModel, {
 			pages: Immutable.List<PageModel>().push(MF.g(PageModel, {
                 layers: this.activePageModel
             })),
@@ -297,13 +294,13 @@ export class CanvasComponent implements OnInit {
      * 打开新建文本浮层
      */
     private openCreateTextDialog(posx: number, posy: number) {
-        let def: MdDialogRef<CreateTextDialogComponent> = this.dialog.open(CreateTextDialogComponent, {
+        const def: MdDialogRef<CreateTextDialogComponent> = this.dialog.open(CreateTextDialogComponent, {
             width: '400px',
             height: '200px',
             disableClose: true,
         });
         def.afterClosed().subscribe(result => {
-            if(typeof result === 'string' && result != '') {
+            if (typeof result === 'string' && result !== '') {
                 this.timelineService.addTextElement(result, result, new ElementStateModel({
                     x: posx,
                     y: posy,

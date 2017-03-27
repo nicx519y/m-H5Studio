@@ -9,8 +9,8 @@ export default class Developer {
 	//project static name
 	public CANVAS_NAME = 'janvas-dev';
 	private BACKGROUND_NAME = 'dev-background';
-	private JANVAS_WIDTH = 375 * window.devicePixelRatio;
-	private JANVAS_HEIGHT = 667 * window.devicePixelRatio;
+	private JANVAS_WIDTH = 375;
+	private JANVAS_HEIGHT = 667;
 	private JANVAS_SCALE = 1.04;
 
 	//project properties
@@ -496,7 +496,7 @@ export default class Developer {
 		let scaleX = this.JANVAS_WIDTH * 1.04 / this.janvasSetting.canvasWidth;
 		let scaleY = this.JANVAS_HEIGHT * 1.04 / this.janvasSetting.canvasHeight;
 
-		this.setScale(100 * window.devicePixelRatio / (scaleX > scaleY ? scaleX : scaleY), callback);
+		this.setScale(100 / (scaleX > scaleY ? scaleX : scaleY), callback);
 
 		this.controlMask.setPosition({
 			x: this.janvasContainer.x,
@@ -510,16 +510,12 @@ export default class Developer {
 	private scaleCanvas(scale:number) {
 		this.canvasScale = scale;
 
-		this.canvasElement.width = this.janvasSetting.canvasWidth ;
-		this.canvasElement.height = this.janvasSetting.canvasHeight;
+		this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale;
+		this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale;
 
-		if (this.janvas) {
-			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, this.canvasScale * window.devicePixelRatio);
-		}
-
-		// this.canvasElement.setAttribute('style', 
-		// 	'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
-		// );
+		this.canvasElement.setAttribute('style', 
+			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
+		);
 	}
 
 	/*

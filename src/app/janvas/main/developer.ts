@@ -224,28 +224,31 @@ export default class Developer {
 				case Developer.MODE.SCALE_MODE: {
 					let rate = 10; //每次点击的倍率10%
 					let nowScale = parseFloat(this.getScale());
-					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					let beforePointToStage = {x: event.stageX, y: event.stageY};
+					let beforePointToJanvas = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					let afterScale = nowScale + (event.nativeEvent.altKey ? -rate : rate);
 					
-					this.setScale(nowScale + (event.nativeEvent.altKey ? -rate : rate), () => {
-						let afterPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-						console.log(afterPoint);
-						console.log('x: ' + (beforePoint.x - afterPoint.x));
+					console.log(beforePointToStage);
+					console.log(this.janvasContainer);
 
-						let deltaX = (beforePoint.x - afterPoint.x) 
-							* (1 - (beforePoint.x / (this.janvasContainer.width / 2))) 
-							* (1 - parseFloat(this.getScale()) / 100);
-
-						let deltaY = beforePoint.y - afterPoint.y;
-
-						console.log('deltaX:'+deltaX);
-
-						console.log('width:'+this.janvasContainer.width);
-
-						// this.janvasContainer.x += event.nativeEvent.altKey ? deltaX : -deltaX;
-
-						// this.janvasContainer.x -= (deltaX * (1 - parseFloat(this.getScale()) / 100));
-						// this.janvasContainer.y += (event.nativeEvent.altKey ? deltaY : -deltaX);
+					this.setScale(afterScale, () => {
+						let afterPointToStage = this.janvasContainer.localToGlobal(beforePointToJanvas.x, beforePointToJanvas.y);
+						console.log(afterPointToStage);
+						// console.log(beforePointToStage.y - afterPointToStage.y);
+						// this.janvasContainer.x += beforePointToStage.x - afterPointToStage.x;
+						// this.janvasContainer.y += beforePointToStage.y - afterPointToStage.y;
 					});
+
+
+					
+					// this.setScale(nowScale + (event.nativeEvent.altKey ? -rate : rate), () => {
+					// 	let afterPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					// 	console.log(beforePoint);
+					// 	console.log(beforePoint.x + ', ' + beforePoint.y);
+
+					// 	console.log(afterPoint);
+					// 	console.log(afterPoint.x + ', ' + afterPoint.y);
+					// });
 					
 					break;
 				}
@@ -513,13 +516,16 @@ export default class Developer {
 		this.canvasElement.width = this.janvasSetting.canvasWidth ;
 		this.canvasElement.height = this.janvasSetting.canvasHeight;
 
+		//janvas处理缩放
 		if (this.janvas) {
-			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, this.canvasScale * window.devicePixelRatio);
+			this.janvas.adjustHIDPICanvas('dev', this.canvasElement.width, this.canvasElement.height, 2);
 		}
 
-		// this.canvasElement.setAttribute('style', 
-		// 	'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
-		// );
+		console.log('canvasScale:' + this.canvasScale);
+
+		this.canvasElement.setAttribute('style', 
+			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
+		);
 	}
 
 	/*

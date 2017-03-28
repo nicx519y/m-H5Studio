@@ -122,7 +122,7 @@ export default class ControlMask {
             tmpDot.set({
                 x: 0, 
                 y: 0, 
-                width: dotContainerWidth * 2, 
+                width: dotContainerWidth * 2,
                 height: dotContainerWidth * 2
             });
 

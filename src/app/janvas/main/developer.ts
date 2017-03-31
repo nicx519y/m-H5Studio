@@ -12,6 +12,7 @@ export default class Developer {
 	private JANVAS_WIDTH = 375;
 	private JANVAS_HEIGHT = 667;
 	private JANVAS_SCALE = 1.04;
+	private scaleRate = 20;				//点击缩放比例 每次20%
 
 	//project properties
 	private id:string;					//canvas对象的id，也是stage的id
@@ -222,10 +223,9 @@ export default class Developer {
 
 			switch(this.devMode) {
 				case Developer.MODE.SCALE_MODE: {
-					let rate = 10; //每次点击的倍率10%
 					let beforeScale = parseFloat(this.getScale());
 					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-					let afterScale = beforeScale + (event.nativeEvent.altKey ? -rate : rate);
+					let afterScale = beforeScale + (event.nativeEvent.altKey ? -this.scaleRate : this.scaleRate);
 					let janvasX = this.janvasContainer.x;
 					let janvasY = this.janvasContainer.y;
 

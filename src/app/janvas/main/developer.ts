@@ -223,15 +223,16 @@ export default class Developer {
 			switch(this.devMode) {
 				case Developer.MODE.SCALE_MODE: {
 					let rate = 10; //每次点击的倍率10%
-					let nowScale = parseFloat(this.getScale());
+					let beforeScale = parseFloat(this.getScale());
 					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-					let afterScale = nowScale + (event.nativeEvent.altKey ? -rate : rate);
+					let afterScale = beforeScale + (event.nativeEvent.altKey ? -rate : rate);
 					let janvasX = this.janvasContainer.x;
 					let janvasY = this.janvasContainer.y;
 
 					this.setScale(afterScale, () => {
-						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - nowScale) / nowScale) * (nowScale/afterScale);
-						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - nowScale) / nowScale) * (nowScale/afterScale);
+						let ratio = beforeScale / afterScale;
+						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale) * ratio;
+						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale) * ratio;
 					});
 					
 					break;

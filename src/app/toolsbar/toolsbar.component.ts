@@ -9,6 +9,7 @@ import { EditorState } from '../models';
 export class ToolsbarComponent implements OnInit {
 
 	public state: EditorState = EditorState.choose;
+	private prevState: EditorState = EditorState.choose;
 	public states = [
 		{
 			name: '元素变换',
@@ -42,6 +43,8 @@ export class ToolsbarComponent implements OnInit {
 	}
 
 	public changeState( state: EditorState ) {
+		if(state === this.state) return;
+		this.prevState = this.state;
 		this.state = state;
 	}
 
@@ -63,6 +66,13 @@ export class ToolsbarComponent implements OnInit {
 
 	public changeMoveMode() {
 		this.changeState(EditorState.move);
+	}
+
+	/**
+	 * 回到上一个状态
+	 */
+	public changePrevMode() {
+		this.state = this.prevState;
 	}
 
 	ngOnInit() {

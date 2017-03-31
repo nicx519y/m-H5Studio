@@ -5,15 +5,21 @@ import Event from './event';
 
 export default class textControl {
     private textLock;
-    private canvasElement;
     private element;
     private stage;
     private textCase;
+    private janvasStage;
+    private graphics;
 
-    constructor(canvasElement:any, stage:any) {
+    constructor(janvasStage:any, stage:any) {
         this.textLock = false;
-        this.canvasElement = canvasElement;
+        this.janvasStage = janvasStage;
         this.stage = stage;
+
+        this.textCase = new createjs.Shape(
+            new createjs.Graphics()
+        );
+        this.stage.addChild(this.textCase);
 
         this.initEvent();
     }
@@ -39,7 +45,17 @@ export default class textControl {
             return;
         }
 
-        let elementId = element.text ? element.janvasInstance.id : '';
+        let elementId = '';
+
+        
+
+        //对文字进行描边
+        if(element.isText) {
+            this.element = element.janvasInstance.instance;
+            this.signText();
+
+            elementId = element.janvasInstance.id;
+        }
 
         Event.triggerHandler('textChanged', {
         	id: elementId,
@@ -48,13 +64,7 @@ export default class textControl {
         	y: point.y
         });
 
-        //对文字进行描边
-        if(element.text) {
-            this.element = element.parent;
-            this.signText();
-        }
-
-        this.textLock = true;
+        // this.textLock = true;
     }
 
     public isLock() {
@@ -62,17 +72,16 @@ export default class textControl {
     }
 
     private signText() {
-        let bounds = this.element.getBounds();
+        let bounds = this.element.parent.getBounds();
+        let point = this.janvasStage.localToGlobal(bounds.x, bounds.y);
 
-        this.textCase = new createjs.Shape(
-            new createjs.Graphics()
-                .beginStroke('#000000')
-                .moveTo(bounds.x, bounds.y)
-                .lineTo(bounds.x + bounds.width, bounds.y)
-                .lineTo(bounds.x + bounds.width, bounds.y + bounds.height)
-                .lineTo(bounds.x, bounds.y + bounds.height)
-        );
-        this.stage.addChild(this.textCase);
+        this.textCase.graphics.clear()
+            .beginStroke('#000000')
+            .moveTo(point.x, point.y)
+            .lineTo(point.x + bounds.width, point.y)
+            .lineTo(point.x + bounds.width, point.y + bounds.height)
+            .lineTo(point.x, point.y + bounds.height)
+            .lineTo(point.x, point.y)
     }
 
     public destroy() {

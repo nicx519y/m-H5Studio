@@ -136,7 +136,7 @@ export default class Developer {
 			}
 		});
 
-		this.textControl = new TextControl(this.canvasElement, this.stage);
+		this.textControl = new TextControl(this.janvasStage, this.stage);
 	}
 
 	/*

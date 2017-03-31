@@ -1,7 +1,7 @@
 <div class="ide-panel" #container >
 	<div class="ide-panel-title" #titleContainer (click)="toggle()" *ngIf="hasTitle" >
 		<span>{{title}}</span>
-		<div class="icon" >
+		<div class="icon" *ngIf="closeAble" >
 			<md-icon *ngIf="isOpen" class="md-18" >expand_more</md-icon>
 			<md-icon *ngIf="!isOpen" class="md-18" >expand_less</md-icon>
 		</div>

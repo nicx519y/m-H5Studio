@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { MainService } from '../main.service';
 import { TimelineService } from '../timeline.service';
 
@@ -15,6 +15,9 @@ export class OnionSkinComponent implements OnInit {
 	@Input()
 	private zoom: number;
 
+	@ViewChild('zoomInput')
+	private zoomInput: ElementRef;
+
 	private formData: { zoom: number } = { zoom: NaN };
 
 	constructor(
@@ -25,6 +28,7 @@ export class OnionSkinComponent implements OnInit {
 
 	private onZoomSubmit() {
 		this.timelineService.setZoom(this.formData.zoom);
+		this.zoomInput && this.zoomInput.nativeElement.blur();
 	}
 
 	ngOnInit() {

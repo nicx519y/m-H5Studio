@@ -100,6 +100,7 @@ export class IdeComponent {
 			selectElementMode: this.toolsbar.changeSelectMode.bind(this.toolsbar),
 			moveMode: this.toolsbar.changeMoveMode.bind(this.toolsbar),
 			zoomMode: this.toolsbar.changeZoomMode.bind(this.toolsbar),
+			prevMode: this.toolsbar.changePrevMode.bind(this.toolsbar),
 			// drawMode: this.toolsbar.changeDrawMode.bind(this.toolsbar),
 			textEditMode: this.toolsbar.changeTextEditMode.bind(this.toolsbar),
 			saveData: this.saveData.bind(this),

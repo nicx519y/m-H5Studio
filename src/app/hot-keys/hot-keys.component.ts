@@ -70,6 +70,18 @@ export class HotKeysComponent implements OnInit {
             key: 'b',
             desc: '绘制模式'
         }),
+         new HotKeyModel({
+            api: 'moveMode',
+            key: ' ',
+            eventType: 'keydown',
+            desc: '移动视图模式'
+        }),
+        new HotKeyModel({
+            api: 'prevMode',
+            key: ' ',
+            eventType: 'keyup',
+            desc: '返回上一个模式'
+        }),
         new HotKeyModel({
             api: 'textEditMode',
             key: 't',
@@ -115,20 +127,21 @@ export class HotKeysComponent implements OnInit {
             ctrl: true,
             key: 'p',
             desc: '新增页面'
-        })
+        }),
     ];
 
     constructor() {
 
     }
 
-    private keyupHandler(evt: KeyboardEvent) {
+    private keyHandler(evt: KeyboardEvent) {
         //如果焦点不在body（有可能在input或者是select上），则热键不生效
         if (document.activeElement.tagName.toLocaleLowerCase() != 'body')
             return;
-
+        console.log(evt.key);
         let model: HotKeyModel = this.hotKeysConfig.find(config => {
-            return (config.get('ctrl') === evt.ctrlKey) &&
+            return (config.get('eventType') === event.type) &&
+                (config.get('ctrl') === evt.ctrlKey) &&
                 (config.get('alt') === evt.altKey) &&
                 (config.get('shift') === evt.shiftKey) &&
                 (config.get('key') === evt.key.toLowerCase());
@@ -143,8 +156,11 @@ export class HotKeysComponent implements OnInit {
     }
 
     ngAfterViewInit() {
+        document.addEventListener('keydown', event => {
+            this.keyHandler(event);
+        });
         document.addEventListener('keyup', event => {
-            this.keyupHandler(event);
+            this.keyHandler(event);
         });
     }
 

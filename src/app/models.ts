@@ -310,6 +310,7 @@ export class ItemModel extends Record({
 export class HotKeyModel extends Record({
 	api: '',
 	key: '',
+	eventType: 'keydown',
 	shift: false,
 	ctrl: false,
 	alt: false,

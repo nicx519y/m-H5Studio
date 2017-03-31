@@ -32,6 +32,7 @@ export default class Developer {
 	private mouse:any					//鼠标
 	private textInput:any;
 	private textControl:any;
+	private startDrag;
 
 	private isShift:boolean = false;	//是否按住shift
 
@@ -196,7 +197,6 @@ export default class Developer {
 	*/
 	private initEvent() {
 		let mousePoint;
-		let startDrag;
 
 		this.stage.on('mouseenter', (event) => {
 			switch(this.devMode) {
@@ -244,7 +244,7 @@ export default class Developer {
 				}
 
 				case Developer.MODE.READ_MODE: {
-					startDrag = true;
+					this.startDrag = true;
 					mousePoint = {
 						x: event.stageX,
 						y: event.stageY
@@ -291,9 +291,11 @@ export default class Developer {
 					break;
 				}
 				case Developer.MODE.READ_MODE: {
-					if(!startDrag) {
+					console.log();
+					if(!this.startDrag) {
 						return;
 					}
+
 					let point = {
 						x: event.stageX,
 						y: event.stageY
@@ -314,7 +316,7 @@ export default class Developer {
 					break;
 				}
 				case Developer.MODE.READ_MODE: {
-					startDrag = false;
+					this.startDrag = false;
 					this.mouse.updateMouseState(Mouse.STATE.HAND);
 					break;
 				}
@@ -666,6 +668,7 @@ export default class Developer {
 	*/
 	public changeMode(modeType:number) {
 		this.devMode = modeType;
+		this.startDrag = false;
 		
 		if(modeType == Developer.MODE.EDIT_MODE) {
 			this.controlMask.selectedElement(this.nowChooseElement);

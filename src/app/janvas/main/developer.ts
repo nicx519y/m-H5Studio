@@ -224,31 +224,15 @@ export default class Developer {
 				case Developer.MODE.SCALE_MODE: {
 					let rate = 10; //每次点击的倍率10%
 					let nowScale = parseFloat(this.getScale());
-					let beforePointToStage = {x: event.stageX, y: event.stageY};
-					let beforePointToJanvas = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
 					let afterScale = nowScale + (event.nativeEvent.altKey ? -rate : rate);
-					
-					console.log(beforePointToStage);
-					console.log(this.janvasContainer);
+					let janvasX = this.janvasContainer.x;
+					let janvasY = this.janvasContainer.y;
 
 					this.setScale(afterScale, () => {
-						let afterPointToStage = this.janvasContainer.localToGlobal(beforePointToJanvas.x, beforePointToJanvas.y);
-						console.log(afterPointToStage);
-						// console.log(beforePointToStage.y - afterPointToStage.y);
-						// this.janvasContainer.x += beforePointToStage.x - afterPointToStage.x;
-						// this.janvasContainer.y += beforePointToStage.y - afterPointToStage.y;
+						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - nowScale) / nowScale) * (nowScale/afterScale);
+						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - nowScale) / nowScale) * (nowScale/afterScale);
 					});
-
-
-					
-					// this.setScale(nowScale + (event.nativeEvent.altKey ? -rate : rate), () => {
-					// 	let afterPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-					// 	console.log(beforePoint);
-					// 	console.log(beforePoint.x + ', ' + beforePoint.y);
-
-					// 	console.log(afterPoint);
-					// 	console.log(afterPoint.x + ', ' + afterPoint.y);
-					// });
 					
 					break;
 				}
@@ -496,8 +480,8 @@ export default class Developer {
 		this.janvasSetting.canvasWidth = width;
 		this.janvasSetting.canvasHeight = height;
 
-		let scaleX = this.JANVAS_WIDTH * 1.04 / this.janvasSetting.canvasWidth;
-		let scaleY = this.JANVAS_HEIGHT * 1.04 / this.janvasSetting.canvasHeight;
+		let scaleX = this.JANVAS_WIDTH * this.JANVAS_SCALE / this.janvasSetting.canvasWidth;
+		let scaleY = this.JANVAS_HEIGHT * this.JANVAS_SCALE / this.janvasSetting.canvasHeight;
 
 		this.setScale(100 / (scaleX > scaleY ? scaleX : scaleY), callback);
 
@@ -513,21 +497,17 @@ export default class Developer {
 	private scaleCanvas(scale:number) {
 		this.canvasScale = scale;
 
-		// this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale;
-		// this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale;
+		this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale * 2;
+		this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale * 2;
 
-		if (this.janvas) {
-			this.janvas.adjustHIDPICanvas(
-				'dev', 
-				this.janvasSetting.canvasWidth, 
-				this.janvasSetting.canvasHeight, 
-				2
-			);
-		}
+		// this.canvasElement.setAttribute('style', ''); = this.janvasSetting.canvasWidth * this.canvasScale;
+		// this.canvasElement.style.height = this.janvasSetting.canvasHeight * this.canvasScale;
 
-		// this.canvasElement.setAttribute('style', 
-		// 	'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + ');'
-		// );
+		this.canvasElement.setAttribute('style', 
+			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + '); width: ' + 
+			this.janvasSetting.canvasWidth * this.canvasScale + 'px; height: ' + 
+			this.janvasSetting.canvasHeight * this.canvasScale + 'px;'
+		);
 	}
 
 	/*
@@ -558,9 +538,10 @@ export default class Developer {
 			drawRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 		
 		//重新定位janvasContainer
+		let scaleRatio = scale / 100;
 		this.janvasContainer.set({
-			x: (this.canvasElement.width - this.JANVAS_WIDTH) / 2, 
-			y: (this.canvasElement.height - this.JANVAS_HEIGHT) / 2, 
+			x: (parseInt(this.canvasElement.style.width) * 2 - this.janvasContainer.width) / 2, 
+			y: (parseInt(this.canvasElement.style.height) * 2 - this.janvasContainer.height) / 2, 
 			width: this.janvasContainer.width,
 			height: this.janvasContainer.height
 		});

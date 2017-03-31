@@ -318,6 +318,8 @@ export class HotKeyModel extends Record({
 
 export class StageModel extends Record({
 	id: '',
+	width: 750,
+	height: 1334,
 	background: new BackgroundModel(),
 	title: '',
 	pageType: PageType.swiper,

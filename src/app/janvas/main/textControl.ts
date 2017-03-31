@@ -38,8 +38,11 @@ export default class textControl {
         if(this.isLock()) {
             return;
         }
+
+        let elementId = element.text ? element.janvasInstance.id : '';
+
         Event.triggerHandler('textChanged', {
-        	id: element.text ? element.parent.janvasInstance.id : '',
+        	id: elementId,
             isDestroy: false,
         	x: point.x,
         	y: point.y

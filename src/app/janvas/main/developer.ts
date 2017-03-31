@@ -349,11 +349,6 @@ export default class Developer {
 		});
 
 		Event.addEventHandler('textChanged', (addedData) => {
-			console.log(111, addedData)
-			let point = this.janvas.API.parseStateData({x: addedData.x, y: addedData.y});
-			console.log(222, point)
-			addedData.x = point.x;
-			addedData.y = point.y;
 			this.triggerHandler(Developer.EVENTS.TEXT_CHANGED, addedData);
 		});
 

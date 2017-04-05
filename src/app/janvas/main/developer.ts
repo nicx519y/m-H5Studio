@@ -231,6 +231,7 @@ export default class Developer {
 
 					this.setScale(afterScale, () => {
 						let ratio = beforeScale / afterScale;
+						//根据点击的坐标计算缩放带来的偏移量，然后在缩放后平移达到定点缩放的效果
 						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale) * ratio;
 						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale) * ratio;
 					});
@@ -524,19 +525,20 @@ export default class Developer {
 			return;
 		}
 
+		let ratio = 100 / scale;
+
 		if(scale.toString() == (100 / this.canvasScale).toFixed(2)) {
 			return;
 		}
 
 		//缩放canvas
-		this.scaleCanvas(100 / scale);
+		this.scaleCanvas(ratio);
 
 		//重新绘制背景
 		this.stageBg.graphics.clear().beginFill('#f5f5f5').
 			drawRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 		
 		//重新定位janvasContainer
-		let scaleRatio = scale / 100;
 		this.janvasContainer.set({
 			x: (parseInt(this.canvasElement.style.width) * 2 - this.janvasContainer.width) / 2, 
 			y: (parseInt(this.canvasElement.style.height) * 2 - this.janvasContainer.height) / 2, 
@@ -544,9 +546,9 @@ export default class Developer {
 			height: this.janvasContainer.height
 		});
 
-		//缩放mouse
-		this.mouse.scaleMouse(100 / scale);
-		this.controlMask.scaleCase(100 / scale);
+		//缩放相关部件
+		this.mouse.scaleMouse(ratio);
+		this.controlMask.scaleCase(ratio);
 
 		//重新选取选择的element
 		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {

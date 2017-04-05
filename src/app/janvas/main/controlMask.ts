@@ -110,6 +110,32 @@ export default class ControlMask {
 
             this.transList.push(transContainer);
         }
+
+        //添加坐标原点
+        let oriWidth = dotContainerWidth * this.scaleNum * 2;
+        let oriDot = new createjs.Shape(
+            new createjs.Graphics()
+                .beginStroke('#ffffff')
+                .setStrokeStyle(this.controlConf.width * this.scaleNum * 5)
+                .moveTo(dotContainerWidth * this.scaleNum * 2, 0)
+                .lineTo(-dotContainerWidth * this.scaleNum * 2, 0)
+                .moveTo(0, -dotContainerWidth * this.scaleNum * 2)
+                .lineTo(0, dotContainerWidth * this.scaleNum * 2)
+                .setStrokeStyle(this.controlConf.width * this.scaleNum)
+                .beginStroke('#000000')
+                .moveTo(-dotContainerWidth * this.scaleNum * 2, 0)
+                .lineTo(dotContainerWidth * this.scaleNum * 2, 0)
+                .moveTo(0, -dotContainerWidth * this.scaleNum * 2)
+                .lineTo(0, dotContainerWidth * this.scaleNum * 2)
+        );
+
+        oriDot.name = ControlMask.CONTROL_MASK_NAME + 'Origin_shape';
+
+        oriDot.mouseEnabled = false;
+        oriDot.mouseChildren = false;
+
+        this.maskContainer.addChild(oriDot);
+        this.oriDot = oriDot;
         
         //添加点操作手柄
         for(let i = 0; i < 9; i++) {
@@ -213,32 +239,6 @@ export default class ControlMask {
             }
             this.dotList.push(tmpDot);
         }
-
-        //添加坐标原点
-        let oriWidth = dotContainerWidth * this.scaleNum * 2;
-        let oriDot = new createjs.Shape(
-            new createjs.Graphics()
-                .beginStroke('#ffffff')
-                .setStrokeStyle(this.controlConf.width * this.scaleNum * 5)
-                .moveTo(dotContainerWidth * this.scaleNum * 2, 0)
-                .lineTo(-dotContainerWidth * this.scaleNum * 2, 0)
-                .moveTo(0, -dotContainerWidth * this.scaleNum * 2)
-                .lineTo(0, dotContainerWidth * this.scaleNum * 2)
-                .setStrokeStyle(this.controlConf.width * this.scaleNum)
-                .beginStroke('#000000')
-                .moveTo(-dotContainerWidth * this.scaleNum * 2, 0)
-                .lineTo(dotContainerWidth * this.scaleNum * 2, 0)
-                .moveTo(0, -dotContainerWidth * this.scaleNum * 2)
-                .lineTo(0, dotContainerWidth * this.scaleNum * 2)
-        );
-
-        oriDot.name = ControlMask.CONTROL_MASK_NAME + 'Origin_shape';
-
-        oriDot.mouseEnabled = false;
-        oriDot.mouseChildren = false;
-
-        this.maskContainer.addChild(oriDot);
-        this.oriDot = oriDot;
     }
 
     /*
@@ -836,6 +836,8 @@ export default class ControlMask {
 
         //绘制坐标原点
         let ori_point = matrix.transformPoint(0, 0);
+        this.oriDot.scaleX = this.scaleNum;
+        this.oriDot.scaleY = this.scaleNum;
         this.oriDot.set({x: ori_point.x, y: ori_point.y});
 
         //绘制边线

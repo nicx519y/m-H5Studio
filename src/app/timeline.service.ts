@@ -268,7 +268,7 @@ export class TimelineService {
 			let elementId: string = element.get('elementId');
 			let ele = {
 				elementId: elementId,
-				start: framesObj[elementId],
+				start: framesObj ? framesObj[elementId] : this._currentFrame,
 				duration: 1,
 			};
 			result.push(ele);
@@ -281,6 +281,8 @@ export class TimelineService {
 	 */
 	private getNearKeyFrames(currentFrame: number) {
 		let obj = {};
+		let data = this.getData();
+		if(!data) return null;
 		this.getData().forEach(layer => {
 			obj[layer.getIn(['element', 'id'])] = layer.get('frames').findLast(frame => frame.get('index') <= currentFrame).get('index');
 		});

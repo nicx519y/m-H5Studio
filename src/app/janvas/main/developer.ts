@@ -12,7 +12,7 @@ export default class Developer {
 	private JANVAS_WIDTH = 375;
 	private JANVAS_HEIGHT = 667;
 	private JANVAS_SCALE = 1.04;
-	private scaleRate = 20;				//点击缩放比例 每次20%
+	private SCALE_RATE = 1.2;				//点击缩放比例 每次20%
 
 	//project properties
 	private id:string;					//canvas对象的id，也是stage的id
@@ -225,7 +225,7 @@ export default class Developer {
 				case Developer.MODE.SCALE_MODE: {
 					let beforeScale = parseFloat(this.getScale());
 					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
-					let afterScale = beforeScale + (event.nativeEvent.altKey ? -this.scaleRate : this.scaleRate);
+					let afterScale = event.nativeEvent.altKey ? beforeScale / this.SCALE_RATE : beforeScale * this.SCALE_RATE;
 					let janvasX = this.janvasContainer.x;
 					let janvasY = this.janvasContainer.y;
 
@@ -499,9 +499,6 @@ export default class Developer {
 		this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale * 2;
 		this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale * 2;
 
-		// this.canvasElement.setAttribute('style', ''); = this.janvasSetting.canvasWidth * this.canvasScale;
-		// this.canvasElement.style.height = this.janvasSetting.canvasHeight * this.canvasScale;
-
 		this.canvasElement.setAttribute('style', 
 			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + '); width: ' + 
 			this.janvasSetting.canvasWidth * this.canvasScale + 'px; height: ' + 
@@ -525,11 +522,11 @@ export default class Developer {
 			return;
 		}
 
-		let ratio = 100 / scale;
-
 		if(scale.toString() == (100 / this.canvasScale).toFixed(2)) {
 			return;
 		}
+
+		let ratio = 100 / scale;
 
 		//缩放canvas
 		this.scaleCanvas(ratio);

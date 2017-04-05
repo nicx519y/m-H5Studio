@@ -647,7 +647,7 @@ export default class ControlMask {
         });
     }
 
-    public selectedElement(elementList:Array<any>) {
+    public selectedElement(elementList:Array<any>, isUserSelect?:Boolean) {
         let returnData = null;
 
         this.elementList = elementList;
@@ -659,12 +659,12 @@ export default class ControlMask {
             this.markElement(elementList[0]);
 
             Event.triggerHandler('elementMarked', {
-                state: Object.assign({}, this.oriTransformData)
+                state: Object.assign({isUserSelect: !!isUserSelect}, this.oriTransformData)
             });
         } else {
             this.markElements();
 
-            Event.triggerHandler('elementMarked', {});
+            Event.triggerHandler('elementMarked', {isUserSelect: !!isUserSelect});
         }
     }
 

@@ -34,6 +34,7 @@ export class TimelineService {
 	private _texting: TextModel = null;														//当前编辑的文本
 	private _zoom: number = NaN;																//当前视图缩放比例
 	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
+	private _currentFrame: number = 0;
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
 	private _dataGetter: Function;																	//数据来源
 	private _dataId: string;	
@@ -223,7 +224,12 @@ export class TimelineService {
 	 * 获取当前active的帧
 	 */
 	public getActiveFrameIndex(): number {
-		return Math.max(0, Math.min.apply(null, this._activeOptions.map(opt => opt.get('start')).toArray()));
+		// return Math.max(0, Math.min.apply(null, this._activeOptions.map(opt => opt.get('start')).toArray()));
+		return this._currentFrame;
+	}
+
+	public setActiveFrameIndex(idx: number = 0) {
+		this._currentFrame = Math.max(idx, 0);
 	}
 
 	/***
@@ -256,16 +262,29 @@ export class TimelineService {
 	 */
 	private selectionToActiveOptions(): Immutable.List<Map<string, any>> {
 		let result = [];
-		let frameIndex: number = this._selection.get('frameIndex');
+		// let frameIndex: number = this._selection.get('frameIndex');
+		let framesObj = this.getNearKeyFrames(this._currentFrame);
 		this._selection.get('elements').forEach(element => {
+			let elementId: string = element.get('elementId');
 			let ele = {
-				elementId: element.get('elementId'),
-				start: frameIndex,
+				elementId: elementId,
+				start: framesObj[elementId],
 				duration: 1,
 			};
 			result.push(ele);
 		});
 		return Immutable.fromJS(result);
+	}
+
+	/**
+	 * 获取和当前帧最接近的帧
+	 */
+	private getNearKeyFrames(currentFrame: number) {
+		let obj = {};
+		this.getData().forEach(layer => {
+			obj[layer.getIn(['element', 'id'])] = layer.get('frames').findLast(frame => frame.get('index') <= currentFrame).get('index');
+		});
+		return obj;
 	}
 
 	public updateActiveOptionsFromSelection() {

@@ -103,7 +103,6 @@ export class TimelineComponent implements OnInit {
 	}
 
 	public removeActiveTweens() {
-		console.log('remove tweens.');
 		this.service.setData(this.service.setTweens(this.activeOptions.toJS(), {
 			type: TweenType.none,
 			tween: MF.g(TweenModel),
@@ -140,12 +139,18 @@ export class TimelineComponent implements OnInit {
 		let pos = this.getFramePosition(x, y);
 		switch(evt.type) {
 			case 'mouseup':
-				this.service.setActiveOptions(this.range);
-				this.isRange = false;
+				if(this.isRange) {
+					this.service.setActiveOptions(this.range);
+					this.service.setActiveFrameIndex(pos.frame);
+					// this.markingPositionChange(pos.frame);
+					this.isRange = false;
+				}
 				break;
 			case 'mousedown':
-				this.isRange = true;
-				this.range = [pos.frame, pos.layer, pos.frame, pos.layer];
+				if(!this.isRange) {
+					this.isRange = true;
+					this.range = [pos.frame, pos.layer, pos.frame, pos.layer];
+				}
 				break;
 			case 'mousemove':
 				if(!this.isRange) {
@@ -155,14 +160,13 @@ export class TimelineComponent implements OnInit {
 					this.range[3] = pos.layer;
 				}
 
-				this.markingPositionChange(pos.frame);
-
 				break;
 			case 'mouseout':
-				this.isRange = false;
-				this.range = [-1, -1, -1, -1];
-
-				this.markingPositionChange();
+				if(this.isRange) {
+					this.isRange = false;
+					this.range = [-1, -1, -1, -1];
+					// this.markingPositionChange();
+				}
 
 				break;
 		}

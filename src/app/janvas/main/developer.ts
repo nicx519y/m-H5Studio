@@ -42,7 +42,8 @@ export default class Developer {
 		DRAG_ELEMENT: 'dragElement',
 		ELEMENT_CHANGED: 'elementChanged',
 		TEXT_CHANGED: 'textChanged',
-		SCALE_CHANGED: 'scaleChanged'
+		SCALE_CHANGED: 'scaleChanged',
+		MOUSE_CHANGED: 'mouseChanged'
 	}
 
 	//mode list
@@ -201,17 +202,20 @@ export default class Developer {
 		this.stage.on('mouseenter', (event) => {
 			switch(this.devMode) {
 				case Developer.MODE.EDIT_MODE: {
-					this.mouse.updateMouseState(Mouse.STATE.MOUSE_AUTO);
+					// this.mouse.updateMouseState(Mouse.STATE.MOUSE_AUTO);
+					this.changeMouseState(Mouse.STATE.MOUSE_AUTO);
 					break;
 				}
 
 				case Developer.MODE.READ_MODE: {
-					this.mouse.updateMouseState(Mouse.STATE.HAND);
+					// this.mouse.updateMouseState(Mouse.STATE.HAND);
+					this.changeMouseState(Mouse.STATE.HAND);
 					break;
 				}
 
 				case Developer.MODE.TEXT_MODE: {
-					this.mouse.updateMouseState(Mouse.STATE.TEXT);
+					// this.mouse.updateMouseState(Mouse.STATE.TEXT);
+					this.changeMouseState(Mouse.STATE.TEXT);
 					break;
 				}
 			}
@@ -251,7 +255,8 @@ export default class Developer {
 						y: event.stageY
 					};
 
-					this.mouse.updateMouseState(Mouse.STATE.DRAGE);
+					// this.mouse.updateMouseState(Mouse.STATE.DRAGE);
+					this.changeMouseState(Mouse.STATE.DRAGE);
 					break;
 				}
 
@@ -318,7 +323,8 @@ export default class Developer {
 				}
 				case Developer.MODE.READ_MODE: {
 					this.startDrag = false;
-					this.mouse.updateMouseState(Mouse.STATE.HAND);
+					// this.mouse.updateMouseState(Mouse.STATE.HAND);
+					this.changeMouseState(Mouse.STATE.HAND);
 					break;
 				}
 			}
@@ -356,7 +362,8 @@ export default class Developer {
 		});
 
 		Event.addEventHandler('mouseStateChange', (state) => {
-			this.mouse.updateMouseState(state);
+			// this.mouse.updateMouseState(state);
+			this.changeMouseState(state);
 		});
 	}
 
@@ -691,6 +698,10 @@ export default class Developer {
 	*/
 	public removeEventHandler(eventName:string) {
 		delete this.eventList[eventName];
+	}
+
+	private changeMouseState(stateName:string) {
+		this.triggerHandler(Developer.EVENTS.MOUSE_CHANGED, {state: stateName});
 	}
 
 	/*

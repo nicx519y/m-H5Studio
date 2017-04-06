@@ -168,7 +168,12 @@ export class CanvasComponent implements OnInit {
 
                 target.addEventHandler(
                     Developer.EVENTS.TEXT_CHANGED,
-                    this.janvastextHandler.bind(this)
+                    this.janvasTextHandler.bind(this)
+                );
+
+                target.addEventHandler(
+                    Developer.EVENTS.MOUSE_CHANGED,
+                    this.janvasMouseHandler.bind(this)
                 );
 
 				this.isJanvasInited = true;
@@ -248,7 +253,7 @@ export class CanvasComponent implements OnInit {
         this.timelineService.setZoom(scaleNum);
     }
 
-    private janvastextHandler(returnObj: any) {
+    private janvasTextHandler(returnObj: any) {
         if (returnObj.isDestroy) {
             this.timelineService.clearTexting();
         } else {
@@ -263,6 +268,10 @@ export class CanvasComponent implements OnInit {
                 );
             }
         }
+    }
+
+    private janvasMouseHandler(returnObj: any) {
+        
     }
 
     /**

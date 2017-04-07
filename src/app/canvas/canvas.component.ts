@@ -31,10 +31,7 @@ import { List, Map as ImmutableMap, Record } from 'immutable';
     selector: 'ide-canvas',
     templateUrl: './canvas.component.html',
     styleUrls: ['./canvas.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    styles: [
-        
-    ]
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CanvasComponent implements OnInit {
     private CANVAS_ELEMENT_ID = 'dev';
@@ -99,7 +96,7 @@ export class CanvasComponent implements OnInit {
         this.box.nativeElement.style.width = w + 'px';
         this.box.nativeElement.style.height = h + 'px';
 
-        this.janvas.resizeJanvasDev(w, h);
+        this.janvas && this.janvas.resizeJanvasDev(w, h);
     }
 
     ngOnInit() {
@@ -213,12 +210,12 @@ export class CanvasComponent implements OnInit {
      *  selectionElement: any[]
      * }
 	 */
-    private janvasSelectedHandler(selection: any[]) {
+    private janvasSelectedHandler(selection: any) {
         let elements = Immutable.List<SelectionElementModel>();
         const section = this.timelineService.getSelection();
         let frameIndex;
 
-        selection.forEach((ele) => {
+        selection.elementList.forEach((ele) => {
             elements = elements.push(MF.g(SelectionElementModel, {
                 elementId: ele.elementId,
                 elementState: MF.g(ElementStateModel, ele.state),
@@ -234,7 +231,8 @@ export class CanvasComponent implements OnInit {
 
         this.timelineService.setSelection(MF.g(SelectionModel, {
             frameIndex: frameIndex,
-            elements: elements
+            elements: elements,
+            isUserSelect: selection.isUserSelect
         }));
     }
 

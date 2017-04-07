@@ -243,14 +243,14 @@ export class ElementModel extends Record({
 export class SelectionElementModel extends Record({
 	elementId: '',
 	elementState: new ElementStateModel(),
-	transformBounds: new Rectangle(),
-	isUserSelect: false,
+	transformBounds: new Rectangle()
 }) {
 
 }
 
 export class SelectionModel extends Record({
 	frameIndex: 0,
+	isUserSelect: false,
 	elements: Immutable.List<SelectionElementModel>()
 }) {
 

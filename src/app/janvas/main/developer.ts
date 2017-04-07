@@ -344,17 +344,20 @@ export default class Developer {
 		});
 
 		Event.addEventHandler('elementMarked', (elementData) => {
-			let returnElements = [];
+			let elementList = [];
 
 			this.nowChooseElement.map((ele, index) => {
 				if(elementData) {
 					elementData.transformedBounds = ele.getTransformedBounds();
 				}
 				
-				returnElements.push(this.fmtReturnObj(ele.janvasInstance, Object.assign({}, elementData)));
+				elementList.push(this.fmtReturnObj(ele.janvasInstance, Object.assign({}, elementData)));
 			});
 
-			this.triggerHandler(Developer.EVENTS.ELEMENT_SELECTED, returnElements);
+			this.triggerHandler(Developer.EVENTS.ELEMENT_SELECTED, {
+				elementList: elementList,
+				isUserSelect: elementData.isUserSelect
+			});
 		});
 
 		Event.addEventHandler('textChanged', (addedData) => {

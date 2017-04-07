@@ -663,7 +663,8 @@ export default class ControlMask {
             this.markElement(elementList[0]);
 
             Event.triggerHandler('elementMarked', {
-                state: Object.assign({isUserSelect: !!isUserSelect}, this.oriTransformData)
+                state: Object.assign({}, this.oriTransformData),
+                isUserSelect: !!isUserSelect
             });
         } else {
             this.markElements();

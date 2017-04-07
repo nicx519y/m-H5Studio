@@ -91,7 +91,7 @@ export class CanvasComponent implements OnInit {
         this.box.nativeElement.style.width = w + 'px';
         this.box.nativeElement.style.height = h + 'px';
 
-        this.janvas.resizeJanvasDev(w, h);
+        this.janvas && this.janvas.resizeJanvasDev(w, h);
     }
 
     ngOnInit() {

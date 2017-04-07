@@ -228,6 +228,7 @@ export class SelectionElementModel extends Record({
 	elementId: '',
 	elementState: new ElementStateModel(),
 	transformBounds: new Rectangle(),
+	isUserSelect: false,
 }) {
 
 }

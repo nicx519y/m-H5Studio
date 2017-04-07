@@ -200,6 +200,10 @@ export class CanvasComponent implements OnInit {
 
     /**
 	 * janvas选中元素后操作
+     * selection : {
+     *  isUserSelect: boolean,
+     *  selectionElement: any[]
+     * }
 	 */
     private janvasSelectedHandler(selection: any[]) {
         let elements = Immutable.List<SelectionElementModel>();

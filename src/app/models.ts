@@ -47,6 +47,22 @@ export enum EditorState {
 	move,				// 移动视图
 }
 
+export enum MouseState {
+	mouseAuto,				// 正常状态
+	hand,					// 手型
+	drage,					// 拖拽
+	mouseMove,				// 移动
+	skewElementTopBottom,	// Y形变
+	skewElementLeftRight,	// X形变
+	rotate,					// 左上旋转
+	textElement,			// 文字
+	mouseMoveReg,			// 移动中心点
+	scaleTopBottom,			// 上下箭头缩放
+	scaleLeftRight,			// 左右箭头缩放
+	scaleTopLeft,			// 左斜箭头缩放
+	scaleTopRight,			// 右斜箭头缩放
+}
+
 export enum Ease {		// 具体请参照createjs Ease类
 	backIn,
 	backInOut,

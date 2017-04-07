@@ -64,9 +64,9 @@ export default class ControlMask {
 
         this.controlConf = controlConf;
 
-        this.dotHoverClass = [Mouse.STATE.SCALE_TILT_LEFT, Mouse.STATE.SCALE_TOP_BOTTOM, Mouse.STATE.SCALE_TILT_RIGHT, 
+        this.dotHoverClass = [Mouse.STATE.SCALE_TOP_LEFT, Mouse.STATE.SCALE_TOP_BOTTOM, Mouse.STATE.SCALE_TOP_RIGHT, 
                             Mouse.STATE.SCALE_LEFT_RIGHT, Mouse.STATE.MOUSE_MOVE_REG, Mouse.STATE.SCALE_LEFT_RIGHT, 
-                            Mouse.STATE.SCALE_TILT_RIGHT, Mouse.STATE.SCALE_TOP_BOTTOM, Mouse.STATE.SCALE_TILT_LEFT];
+                            Mouse.STATE.SCALE_TOP_RIGHT, Mouse.STATE.SCALE_TOP_BOTTOM, Mouse.STATE.SCALE_TOP_LEFT];
 
         this.initMaskDots();
 
@@ -169,19 +169,23 @@ export default class ControlMask {
 
                     switch(index) {
                         case 0: {
-                            state = Mouse.STATE.ROTATE_LEFT_TOP;
+                            // state = Mouse.STATE.ROTATE_LEFT_TOP;
+                            state = Mouse.STATE.ROTATE;
                             break;
                         }
                         case 1: {
-                            state = Mouse.STATE.ROTATE_RIGHT_TOP;
+                            // state = Mouse.STATE.ROTATE_RIGHT_TOP;
+                            state = Mouse.STATE.ROTATE;
                             break;
                         }
                         case 3: {
-                            state = Mouse.STATE.ROTATE_LEFT_BOTTOM;
+                            // state = Mouse.STATE.ROTATE_LEFT_BOTTOM;
+                            state = Mouse.STATE.ROTATE;
                             break;
                         }
                         case 4: {
-                            state = Mouse.STATE.ROTATE_RIGHT_BOTTOM;
+                            // state = Mouse.STATE.ROTATE_RIGHT_BOTTOM;
+                            state = Mouse.STATE.ROTATE;
                             break;
                         }
                     }

@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import {
     MainModel, EditorState, ElementModel, ElementStateModel,
-    FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF, TextModel
+    FrameModel, PageModel, ItemModel, SelectionModel, SelectionElementModel, Rectangle, MF, TextModel, MouseState
 } from '../models';
 import { TimelineService } from '../timeline.service';
 import Developer from '../janvas/main/developer';
@@ -32,12 +32,20 @@ import { List, Map as ImmutableMap, Record } from 'immutable';
     templateUrl: './canvas.component.html',
     styleUrls: ['./canvas.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: [
+        
+    ]
 })
 export class CanvasComponent implements OnInit {
     private CANVAS_ELEMENT_ID = 'dev';
+
     private janvas: any;
     private isJanvasInited = false;
     private modeMap: Map<EditorState, any> = new Map<EditorState, any>();
+    private mouseStateMap: Map<MouseState, any> = new Map<MouseState, any>();
+    private iconBasePath: '../../assets/app/image';
+
+    private 
 
     @ViewChild('dev')
     private devCanvas: ElementRef;
@@ -271,7 +279,12 @@ export class CanvasComponent implements OnInit {
     }
 
     private janvasMouseHandler(returnObj: any) {
-        
+        if(!returnObj) {
+            return;
+        }
+        console.log(returnObj.state);
+
+        return this.iconBasePath + returnObj.state;
     }
 
     /**

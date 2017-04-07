@@ -22,12 +22,13 @@ export default class Mouse {
         ROTATE_LEFT_BOTTOM: 'rotateElementLeftBottom',
         ROTATE_RIGHT_TOP: 'rotateElementRightTop',
         ROTATE_RIGHT_BOTTOM: 'rotateElementRightBottom',
+        ROTATE: 'rotate',
         TEXT: 'textElement',
         MOUSE_MOVE_REG: 'mouseMoveReg',
         SCALE_TOP_BOTTOM: 'scaleTopBottom',
         SCALE_LEFT_RIGHT: 'scaleLeftRight',
-        SCALE_TILT_LEFT: 'scaleTiltLeft',
-        SCALE_TILT_RIGHT: 'scaleTiltRight',
+        SCALE_TOP_LEFT: 'scaleTiltLeft',
+        SCALE_TOP_RIGHT: 'scaleTiltRight',
     }
 
     private iconPath = {};

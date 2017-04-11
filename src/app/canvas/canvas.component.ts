@@ -40,9 +40,7 @@ export class CanvasComponent implements OnInit {
     private isJanvasInited = false;
     private modeMap: Map<EditorState, any> = new Map<EditorState, any>();
     private mouseStateMap: Map<MouseState, any> = new Map<MouseState, any>();
-    private iconBasePath: '../../assets/app/image';
-
-    private 
+    private iconBasePath = '../../assets/app/image/';
 
     @ViewChild('dev')
     private devCanvas: ElementRef;
@@ -77,6 +75,8 @@ export class CanvasComponent implements OnInit {
 
     @Input()
     private scaleNum: number;
+
+    public cursorImg;
 
     constructor(
         private timelineService: TimelineService,
@@ -284,9 +284,9 @@ export class CanvasComponent implements OnInit {
         if(!returnObj) {
             return;
         }
-        console.log(returnObj.state);
+        console.log(this.iconBasePath + returnObj.state + '.png');
 
-        return this.iconBasePath + returnObj.state;
+        this.cursorImg = this.iconBasePath + returnObj.state + '.png';
     }
 
     /**

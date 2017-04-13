@@ -238,8 +238,8 @@ export default class Developer {
 					this.setScale(afterScale, () => {
 						let ratio = beforeScale / afterScale;
 						//根据点击的坐标计算缩放带来的偏移量，然后在缩放后平移达到定点缩放的效果
-						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale);
-						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale);
+						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale) * ratio;
+						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale) * ratio;
 					});
 					
 					break;
@@ -358,7 +358,7 @@ export default class Developer {
 
 			this.triggerHandler(Developer.EVENTS.ELEMENT_SELECTED, {
 				elementList: elementList,
-				isUserSelect: elementData.isUserSelect
+				isUserSelect: elementData == null ? true : elementData.isUserSelect
 			});
 		});
 
@@ -549,8 +549,8 @@ export default class Developer {
 		
 		//重新定位janvasContainer
 		this.janvasContainer.set({
-			x: (this.canvasElement.width / 2 - this.janvasContainer.width * scale / 100), 
-			y: (this.canvasElement.height / 2 - this.janvasContainer.height * scale / 100), 
+			x: (this.canvasElement.width * 50 / scale - this.janvasContainer.width) / 2, 
+			y: (this.canvasElement.height * 50 / scale - this.janvasContainer.height) / 2, 
 			width: this.janvasContainer.width,
 			height: this.janvasContainer.height
 		});

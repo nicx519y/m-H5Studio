@@ -641,7 +641,7 @@ export default class ControlMask {
             new createjs.AlphaMaskFilter(box.cacheCanvas)
         ];
 
-        this.copyElement.cache(0, 0, elementBounds.width, elementBounds.height);
+        // this.copyElement.cache(0, 0, elementBounds.width, elementBounds.height);
     }
 
     public setPosition(position:any) {

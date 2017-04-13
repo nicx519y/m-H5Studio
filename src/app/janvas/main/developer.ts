@@ -113,8 +113,8 @@ export default class Developer {
 
 		this.controlMask = new ControlMask({
 			color: '#000000',
-			width: 2,
-			dotRadius: 5
+			width: 1,
+			dotRadius: 4
 		});
 
 		//设置鼠标
@@ -129,7 +129,7 @@ export default class Developer {
 			this.mouse.scaleMouse(this.canvasScale);
 			this.stage.addChild(this.mouse.getInstance());
 
-			this.controlMask.scaleCase(this.canvasScale);
+			// this.controlMask.scaleCase(this.canvasScale);
 
 			if(!this.devMode && typeof this.devMode != 'number') {
 				this.devMode = Developer.MODE.EDIT_MODE;
@@ -238,8 +238,8 @@ export default class Developer {
 					this.setScale(afterScale, () => {
 						let ratio = beforeScale / afterScale;
 						//根据点击的坐标计算缩放带来的偏移量，然后在缩放后平移达到定点缩放的效果
-						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale) * ratio;
-						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale) * ratio;
+						this.janvasContainer.x = (janvasX - beforePoint.x * (afterScale - beforeScale) / beforeScale);
+						this.janvasContainer.y = (janvasY - beforePoint.y * (afterScale - beforeScale) / beforeScale);
 					});
 					
 					break;
@@ -506,16 +506,13 @@ export default class Developer {
 	 * 调整janvas-dev的canvas大小
 	*/
 	private scaleCanvas() {
-		// this.canvasScale = scale;
 		let ratio = 2;
 
 		this.canvasElement.width = this.janvasSetting.canvasWidth * ratio;
 		this.canvasElement.height = this.janvasSetting.canvasHeight * ratio;
 
 		this.canvasElement.setAttribute('style', 
-			'transform-origin: 0 0 0; transform: scale(' + 1 / ratio + '); width: ' + 
-			this.janvasSetting.canvasWidth + 'px; height: ' + 
-			this.janvasSetting.canvasHeight + 'px;'
+			'transform-origin: 0 0 0; transform: scale(' + 1 / ratio + ');'
 		);
 	}
 
@@ -552,15 +549,15 @@ export default class Developer {
 		
 		//重新定位janvasContainer
 		this.janvasContainer.set({
-			x: (parseInt(this.canvasElement.style.width) * 2 - this.janvasContainer.width) / 2, 
-			y: (parseInt(this.canvasElement.style.height) * 2 - this.janvasContainer.height) / 2, 
+			x: (this.canvasElement.width / 2 - this.janvasContainer.width * scale / 100), 
+			y: (this.canvasElement.height / 2 - this.janvasContainer.height * scale / 100), 
 			width: this.janvasContainer.width,
 			height: this.janvasContainer.height
 		});
 
 		//缩放相关部件
 		this.mouse.scaleMouse(ratio);
-		this.controlMask.scaleCase(ratio);
+		// this.controlMask.scaleCase(ratio);
 
 		//重新选取选择的element
 		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {

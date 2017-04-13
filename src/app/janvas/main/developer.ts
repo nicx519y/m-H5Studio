@@ -82,7 +82,9 @@ export default class Developer {
 		console.info('Janvas－developer初始化');
 
 		//调整canvas缩放 容下janvas画布
-		this.scaleCanvas(scale);
+		this.scaleCanvas();
+		this.canvasScale = scale;
+		window['jScale'] = 2 * scale / 100;
 
 		//创建主画布
 		this.stage = new createjs.Stage(this.id);
@@ -503,16 +505,17 @@ export default class Developer {
 	/*
 	 * 调整janvas-dev的canvas大小
 	*/
-	private scaleCanvas(scale:number) {
-		this.canvasScale = scale;
+	private scaleCanvas() {
+		// this.canvasScale = scale;
+		let ratio = 2;
 
-		this.canvasElement.width = this.janvasSetting.canvasWidth * this.canvasScale * 2;
-		this.canvasElement.height = this.janvasSetting.canvasHeight * this.canvasScale * 2;
+		this.canvasElement.width = this.janvasSetting.canvasWidth * ratio;
+		this.canvasElement.height = this.janvasSetting.canvasHeight * ratio;
 
 		this.canvasElement.setAttribute('style', 
-			'transform-origin: 0 0 0; transform: scale(' + 1 / this.canvasScale + '); width: ' + 
-			this.janvasSetting.canvasWidth * this.canvasScale + 'px; height: ' + 
-			this.janvasSetting.canvasHeight * this.canvasScale + 'px;'
+			'transform-origin: 0 0 0; transform: scale(' + 1 / ratio + '); width: ' + 
+			this.janvasSetting.canvasWidth + 'px; height: ' + 
+			this.janvasSetting.canvasHeight + 'px;'
 		);
 	}
 
@@ -539,12 +542,9 @@ export default class Developer {
 		let ratio = 100 / scale;
 
 		//缩放canvas
-		// if(window['jScale']) {
-		// 	window['jScale'] = .5;
-		// } else {
-			this.scaleCanvas(ratio);
-		// }
-		
+		this.scaleCanvas();
+		this.canvasScale = ratio;
+		window['jScale'] = 2 * scale / 100;
 
 		//重新绘制背景
 		this.stageBg.graphics.clear().beginFill('#f5f5f5').

@@ -13,7 +13,7 @@
   },
   "private": true,
   "dependencies": {
-    "@JDB/janvas": ">=0.5.0",
+    "@JDB/janvas": ">=0.6.11",
     "@JDB/janvas-developer": ">=0.0.1",
     "@angular/common": "^2.4.3",
     "@angular/compiler": "^2.4.3",

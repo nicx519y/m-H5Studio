@@ -539,7 +539,12 @@ export default class Developer {
 		let ratio = 100 / scale;
 
 		//缩放canvas
-		this.scaleCanvas(ratio);
+		// if(window['jScale']) {
+		// 	window['jScale'] = .5;
+		// } else {
+			this.scaleCanvas(ratio);
+		// }
+		
 
 		//重新绘制背景
 		this.stageBg.graphics.clear().beginFill('#f5f5f5').

@@ -9,6 +9,8 @@ import {
 	ElementModel,
 	SelectionElementModel,
 	SelectionModel,
+	ActiveRangeModel,
+	ActiveOptionModel,
 	ElementStateModel,
 	TweenModel,
 	TweenType,
@@ -33,7 +35,7 @@ export class TimelineService {
 	private _selection: SelectionModel = new SelectionModel();									//用于跟janvas交互的选取元素
 	private _texting: TextModel = null;														//当前编辑的文本
 	private _zoom: number = NaN;																//当前视图缩放比例
-	private _activeOptions: List<Immutable.Map<string, number>> = Immutable.List<Immutable.Map<string, any>>();		//时间轴的选中区域
+	private _activeOptions: ActiveOptionModel = new ActiveOptionModel();		//时间轴的选中区域
 	private _currentFrame: number = 0;
 	private _dataType: TimelineDataType;														//数据类型，标识是page数据还是item数据，或者其他的可编辑元素
 	private _dataGetter: Function;																	//数据来源
@@ -78,10 +80,16 @@ export class TimelineService {
 		}
 	}
 
+	/**
+	 * 判断是否有数据
+	 */
 	public hasData(): boolean {
 		return (this.getData() !== null);
 	}
 
+	/**
+	 * 获取图层数据
+	 */
 	public getData(): List<LayerModel> {
 		if(this._dataType === TimelineDataType.Page) {
 			return this._dataGetter(this._dataId).get('layers');
@@ -92,6 +100,10 @@ export class TimelineService {
 		}
 	}
 
+	/**
+	 * 设置图层数据
+	 * @param data 图层数据
+	 */
 	public setData(data: List<LayerModel>) {
 		if(this._dataType === TimelineDataType.Page) {
 			this.pagesService.setPageById(
@@ -104,12 +116,21 @@ export class TimelineService {
 				this._dataId
 			);
 		}
+
+		this.resetActiveFrameIndexByActiveOptions();
 	}
 
+	/**
+	 * 获取当前zoom值
+	 */
 	public getZoom(): number {
 		return this._zoom;
 	}
 
+	/**
+	 * 设置场景缩放
+	 * @param zoom 场景缩放值
+	 */
 	public setZoom(zoom: number) {
 		this._zoom = zoom;
 	}
@@ -127,6 +148,10 @@ export class TimelineService {
 	public setSelection(selection: SelectionModel) {
 		if(!Immutable.fromJS(selection.toJS()).equals(Immutable.fromJS(this._selection.toJS()))) {
 			this._selection = selection;
+			console.log('selection change: ', this._selection.toJS());
+			if(this._selection.get('isUserSelect') === true) {
+				this._activeOptions = this.selectionToActiveOptions();
+			}
 		}
 	}
 
@@ -179,19 +204,31 @@ export class TimelineService {
 		this.setTextById(eleId, text);
 	}
 
-	public getActiveOptions(): List<Map<string, any>> {
+	/**
+	 * 获取选中帧状态
+	 */
+	public getActiveOptions(): ActiveOptionModel {
 		return this._activeOptions;
 	}
 
-	public resetActiveOptions() {
-		this._activeOptions = Immutable.List<Map<string, any>>();
+	/**
+	 * 重置选中帧状态
+	 */
+	public resetActiveOptions(isUserActive: boolean = true) {
+		this.setActiveOptions([], true, isUserActive);
 	}
 
+	/**
+	 * 设置选中帧状态
+	 * @param options 选中帧options
+	 * @param isRange 是否成区域
+	 */
 	public setActiveOptions(
-		options: number[] | { elementId: string, start: number, duration: number, }[], 
-		isRange: boolean = true
+		options: any[],
+		isRange: boolean = true,
+		isUserActive = true,
 	) {
-		let ao: List<Map<string, any>>;
+		let ao: List<ActiveRangeModel> = Immutable.List<ActiveRangeModel>();
 		if(isRange) {
 			let range = options as number[];
 			if(range.length < 4) {
@@ -202,21 +239,32 @@ export class TimelineService {
 			let layer1 = Math.min(range[1], range[3]);
 			let frame2 = Math.max(range[0], range[2]);
 			let layer2 = Math.max(range[1], range[3]);
-			ao = Immutable.List<Map<string, any>>();
 			this.getData().forEach((layer, index) => {
 				(index >= layer1 && index <= layer2) &&
-				(ao = ao.push(Immutable.Map<string, any>({
+				(ao = ao.push(new ActiveRangeModel({
 					elementId: layer.getIn(['element', 'id']),
 					start: frame1,
 					duration: frame2 - frame1 + 1,
 				})));
 			});
+			//设置当前播放的帧
+			this.setActiveFrameIndex(range[2]);
 		} else {
-			ao = Immutable.fromJS(options as {elementId: string, start: number, duration: number }[]).toList();
+			options.forEach(opt => ao = ao.push(new ActiveRangeModel(opt)));
 		}
 
-		if(!Immutable.is(ao, this._activeOptions)) {
-			this._activeOptions = ao;
+		let activeOptions: ActiveOptionModel = new ActiveOptionModel({
+			isUserActive: isUserActive,
+			ranges: ao
+		});
+
+		if(!Immutable.is(activeOptions, this._activeOptions)) {
+			this._activeOptions = activeOptions;
+			console.log('active options change: ', this._activeOptions.toJS());
+			//根据active options的改变，改变selection
+			if(this._activeOptions.get('isUserActive') === true) {
+				this._selection = this.activeOptionsToSelection();
+			}
 		}
 	}
 
@@ -224,56 +272,57 @@ export class TimelineService {
 	 * 获取当前active的帧
 	 */
 	public getActiveFrameIndex(): number {
-		// return Math.max(0, Math.min.apply(null, this._activeOptions.map(opt => opt.get('start')).toArray()));
 		return this._currentFrame;
 	}
 
-	public setActiveFrameIndex(idx: number = 0) {
-		this._currentFrame = Math.max(idx, 0);
+	/**
+	 * 设置当前播放的帧
+	 * @param idx 设置的帧数
+	 */
+	private setActiveFrameIndex(idx: number = 0) {
+		this._currentFrame = Math.min(Math.max(idx, 0), this.getFrameCount() - 1);
+	}
+
+	/**
+	 * 根据帧的选中状态重设当前播放帧
+	 */
+	private resetActiveFrameIndexByActiveOptions() {
+		this.setActiveFrameIndex(Math.max.apply(null, this._activeOptions.get('ranges').toJS().map(opt => opt.start + opt.duration - 1)));
 	}
 
 	/***
 	 * active options 到 selection 的换算关系
 	 */
 	private activeOptionsToSelection(): SelectionModel {
-		let frameIndex: number = 0;
-		if(this._activeOptions.size > 0) {
-			frameIndex = Math.min.apply(null, 
-				this._activeOptions.filter(ao => ao.get('duration') > 0)
-					.map(ao => ao.get('start')).toArray()
-			);
-		}
-		let elements: Immutable.List<SelectionElementModel> = Immutable.List<SelectionElementModel>();
-		this._activeOptions.forEach(ao => {
-			elements = elements.push(MF.g(SelectionElementModel, {
-				elementId: ao.get('elementId'),
-				elementState: null,
-			}));
-		});
-		
-		return MF.g(SelectionModel, {
-			frameIndex: frameIndex,
-			elements: elements
+		let elementIds: string[] = this.getElementsOfActiveRangesInCurrentFrame();
+		let elements: Immutable.List<SelectionElementModel> = Immutable.fromJS(elementIds.map(id => new SelectionElementModel({ elementId: id }))).toList();
+		return new SelectionModel({
+			elements: elements,
+			isUserSelect: false,
 		});
 	}
 
 	/**
 	 * selection 到 active options 的换算关系
 	 */
-	private selectionToActiveOptions(): Immutable.List<Map<string, any>> {
-		let result = [];
+	private selectionToActiveOptions(): ActiveOptionModel {
+		let result = Immutable.List<ActiveRangeModel>();
 		// let frameIndex: number = this._selection.get('frameIndex');
 		let framesObj = this.getNearKeyFrames(this._currentFrame);
 		this._selection.get('elements').forEach(element => {
 			let elementId: string = element.get('elementId');
+			let frame = framesObj[elementId];
 			let ele = {
 				elementId: elementId,
-				start: framesObj ? framesObj[elementId] : this._currentFrame,
-				duration: 1,
+				start: frame ? frame.get('index') : -1,
+				duration: frame ? frame.get('duration') : 0,
 			};
-			result.push(ele);
+			result = result.push(new ActiveRangeModel(ele));
 		});
-		return Immutable.fromJS(result);
+		return new ActiveOptionModel({
+			isUserActive: false,
+			ranges: result
+		});
 	}
 
 	/**
@@ -284,31 +333,14 @@ export class TimelineService {
 		let data = this.getData();
 		if(!data) return null;
 		this.getData().forEach(layer => {
-			obj[layer.getIn(['element', 'id'])] = layer.get('frames').findLast(frame => frame.get('index') <= currentFrame).get('index');
+			obj[layer.getIn(['element', 'id'])] = layer.get('frames').findLast(frame => frame.get('index') <= currentFrame);
 		});
 		return obj;
 	}
 
-	public updateActiveOptionsFromSelection() {
-		let newAO = this.selectionToActiveOptions();
-		if(newAO.size === 0) return;		//如果selection为空，则不更新activeOption
-		if(newAO.size != this._activeOptions.size
-			|| !Immutable.is(newAO.map(ao => ao.get('elementId')), this._activeOptions.map(ao => ao.get('elementId')))
-			|| !Immutable.is(newAO.map(ao => ao.get('start')), this._activeOptions.map(ao => ao.get('start')))
-		) {
-			console.log('not same: ', newAO.toJS(), this._activeOptions.toJS());
-			this._activeOptions = newAO;	
-		}
-	}
-
-	public updateSelectionFromActiveOptions() {
-		let newSelection = this.activeOptionsToSelection();
-		if(!Immutable.is(Immutable.fromJS(newSelection.toJS()), Immutable.fromJS(this._selection.toJS()))) {
-			console.log('update selection: ', newSelection.toJS());
-			this._selection = newSelection;
-		}
-	}
-
+	/**
+	 * 获取总帧长
+	 */
 	public getFrameCount(): number {
 		if(!this.getData() || this.getData().size <= 0) return 0;
 		let count: number = 0;
@@ -344,6 +376,10 @@ export class TimelineService {
 		this.addElement(newElement, layerName, firstFrameState);
 	}
 
+	/**
+	 * 删除元素
+	 * @param elementId 元素id
+	 */
 	public removeElement(elementId: string) {
 		if(!this.hasData()) return;
 		let model: List<LayerModel> = this.getData();
@@ -361,6 +397,11 @@ export class TimelineService {
 		(!Immutable.is(Immutable.fromJS(this.getData().toJS()), Immutable.fromJS(data).toJS())) && (this.setData(data));
 	}
 
+	/**
+	 * 交换两个元素图层位置
+	 * @param eleId1 元素1的id
+	 * @param eleId2 元素2的id
+	 */
 	public swapElements(eleId1: string, eleId2: string) {
 		let idx1: number = this.getData().findIndex(layer => layer.getIn(['element', 'id']) === eleId1);
 		let idx2: number = this.getData().findIndex(layer => layer.getIn(['element', 'id']) === eleId2);
@@ -371,6 +412,10 @@ export class TimelineService {
 		}
 	}
 
+	/**
+	 * 向上移动元素的图层位置
+	 * @param elementIds 元素id集合
+	 */
 	public upElements(elementIds: string[]) {
 		let eleIdxs: number[] = elementIds.map(id => this.getData().findIndex(layer => layer.getIn(['element', 'id']) === id));
 		eleIdxs = eleIdxs.sort((a, b) => {
@@ -395,6 +440,10 @@ export class TimelineService {
 		this.setData(tempData);
 	}
 
+	/**
+	 * 向下移动元素图层位置
+	 * @param elementIds 元素id集合
+	 */
 	public downElements(elementIds: string[]) {
 		let eleIdxs: number[] = elementIds.map(id => this.getData().findIndex(layer => layer.getIn(['element', 'id']) === id));
 		eleIdxs = eleIdxs.sort((a, b) => {
@@ -419,6 +468,11 @@ export class TimelineService {
 		this.setData(tempData);
 	}
 
+	/**
+	 * 设置关键帧
+	 * @param options 帧的开始和结束
+	 * @param frameOptions 帧属性
+	 */
 	public setToKeyFrames(options: {
 		elementId: string,
 		start: number,
@@ -503,9 +557,15 @@ export class TimelineService {
 				}
 				return layer.set('frames', frames);
 			}).toList();
+
+
 		return this.resetDuration(data);
 	}
 
+	/**
+	 * 设置玮帧
+	 * @param options 帧长度属性
+	 */
 	public changeToFrames(options: {
 		elementId: string,
 		start: number,
@@ -521,6 +581,10 @@ export class TimelineService {
 		return this.resetDuration(data);
 	}
 
+	/**
+	 * 删除关键帧
+	 * @param options 
+	 */
 	public removeKeyFrames(options: {
 		elementId: string,
 		start: number,
@@ -542,6 +606,10 @@ export class TimelineService {
 		return this.resetDuration(data);
 	}
 
+	/**
+	 * 删除帧
+	 * @param options 
+	 */
 	public removeFrames(options: {
 		elementId: string,
 		start: number,
@@ -570,6 +638,11 @@ export class TimelineService {
 		return this.resetDuration(data);
 	}
 
+	/**
+	 * 设置帧动画
+	 * @param options 
+	 * @param tweenOptions 
+	 */
 	public setTweens(options: {
 		elementId: string,
 		start: number,
@@ -604,10 +677,61 @@ export class TimelineService {
 		return data;
 	}
 
+	/**
+	 * 移动帧
+	 * @param idxs 
+	 * @param eleIds 
+	 */
 	public moveFrames(idxs: number[], eleIds: string[]) {
 		//...todo
 	}
 
+	/**
+	 * 在当前帧以及在当前选区范围内，获取存在的element
+	 */
+	private getElementsOfActiveRangesInCurrentFrame(): string[] {
+		if(this._activeOptions.get('ranges').size <= 0) {
+			return[];
+		}
+
+		let ranges: List<ActiveRangeModel> = this._activeOptions.get('ranges');
+		let layers: List<LayerModel> = this.getData().filter(layer => {
+			let range: ActiveRangeModel = ranges.find(range => range.get('elementId') === layer.getIn(['element', 'id']));
+			if(!range || this._currentFrame < range.get('start') || this._currentFrame >= range.get('start') + range.get('duration')) {
+				return false;
+			}
+			let isEmpty: boolean = this.isEmptyInFrames(layer.get('frames'), this._currentFrame);
+			console.log('isEmpty: ', isEmpty);
+			return (!isEmpty);
+		}).toList();
+
+		return layers.map(layer => layer.getIn(['element', 'id'])).toJS();
+	}
+
+	/**
+	 * 判断在一个帧的集合中，某一帧是否是空帧
+	 * @param frames 帧的集合 
+	 * @param frameIndex 要判断的帧序号
+	 */
+	private isEmptyInFrames(frames: List<FrameModel>, frameIndex: number): boolean {
+		let result: boolean = true;
+		for(let i = 0; i < frames.size; i ++) {
+			let frame = frames.get(i);
+			if(frame.get('isEmptyFrame') === false 
+				&& frameIndex >= frame.get('index') 
+					&& frameIndex < frame.get('index') + frame.get('duration')) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 重新计算所有帧的duration
+	 * @param options 
+	 * @returns 返回所有重设后的图层数据
+	 */
 	private resetDuration(options: List<LayerModel>): List<LayerModel> {
 		return options.map(layer => {
 			let frames: List<FrameModel> = layer.get('frames');
@@ -629,13 +753,11 @@ export class TimelineService {
 		}).toList();
 	}
 
-
 	private swapArray(arr: any[], idx1: number, idx2: number) {
 		let e1 = arr[idx1];
 		let e2 = arr[idx2];
 		arr[idx1] = e2;
 		arr[idx2] = e1;
 	}
-
 	
 }

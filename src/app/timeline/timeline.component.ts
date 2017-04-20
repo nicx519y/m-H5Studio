@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewChildren, ElementRef, Input, Output, QueryList, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
 import { TimelineService, TimelineDataType } from '../timeline.service';
-import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel, SelectionModel } from '../models';
+import { MF, LayerModel, TweenType, LayerType, FrameModel, ElementModel, TweenModel, SelectionModel, ActiveOptionModel, ActiveRangeModel } from '../models';
 import { LayerComponent } from '../layer/layer.component';
 import { TimelineRulerComponent } from '../timeline-ruler/timeline-ruler.component';
 
@@ -41,13 +41,16 @@ export class TimelineComponent implements OnInit {
 	model: List<LayerModel>;
 
 	@Input()
-	activeOptions: List<Map<string, any>>;
+	activeOptions: ActiveOptionModel;
 
 	@Input()
 	selection: SelectionModel;
 
 	@Input()
 	frameCount: number;
+
+	@Input()
+	currentFrame: number;
 
 	@Input()
 	dataType: TimelineDataType;
@@ -63,47 +66,77 @@ export class TimelineComponent implements OnInit {
 	}
 
 
+	/**
+	 * 删除选中的元素
+	 */
 	public removeActiveElements() {
 		let ids: string[] = this.getActiveElements();
 		this.service.removeElements(ids);
 	}
 
+	/**
+	 * 移动选中的元素，图层位置向上
+	 */
 	public upActiveElements() {
 		let ids: string[] = this.getActiveElements();
 		this.service.upElements(ids);
 	}
 
+	/**
+	 * 移动选中元素，图层位置向下
+	 */
 	public downActiveElements() {
 		let ids: string[] = this.getActiveElements();
 		this.service.downElements(ids);
 	}
 
+	/**
+	 * 设置选中的帧为关键帧
+	 */
 	public changeActiveToKeyFrames() {
-		this.service.setData(this.service.setToKeyFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.setToKeyFrames(this.activeOptions.get('ranges').toJS()));
 	}
 
+	/**
+	 * 设置选中的帧为空白关键帧
+	 */
 	public changeActiveToEmptyKeyFrames() {
-		this.service.setData(this.service.setToKeyFrames(this.activeOptions.toJS(), { isEmptyFrame: true }));
+		this.service.setData(this.service.setToKeyFrames(this.activeOptions.get('ranges').toJS(), { isEmptyFrame: true }));
 	}
 
+	/**
+	 * 设置选中的帧为帧
+	 */
 	public changeActiveToFrames() {
-		this.service.setData(this.service.changeToFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.changeToFrames(this.activeOptions.get('ranges').toJS()));
 	}
 
+	/**
+	 * 删除选中的关键帧
+	 */
 	public removeActiveKeyFrames() {
-		this.service.setData(this.service.removeKeyFrames(this.activeOptions.toJS()));
+		this.service.setData(this.service.removeKeyFrames(this.activeOptions.get('ranges').toJS()));
 	}
 
+	/**
+	 * 删除选中的帧
+	 */
 	public removeActiveFrames() {
-		this.service.setData(this.service.removeFrames(this.activeOptions.toJS()));
-	}
-	
-	public createActiveTweens() {
-		this.service.setData(this.service.setTweens(this.activeOptions.toJS()));
+		this.service.setData(this.service.removeFrames(this.activeOptions.get('ranges').toJS()));
 	}
 
+	/**
+	 * 创建帧动画
+	 */
+	public createActiveTweens() {
+		this.service.setData(this.service.setTweens(this.activeOptions.get('ranges').toJS()));
+	}
+
+	/**
+	 * 删除帧动画
+	 */
 	public removeActiveTweens() {
-		this.service.setData(this.service.setTweens(this.activeOptions.toJS(), {
+		this.service.setData(this.service.setTweens(this.activeOptions.get('ranges').toJS(), {
 			type: TweenType.none,
 			tween: MF.g(TweenModel),
 		}));
@@ -113,7 +146,7 @@ export class TimelineComponent implements OnInit {
 	 * 获取被选中的所有element索引值
 	 */
 	private getActiveElements(): string[] {
-		return this.activeOptions.map(ao => ao.get('elementId')).toJS();
+		return this.activeOptions.get('ranges').map(ao => ao.get('elementId')).toJS();
 	}
 
 	/**
@@ -121,9 +154,9 @@ export class TimelineComponent implements OnInit {
 	 */
 	private isElementActive(eleId: string): boolean {
 		if(!this.activeOptions || this.activeOptions.size <= 0) return false;
-		let activeOption: Map<string, any> = this.activeOptions.find(ao => ao.get('elementId') === eleId);
-		if(!activeOption) return false;
-		return (activeOption.get('start') >= 0 && activeOption.get('duration') > 0);
+		let range: ActiveRangeModel = this.activeOptions.get('ranges').find(ao => ao.get('elementId') === eleId);
+		if(!range) return false;
+		return (range.get('start') >= 0 && range.get('duration') > 0);
 	}
 
 	private toggleElementVisible(eleId: string) {
@@ -140,9 +173,7 @@ export class TimelineComponent implements OnInit {
 		switch(evt.type) {
 			case 'mouseup':
 				if(this.isRange) {
-					this.service.setActiveOptions(this.range);
-					this.service.setActiveFrameIndex(pos.frame);
-					// this.markingPositionChange(pos.frame);
+					this.service.setActiveOptions(this.range, true, true);
 					this.isRange = false;
 				}
 				break;
@@ -153,9 +184,7 @@ export class TimelineComponent implements OnInit {
 				}
 				break;
 			case 'mousemove':
-				if(!this.isRange) {
-					this.range = [pos.frame, pos.layer, pos.frame, pos.layer];
-				} else {
+				if(this.isRange) {
 					this.range[2] = pos.frame;
 					this.range[3] = pos.layer;
 				}
@@ -165,7 +194,6 @@ export class TimelineComponent implements OnInit {
 				if(this.isRange) {
 					this.isRange = false;
 					this.range = [-1, -1, -1, -1];
-					// this.markingPositionChange();
 				}
 
 				break;
@@ -184,6 +212,11 @@ export class TimelineComponent implements OnInit {
 		let frame2 = Math.max(this.range[0], this.range[2]);
 		let layer2 = Math.max(this.range[1], this.range[3]);
 		let ne = this.hoverRanger.nativeElement;
+
+		if(!this.isRange) {
+			this.range = [-1,-1,-1,-1];
+		}
+
 		ne.style.left = FRAME_WIDTH * frame1 + 'px';
 		ne.style.top = (LAYER_HEIGHT + LAYER_GAP) * layer1 + 'px';
 		ne.style.width = (frame2 - frame1 + 1) * FRAME_WIDTH + 'px';
@@ -201,18 +234,17 @@ export class TimelineComponent implements OnInit {
 		};
 	}
 
-	private markingPositionChange(frame: number = -1) {
-		this.marking.nativeElement.style.left = frame * this.frameWidth + 'px';
+	private getMarkingPosition(): string {
+		return this.currentFrame * this.frameWidth + 'px';
 	}
 
 	/**
 	 * 设置layer component的active状态
 	 */
 	private setLayersActive() {
-		console.log('setLayersActive');
 		if(!this.layers) return;
 		let eles: string[] = this.getActiveElements();
-		let aos = this.activeOptions;
+		let aos = this.activeOptions.get('ranges');
 		this.layers.forEach(layer => {
 			let eleId = layer.elementId;
 			if(eles.indexOf(eleId) >= 0) {
@@ -280,20 +312,7 @@ export class TimelineComponent implements OnInit {
 		//设置layer组件的active状态
 		if(changes.hasOwnProperty('activeOptions') && this.layers) {
 			this.setLayersActive();
-			//如果时间轴选取区域变化，同步到janvas选取元素
-            this.service.updateSelectionFromActiveOptions();
 		}
-
-		if(changes.hasOwnProperty('selection')) {
-			//如果选取元素数据变化，同步到时间轴选取区域
-			this.service.updateActiveOptionsFromSelection();
-		}
-
-		if(changes.hasOwnProperty('model')) {
-
-		}
-
-
 	}
 
 }

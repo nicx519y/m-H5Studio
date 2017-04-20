@@ -249,9 +249,23 @@ export class SelectionElementModel extends Record({
 }
 
 export class SelectionModel extends Record({
-	frameIndex: 0,
 	isUserSelect: false,
 	elements: Immutable.List<SelectionElementModel>()
+}) {
+
+}
+
+export class ActiveRangeModel extends Record({
+	elementId: '',
+	start: 0,
+	duration: 0,
+}) {
+
+}
+
+export class ActiveOptionModel extends Record({
+	isUserActive: true,
+	ranges: Immutable.List<ActiveRangeModel>()
 }) {
 
 }

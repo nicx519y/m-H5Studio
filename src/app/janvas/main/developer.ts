@@ -606,7 +606,7 @@ export default class Developer {
 		this.nowChooseElement = elementList;
 		
 		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
-			this.controlMask.selectedElement(this.nowChooseElement, true);
+			this.controlMask.selectedElement(this.nowChooseElement, false);
 		}
 	}
 

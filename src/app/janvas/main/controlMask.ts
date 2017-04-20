@@ -294,6 +294,8 @@ export default class ControlMask {
                 return;
             }
 
+            console.log(pressPoint);
+
             let deltaX = event.stageX - pressPoint.x;
             let deltaY = event.stageY - pressPoint.y;
 

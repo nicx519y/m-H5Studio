@@ -584,13 +584,13 @@ export default class Developer {
 	public selectElement(elementIdList:Array<String>, frameIndex?:Number, pageIndex?:Number) {
 		let elementList = [];
 
-		if(frameIndex) {
-			this.gotoPage(frameIndex);
-		}
+		// if(frameIndex) {
+		// 	this.gotoPage(frameIndex);
+		// }
 
-		if(pageIndex) {
-			this.gotoFrame(pageIndex);
-		}
+		// if(pageIndex) {
+		// 	this.gotoFrame(pageIndex);
+		// }
 
 		elementIdList.map((id, index) => {
 			if(!id) {

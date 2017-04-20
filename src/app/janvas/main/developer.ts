@@ -422,7 +422,7 @@ export default class Developer {
 		}
 
 		if(this.nowChooseElement && this.devMode == Developer.MODE.EDIT_MODE) {
-			this.controlMask.selectedElement(this.nowChooseElement);
+			this.controlMask.selectedElement(this.nowChooseElement, true);
 		}
 	}
 

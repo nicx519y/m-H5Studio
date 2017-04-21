@@ -252,10 +252,12 @@ export default class Developer {
 
 				case Developer.MODE.READ_MODE: {
 					this.startDrag = true;
-					mousePoint = {
-						x: event.stageX,
-						y: event.stageY
-					};
+					// mousePoint = {
+					// 	x: event.stageX,
+					// 	y: event.stageY
+					// };
+
+					mousePoint = undefined;
 
 					// this.mouse.updateMouseState(Mouse.STATE.DRAGE);
 					this.changeMouseState(Mouse.STATE.DRAGE);
@@ -299,9 +301,15 @@ export default class Developer {
 					break;
 				}
 				case Developer.MODE.READ_MODE: {
-					console.log();
 					if(!this.startDrag) {
 						return;
+					}
+
+					if(!mousePoint) {
+						mousePoint = {
+							x: event.stageX,
+							y: event.stageY
+						};
 					}
 
 					let point = {

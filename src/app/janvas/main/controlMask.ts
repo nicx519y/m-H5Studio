@@ -274,11 +274,15 @@ export default class ControlMask {
 
         //选中元素 拖拽开始
         this.maskContainerWrap.on('mousedown', (event) => {
-            pressPoint = {
-                x: event.stageX,
-                y: event.stageY
-            }
-            pressDownPoint = pressPoint;
+            // pressPoint = {
+            //     x: event.stageX,
+            //     y: event.stageY
+            // }
+
+            // pressDownPoint = pressPoint;
+
+            pressDownPoint  = undefined;
+            pressPoint = undefined;
 
             oriElementPosition = this.maskContainerWrap.localToGlobal(
                 this.maskContainer.x, 
@@ -294,7 +298,12 @@ export default class ControlMask {
                 return;
             }
 
-            console.log(pressPoint);
+            if(!pressDownPoint) {
+                pressDownPoint = pressPoint = {
+                    x: event.stageX,
+                    y: event.stageY
+                }
+            }
 
             let deltaX = event.stageX - pressPoint.x;
             let deltaY = event.stageY - pressPoint.y;

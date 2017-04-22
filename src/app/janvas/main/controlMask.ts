@@ -254,8 +254,6 @@ export default class ControlMask {
 
         let container = this.maskContainer;
 
-        let oriElementPosition;//原始全局坐标
-
         //选中元素 hover效果
         container.on('mouseover', (event) => {
             if(this.pressLock){
@@ -283,11 +281,6 @@ export default class ControlMask {
 
             pressDownPoint  = undefined;
             pressPoint = undefined;
-
-            oriElementPosition = this.maskContainerWrap.localToGlobal(
-                this.maskContainer.x, 
-                this.maskContainer.y
-            );
         });
 
         //选中元素 拖拽移动
@@ -332,6 +325,10 @@ export default class ControlMask {
         //选中元素 拖拽结束
         this.maskContainerWrap.on('pressup', (event) => {
             this.pressLock = false;
+
+            if(!pressDownPoint) {
+                return;
+            }
 
             if(event.stageX == pressDownPoint.x && event.stageY == pressDownPoint.y) {
                 return;

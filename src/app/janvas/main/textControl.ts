@@ -47,8 +47,6 @@ export default class textControl {
 
         let elementId = '';
 
-        
-
         //对文字进行描边
         if(element.isText) {
             this.element = element.janvasInstance.instance;

@@ -227,10 +227,15 @@ export default class Developer {
 		this.stage.on('stagemousedown', (event) => {
 			this.isShift = event.nativeEvent.shiftKey; //判断是否是shift
 
+			var jScale = window['jScale'];
+
+			var stageX = event.stageX * jScale;
+			var stageY = event.stageY * jScale;
+
 			switch(this.devMode) {
 				case Developer.MODE.SCALE_MODE: {
 					let beforeScale = parseFloat(this.getScale());
-					let beforePoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					let beforePoint = this.janvasContainer.globalToLocal(stageX, stageY);
 					let afterScale = event.nativeEvent.altKey ? beforeScale / this.SCALE_RATE : beforeScale * this.SCALE_RATE;
 					let janvasX = this.janvasContainer.x;
 					let janvasY = this.janvasContainer.y;
@@ -266,12 +271,13 @@ export default class Developer {
 
 				case Developer.MODE.TEXT_MODE: {
 					let element = this.stage.getObjectUnderPoint(
-						event.stageX, 
-						event.stageY, 
+						stageX, 
+						stageY, 
 						this.stage
 					);
 
-					let textPoint = this.janvasContainer.globalToLocal(event.stageX, event.stageY);
+					console.log(this.janvasContainer);
+					let textPoint = this.janvasContainer.globalToLocal(stageX, stageY);
 
 					this.textControl.chooseText(element, textPoint);
 
